@@ -9585,27 +9585,32 @@
         "address": "Jl. Raya Kalimalang, Unit Ruko no. A09, Pondok Bambu, Bekasi Barat, 17145",
         "hours": "07:00 - 23:15 WIB",
     }
-];
+  
+        // Kategori tombol filter
+        const categories = ['Kabeh', 'Kopi', 'Non-Kopi', 'Paket Hemat', 'Jajanan', 'Jajanan Pinggir Dalan', 'Sego', 'Mie', 'Kentaki'];
 
-        let menuItems = []; // Menampung data yang ditarik dari backend
+        // Wadah kosong untuk menampung data dari backend API
+        let menuItems = [];
 
-async function loadProductsFromBackend() {
-    try {
-        const response = await fetch('/api/products');
-        if (!response.ok) throw new Error('Gagal mengambil menu dari backend');
-        
-        menuItems = await response.json();
-        
-        // Panggil fungsi render awal setelah menu berhasil ditarik
-        selectBrand('Kopi Kenangan');
-    } catch (err) {
-        console.error('Error memuat produk:', err);
-    }
-}
+        async function loadProductsFromBackend() {
+            try {
+                const response = await fetch('/api/products');
+                if (!response.ok) throw new Error('Gagal mengambil menu dari backend');
+                
+                menuItems = await response.json();
+                
+                // Render kategori dan menu setelah data berhasil diambil
+                if (typeof renderCategories === 'function') renderCategories();
+                if (typeof selectBrand === 'function') selectBrand('Kopi Kenangan');
+                if (typeof filterCategory === 'function') filterCategory('Kabeh');
+            } catch (err) {
+                console.error('Error memuat produk backend:', err);
+            }
+        }
 
-document.addEventListener('DOMContentLoaded', () => {
-    loadProductsFromBackend();
-});
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProductsFromBackend();
+        });
 
         const smallImgItems = ['og thai tea', 'thai tea aren', 'blueberry frappe', 'chocoberry frappe'];
         const wifiPasswords = ["TemanKenangan#01", "SelaluSeru@02", "WorkFromKenangan+03", "SahabatSetia=04", "PaduanPas!05"];
