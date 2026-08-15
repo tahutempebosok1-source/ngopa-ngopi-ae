@@ -9593,18 +9593,21 @@ let menuItems = [];
 
 async function loadProductsFromBackend() {
     try {
-        const res = await fetch('/api/products');
-        if (!res.ok) throw new Error('Status bukan 200');
-        menuItems = await res.json();
+        const response = await fetch('/api/products');
+        if (!response.ok) throw new Error('Gagal memuat API backend');
         
-        // Panggil render SETELAH menuItems terisi
+        // 1. Simpan data ke menuItems
+        menuItems = await response.json();
+
+        // 2. Langsung render kategori dan brand default saat data sudah terisi penuh
         if (typeof renderCategories === 'function') renderCategories();
         if (typeof selectBrand === 'function') selectBrand('Kopi Kenangan');
     } catch (err) {
-        console.error('Gagal fetch /api/products:', err);
+        console.error('Error:', err);
     }
 }
 
+// Inisialisasi saat halaman dimuat
 document.addEventListener('DOMContentLoaded', () => {
     loadProductsFromBackend();
 });
