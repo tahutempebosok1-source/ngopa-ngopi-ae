@@ -1,5 +1,4 @@
-export default function handler(req, res) {
-    // Master data produk tersimpan aman di server backend
+module.exports = (req, res) => {
     const products = [
         // --- KOPI KENANGAN ---
         { id: 101, brand: 'Kopi Kenangan', name: 'Kopi Kenangan Mantan', cat: 'Kopi', price: 19000, img: 'kopi-kenangan-mantan.png', desc: 'Espresso, susu segar, dan gula aren asli' },
@@ -20,10 +19,7 @@ export default function handler(req, res) {
         { id: 204, brand: 'Fore Coffee', name: 'Butter Croissant', cat: 'Jajanan', price: 22000, img: 'fore-butter-croissant.png', desc: 'Croissant renyah beraroma butter' }
     ];
 
-    // Mengizinkan frontend membaca data dari endpoint ini (CORS)
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET');
-    
-    // Kirim response status 200 (Berhasil) dalam bentuk JSON
     res.status(200).json(products);
-}
+};
