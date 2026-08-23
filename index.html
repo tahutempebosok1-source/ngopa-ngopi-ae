@@ -1,114 +1,60 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ngopa Ngopi Ae - Tuku Kopi Murah Nak Kene</title>
-    <link rel="icon" type="image/png" href="logo-ngopa-ngopi-ae.png">
-    
-    <!-- ✅ 1. TAILWIND CDN -->
+    <link rel="icon" type="image/png" href="logo-ngopa-ngopi-ae.png" />
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- ✅ 2. TAILWIND CONFIG (harus di dalam script, setelah CDN) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const supabaseUrl = 'https://aenpbsmaazkebxfkbwid.supabase.co'
+        const supabaseKey = 'sb_publishable_Zcka6Mi0CzlFLrIYGlQdMg_GKLBiHlz'
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey)
+    </script>
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        brand: {
-                            50: '#F2F9F4',
-                            100: '#DCF0E2',
-                            200: '#B8E2C5',
-                            500: '#2E6F40',
-                            700: '#1B4326',
-                            800: '#14331C',
-                            900: '#0D2213'
-                        }
+                        brand: { 50: '#F2F9F4', 100: '#DCF0E2', 200: '#B8E2C5', 500: '#2E6F40', 700: '#1B4326', 800: '#14331C', 900: '#0D2213' }
                     },
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                    }
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] }
                 }
             }
         }
-        </script>
-    
-     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <!-- ✅ DEKLARASI SUPABASE DI SINI (HANYA 1 KALI) -->
-    <script>
-        const supabaseUrl = 'https://aenpbsmaazkebxfkbwid.supabase.co';
-        const supabaseKey = 'sb_publishable_pp4D47oL3GRAfzz1qe-iBA_5UeghLUd';
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
     </script>
     <style>
-        /* --- Semua gaya dari file asli (saya pertahankan) --- */
-        .sidebar-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
-            z-index: 999; display: none; opacity: 0; transition: opacity 0.3s ease;
-        }
+        /* --- Semua gaya dari file asli --- */
+        .sidebar-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 999; display: none; opacity: 0; transition: opacity 0.3s ease; }
         .sidebar-overlay.active { display: block; opacity: 1; }
-        
-        .sidebar-content {
-            position: fixed; top: 0; right: -100%; width: 85%; max-width: 380px;
-            height: 100%; background: #ffffff; z-index: 1000;
-            transition: right 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
-            padding: 24px; box-shadow: -4px 0 20px rgba(0,0,0,0.1);
-            overflow-y: auto;
-        }
+        .sidebar-content { position: fixed; top: 0; right: -100%; width: 85%; max-width: 380px; height: 100%; background: #ffffff; z-index: 1000; transition: right 0.3s cubic-bezier(0.2, 0.9, 0.4, 1); padding: 24px; box-shadow: -4px 0 20px rgba(0,0,0,0.1); overflow-y: auto; }
         .sidebar-content.open { right: 0; }
-        .sidebar-close {
-            position: absolute; top: 16px; right: 16px;
-            width: 36px; height: 36px; border-radius: 50%;
-            background: #f3f4f6; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.2s; border: none;
-        }
+        .sidebar-close { position: absolute; top: 16px; right: 16px; width: 36px; height: 36px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; border: none; }
         .sidebar-close:hover { background: #e5e7eb; }
         .sidebar-title { font-size: 18px; font-weight: 900; margin-bottom: 20px; }
-        .sidebar-menu-item {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 14px 16px; background: #f9fafb; border-radius: 16px;
-            margin-bottom: 10px; cursor: pointer; transition: 0.2s;
-        }
+        .sidebar-menu-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #f9fafb; border-radius: 16px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
         .sidebar-menu-item:hover { background: #f3f4f6; transform: translateX(4px); }
         .sidebar-menu-item .left { display: flex; align-items: center; gap: 12px; font-weight: 700; }
         .sidebar-menu-item .left i { font-size: 18px; color: #2E6F40; width: 24px; text-align: center; }
         .sidebar-menu-item .sub { font-size: 11px; color: #6b7280; font-weight: 400; display: block; }
         .sidebar-menu-item .arrow { color: #9ca3af; font-size: 12px; }
-        
         .dark-theme .sidebar-content { background: #0D2213; }
         .dark-theme .sidebar-close { background: #1B4326; color: white; }
         .dark-theme .sidebar-menu-item { background: #14331C; }
         .dark-theme .sidebar-menu-item:hover { background: #1B4326; }
         .dark-theme .sidebar-menu-item .sub { color: #9ca3af; }
         #adminDashboardContainer { background-color: #0B190E !important; }
-        .admin-container {
-            max-width: 1000px;
-            margin: 40px auto;
-            padding: 20px;
-            background: #0F2616;
-            border-radius: 24px;
-            border: 1px solid #2E6F40;
-            min-height: 80vh;
-        }
+        .admin-container { max-width: 1000px; margin: 40px auto; padding: 20px; background: #0F2616; border-radius: 24px; border: 1px solid #2E6F40; min-height: 80vh; }
         .admin-container h1 { color: #FFC107; font-size: 24px; font-weight: 900; margin-bottom: 20px; }
         .admin-table { width: 100%; border-collapse: collapse; font-size: 13px; }
         .admin-table th { background: #1B4326; color: #FFC107; padding: 12px 8px; text-align: left; border-bottom: 2px solid #2E6F40; }
         .admin-table td { padding: 12px 8px; border-bottom: 1px solid #1B4326; color: #e5e7eb; }
         .admin-table tr:hover td { background: rgba(255, 193, 7, 0.05); }
-        .admin-status-select {
-            padding: 6px 10px;
-            border-radius: 8px;
-            background: #14331C;
-            border: 1px solid #2E6F40;
-            color: white;
-            font-size: 12px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+        .admin-status-select { padding: 6px 10px; border-radius: 8px; background: #14331C; border: 1px solid #2E6F40; color: white; font-size: 12px; font-weight: bold; cursor: pointer; }
         .admin-status-select option { background: #0F2616; }
         .admin-badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 10px; font-weight: 700; }
         .admin-badge.diterima { background: #3B82F6; color: white; }
@@ -117,36 +63,13 @@
         .admin-badge.selesai { background: #6B7280; color: white; }
         .dark-theme footer .text-brand-800, .dark-theme footer span { color: #0F2616 !important; }
         .dark-theme footer .border-brand-200 { border-color: #2E6F40 !important; }
-        .dark-theme #cartModal .bg-white,
-        .dark-theme #outletModal .bg-white,
-        .dark-theme #aboutNgopaModal .bg-brand-900,
-        .dark-theme #bundlingModal .bg-brand-900,
-        .dark-theme #itemDetailModal .bg-brand-900 { background-color: #0F2616 !important; }
-        .dark-theme input, .dark-theme select, .dark-theme textarea, .dark-theme .custom-select-trigger {
-            background-color: #14331C !important;
-            color: #ffffff !important;
-            border-color: #2E6F40 !important;
-        }
+        .dark-theme #cartModal .bg-white, .dark-theme #outletModal .bg-white, .dark-theme #aboutNgopaModal .bg-brand-900, .dark-theme #bundlingModal .bg-brand-900, .dark-theme #itemDetailModal .bg-brand-900 { background-color: #0F2616 !important; }
+        .dark-theme input, .dark-theme select, .dark-theme textarea, .dark-theme .custom-select-trigger { background-color: #14331C !important; color: #ffffff !important; border-color: #2E6F40 !important; }
         .dark-theme input::placeholder, .dark-theme textarea::placeholder { color: #9ca3af !important; }
-        .cat-item {
-            animation: zoomIn 0.4s cubic-bezier(0.2, 0.9, 0.4, 1) both;
-            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1);
-            transform-origin: center;
-            border: 2px solid transparent;
-            flex-shrink: 0;
-            outline: none !important;
-            box-shadow: none !important;
-        }
+        .cat-item { animation: zoomIn 0.4s cubic-bezier(0.2, 0.9, 0.4, 1) both; transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1); transform-origin: center; border: 2px solid transparent; flex-shrink: 0; outline: none !important; box-shadow: none !important; }
         .cat-item:hover { transform: scale(1.05) !important; }
         .cat-item:active { transform: scale(0.94) !important; transition-duration: 0.1s; }
-        .cat-item.active {
-            transform: scale(1);
-            background-color: #1B4326 !important;
-            color: white !important;
-            border: 2px solid #FFC107 !important;
-            outline: none !important;
-            box-shadow: none !important;
-        }
+        .cat-item.active { transform: scale(1); background-color: #1B4326 !important; color: white !important; border: 2px solid #FFC107 !important; outline: none !important; box-shadow: none !important; }
         .dark-theme .cat-item:focus { outline: none !important; box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.5); }
         .dark-theme .brand-kk { background-color: #1A1A1A !important; border-color: #333 !important; }
         .dark-theme .brand-tm { background-color: #FFFFFF !important; color: #1A1A1A !important; border-color: #EAEAEA !important; }
@@ -158,147 +81,43 @@
         .dark-theme #outletList .text-gray-500 { color: #9ca3af !important; }
         .dark-theme .wifi-tab-btn { background-color: #14331C !important; color: #e5e7eb !important; border-color: #2E6F40 !important; }
         .dark-theme .wifi-tab-btn.bg-brand-800 { background-color: #2E6F40 !important; color: #ffffff !important; }
-        .dark-theme .floating-cart, .dark-theme .floating-top-btn {
-            background-color: #1A1A1A !important;
-            border-color: #333 !important;
-            color: #ffffff !important;
-        }
-        #aboutNgopaModal:not(.hidden) #aboutModalContent {
-            transform: scale(1) !important;
-            opacity: 1 !important;
-        }
-        #aboutModalContent {
-            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.3s ease;
-        }
+        .dark-theme .floating-cart, .dark-theme .floating-top-btn { background-color: #1A1A1A !important; border-color: #333 !important; color: #ffffff !important; }
+        #aboutNgopaModal:not(.hidden) #aboutModalContent { transform: scale(1) !important; opacity: 1 !important; }
+        #aboutModalContent { transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.3s ease; }
         .custom-select-wrapper { position: relative; user-select: none; width: 100%; }
         .custom-select { position: relative; display: flex; flex-direction: column; }
-        .custom-select-trigger {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 16px;
-            font-size: 13px;
-            font-weight: 700;
-            color: #0D2213;
-            background: #ffffff;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .custom-select-trigger:hover, .custom-select-trigger:focus {
-            border-color: #2E6F40;
-            box-shadow: 0 0 0 3px rgba(46, 111, 64, 0.1);
-        }
+        .custom-select-trigger { position: relative; display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; font-size: 13px; font-weight: 700; color: #0D2213; background: #ffffff; border: 2px solid #e5e7eb; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; }
+        .custom-select-trigger:hover, .custom-select-trigger:focus { border-color: #2E6F40; box-shadow: 0 0 0 3px rgba(46, 111, 64, 0.1); }
         .custom-select-trigger::after { content: '▼'; font-size: 10px; color: #9ca3af; transition: transform 0.3s ease; }
         .custom-select.open .custom-select-trigger::after { transform: rotate(180deg); }
-        .custom-options {
-            position: absolute;
-            display: none;
-            top: 100%;
-            left: 0;
-            right: 0;
-            margin-top: 4px;
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            z-index: 50;
-            padding: 6px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
+        .custom-options { position: absolute; display: none; top: 100%; left: 0; right: 0; margin-top: 4px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); z-index: 50; padding: 6px; max-height: 200px; overflow-y: auto; }
         .custom-select.open .custom-options { display: block; }
-        .custom-option {
-            padding: 10px 14px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #374151;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background 0.2s ease;
-        }
+        .custom-option { padding: 10px 14px; font-size: 13px; font-weight: 600; color: #374151; border-radius: 8px; cursor: pointer; transition: background 0.2s ease; }
         .custom-option:hover { background-color: #f3f4f6; }
         .custom-option.selected { background-color: #F2F9F4; color: #2E6F40; }
         .custom-options::-webkit-scrollbar { width: 4px; }
         .custom-options::-webkit-scrollbar-thumb { background: #2E6F40; border-radius: 4px; }
-        #categoryContainer {
-            scroll-behavior: smooth;
-            overflow-x: auto;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
+        #categoryContainer { scroll-behavior: smooth; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
         #categoryContainer::-webkit-scrollbar { display: none; }
-        @keyframes zoomIn {
-            0% { transform: scale(0.85); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .cat-item {
-            animation: zoomIn 0.4s cubic-bezier(0.2, 0.9, 0.4, 1) both;
-            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1);
-            transform-origin: center;
-        }
+        @keyframes zoomIn { 0% { transform: scale(0.85); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .cat-item { animation: zoomIn 0.4s cubic-bezier(0.2, 0.9, 0.4, 1) both; transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1); transform-origin: center; }
         .cat-item:hover { transform: scale(1.05) !important; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
         .cat-item:active { transform: scale(0.94) !important; transition-duration: 0.1s; }
-        .cat-item.active {
-            transform: scale(1);
-            background-color: #1B4326 !important;
-            color: white !important;
-            border-color: #1B4326 !important;
-            box-shadow: 0 4px 12px rgba(27, 67, 38, 0.3);
-        }
+        .cat-item.active { transform: scale(1); background-color: #1B4326 !important; color: white !important; border-color: #1B4326 !important; box-shadow: 0 4px 12px rgba(27, 67, 38, 0.3); }
         .cat-item.active:hover { transform: scale(1.02) !important; }
         .cat-icon { font-size: 11px; margin-right: 6px; opacity: 0.7; transition: opacity 0.2s ease; }
         .cat-item.active .cat-icon { opacity: 1; color: #fde047; }
         #bundlingSlotsContainer { display: flex; flex-wrap: wrap !important; gap: 10px; }
         .slot-btn { flex: 1 1 130px !important; min-width: 120px; max-width: 100%; }
-        .bundle-item-card {
-            position: relative;
-            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1);
-            transform: scale(1);
-        }
+        .bundle-item-card { position: relative; transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1); transform: scale(1); }
         .bundle-item-card:active { transform: scale(0.94); }
-        .bundle-item-card.selected {
-            border-color: #FFC107 !important;
-            box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.4);
-            background-color: rgba(255, 193, 7, 0.08);
-        }
-        .bundle-item-card.selected::after {
-            content: '✓';
-            position: absolute;
-            top: -2px;
-            right: -2px;
-            background: #FFC107;
-            color: #0D2213;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex !important;
-            align-items: center;
-            justify-content: center;
-            font-weight: 900;
-            font-size: 14px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            z-index: 10;
-        }
+        .bundle-item-card.selected { border-color: #FFC107 !important; box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.4); background-color: rgba(255, 193, 7, 0.08); }
+        .bundle-item-card.selected::after { content: '✓'; position: absolute; top: -2px; right: -2px; background: #FFC107; color: #0D2213; width: 24px; height: 24px; border-radius: 50%; display: flex !important; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); z-index: 10; }
         #bundlingModal .overflow-y-auto { scrollbar-width: none; -ms-overflow-style: none; }
         #bundlingModal .overflow-y-auto::-webkit-scrollbar { display: none; }
         .slot-btn-empty { border: 1px solid rgba(255, 255, 255, 0.15); background-color: rgba(255, 255, 255, 0.03); }
         .slot-btn-empty:hover { border-color: rgba(255, 193, 7, 0.4); }
-        .qty-btn {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 900;
-            font-size: 14px;
-            transition: all 0.2s ease;
-            cursor: pointer;
-            border: none;
-        }
+        .qty-btn { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; transition: all 0.2s ease; cursor: pointer; border: none; }
         .qty-btn:hover { transform: scale(1.1); }
         .qty-btn-minus { background: #f3f4f6; color: #333; }
         .qty-btn-minus:hover { background: #e5e7eb; }
@@ -308,54 +127,17 @@
         ::-webkit-scrollbar-thumb { background: #2E6F40; border-radius: 10px; }
         ::-webkit-scrollbar-track { background: #F2F9F4; }
         .glass-nav { backdrop-filter: blur(12px); background-color: rgba(20, 51, 28, 0.95); }
-        .brand-card-custom {
-            transition: all 0.3s ease;
-            border-radius: 20px;
-            padding: 20px 10px;
-            text-align: center;
-            cursor: pointer;
-            position: relative;
-            min-height: 140px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
+        .brand-card-custom { transition: all 0.3s ease; border-radius: 20px; padding: 20px 10px; text-align: center; cursor: pointer; position: relative; min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .brand-card-custom:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
         .brand-kk { background-color: #1A1A1A; color: white; border: 2px solid #333; }
         .brand-tm { background-color: #FFFFFF; color: #1A1A1A; border: 2px solid #EAEAEA; }
         .brand-fr { background-color: #1B3A2D; color: white; border: 2px solid #2E5A47; }
-        .brand-logo-wrapper {
-            width: 70px;
-            height: 70px;
-            background: white;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 10px;
-            padding: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
+        .brand-logo-wrapper { width: 70px; height: 70px; background: white; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         .brand-logo-wrapper img { width: 100%; height: 100%; object-fit: contain; }
         .badge-kk { background: rgba(255, 193, 7, 0.2); border: 1px solid #FFC107; color: #FFC107; }
         .badge-tm { background: #F3F4F6; border: 1px solid #D1D5DB; color: #9CA3AF; }
         .badge-fr { background: rgba(255, 193, 7, 0.2); border: 1px solid #FFC107; color: #FFC107; }
-        .checkmark-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 24px;
-            height: 24px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            border: 1px solid #E5E7EB;
-        }
+        .checkmark-badge { position: absolute; top: 10px; right: 10px; width: 24px; height: 24px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); border: 1px solid #E5E7EB; }
         .checkmark-badge i { color: #1A1A1A; font-size: 12px; display: none; }
         .brand-card-custom.active .checkmark-badge i { display: block; }
         .dark-theme { background-color: #0B190E !important; color: #ffffff !important; }
@@ -371,67 +153,25 @@
         .dark-theme .cat-item .cat-icon { color: #1B4326 !important; opacity: 1 !important; }
         .dark-theme .cat-item.active { background-color: #1B4326 !important; color: #ffffff !important; border-color: #1B4326 !important; }
         .dark-theme .cat-item.active .cat-icon { color: #ffffff !important; }
-        .menu-animate-enter {
-            opacity: 1 !important;
-            transform: scale(1) translateY(0) !important;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-        .menu-animate-leave {
-            opacity: 0 !important;
-            transform: scale(0.96) translateY(8px) !important;
-            transition: opacity 0.15s ease, transform 0.15s ease;
-        }
+        .menu-animate-enter { opacity: 1 !important; transform: scale(1) translateY(0) !important; transition: opacity 0.3s ease, transform 0.3s ease; }
+        .menu-animate-leave { opacity: 0 !important; transform: scale(0.96) translateY(8px) !important; transition: opacity 0.15s ease, transform 0.15s ease; }
         .lang-btn { transition: all 0.2s ease; cursor: pointer; min-width: 4px; display: flex; align-items: center; justify-content: center; }
         .lang-btn:hover { transform: scale(1.1); }
-        .floating-cart {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 40;
-            background: #1A1A1A;
-            color: #ffffff;
-            padding: 12px 20px;
-            border-radius: 50px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
-            transform: translateY(80px);
-            opacity: 0;
-            pointer-events: none;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
+        .floating-cart { position: fixed; bottom: 24px; right: 24px; z-index: 40; background: #1A1A1A; color: #ffffff; padding: 12px 20px; border-radius: 50px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3); display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1); transform: translateY(80px); opacity: 0; pointer-events: none; border: 1px solid rgba(255, 255, 255, 0.1); }
         .floating-cart.visible { transform: translateY(0); opacity: 1; pointer-events: auto; }
         .floating-cart:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4); }
         .floating-cart .cart-icon { background: #ffffff; color: #1A1A1A; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; }
-        .floating-top-btn {
-            position: fixed;
-            bottom: 24px;
-            left: 24px;
-            z-index: 40;
-            background: #1A1A1A;
-            color: #ffffff;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
-            transform: translateY(80px);
-            opacity: 0;
-            pointer-events: none;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
+        .floating-top-btn { position: fixed; bottom: 24px; left: 24px; z-index: 40; background: #1A1A1A; color: #ffffff; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3); cursor: pointer; transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1); transform: translateY(80px); opacity: 0; pointer-events: none; border: 1px solid rgba(255, 255, 255, 0.1); }
         .floating-top-btn.visible { transform: translateY(0); opacity: 1; pointer-events: auto; }
         .floating-top-btn:hover { transform: translateY(-3px) scale(1.05); background: #333333; }
         .header-right { margin-left: auto !important; }
         .animate-bounce-short { animation: bounceShort 0.6s ease; }
         @keyframes bounceShort { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+        
+        /* Track filter */
+        .track-filter-btn { padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; background: #1B4326; color: #9ca3af; border: 1px solid transparent; cursor: pointer; transition: all 0.2s; }
+        .track-filter-btn.active { background: #FFC107; color: #0D2213; border-color: #FFC107; }
+        .track-filter-btn:hover { opacity: 0.8; }
     </style>
 </head>
 <body id="mainBody" class="bg-brand-50 text-brand-900 font-sans pb-24 md:pb-8 transition-colors duration-300">
@@ -476,10 +216,6 @@
     <div id="sidebarContent" class="sidebar-content">
         <button class="sidebar-close" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
         <div class="sidebar-title">☕ Menu</div>
-        <div class="sidebar-menu-item" onclick="closeModal('outletModal'); toggleSidebar();">
-            <span class="left"><i class="fa-solid fa-store"></i> Pilih Outlet</span>
-            <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
-        </div>
         <div class="sidebar-menu-item" onclick="toggleSidebar(); openModal('panduanOrderModal')">
             <span class="left"><i class="fa-solid fa-route"></i> Cara Order</span>
             <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
@@ -504,7 +240,8 @@
             <div class="left"><i class="fa-solid fa-circle-question"></i> FAQ & Info</div>
             <i class="fa-solid fa-chevron-right arrow"></i>
         </div>
-        <div class="sidebar-menu-item" onclick="openModal('bestSellerModal'); toggleSidebar();">
+        <!-- Best Seller - panggil openBestSellerModal -->
+        <div class="sidebar-menu-item" onclick="openBestSellerModal(); toggleSidebar();">
             <div class="left"><i class="fa-solid fa-star"></i> Best Seller</div>
             <i class="fa-solid fa-chevron-right arrow"></i>
         </div>
@@ -867,7 +604,7 @@
             <div class="mt-4 bg-brand-50 border-2 border-brand-500 p-4 rounded-2xl text-center">
                 <p class="text-xs font-black text-brand-700 uppercase tracking-wide">PESAN SEKARANG KE MIMIN YA!</p>
                 <div class="my-2 space-y-1">
-                    <a href="http://wa.me/62881036705137" target="_blank" class="block font-black text-lg text-brand-900 hover:text-brand-500 transition"><i class="fa-brands fa-whatsapp text-emerald-600 mr-1"></i> +62 8810-3670-5137</a>
+                    <a href="https://wa.me/62881036705137" target="_blank" class="block font-black text-lg text-brand-900 hover:text-brand-500 transition"><i class="fa-brands fa-whatsapp text-emerald-600 mr-1"></i> +62 8810-3670-5137</a>
                     <a href="https://wa.me/62895327811763" target="_blank" class="block font-black text-lg text-brand-900 hover:text-brand-500 transition"><i class="fa-brands fa-whatsapp text-emerald-600 mr-1"></i> +62 8953-2781-1763</a>
                 </div>
             </div>
@@ -1001,7 +738,7 @@
         </div>
     </div>
 
-    <!-- ========== MODAL: Track Order ========== -->
+    <!-- ========== MODAL: Track Order (dengan filter brand) ========== -->
     <div id="trackOrderModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-brand-900 text-white w-full max-w-md rounded-3xl p-6 shadow-2xl border border-brand-700 transform transition-all duration-300 scale-95 opacity-0" id="trackModalContent">
             <div class="flex justify-between items-center mb-4">
@@ -1010,8 +747,8 @@
                         <i class="fa-solid fa-lock text-lg"></i>
                     </div>
                     <div>
-                        <h3 class="font-black text-lg text-white">Verifikasi Keamanan</h3>
-                        <p class="text-xs text-gray-400">Lacak status pesanan Anda</p>
+                        <h3 class="font-black text-lg text-white">LACAK Status Pesanan</h3>
+                        <p class="text-xs text-gray-400">Pantau progress pesanan Anda</p>
                     </div>
                 </div>
                 <button onclick="closeModal('trackOrderModal')" class="text-gray-400 hover:text-white text-2xl font-bold">×</button>
@@ -1023,6 +760,14 @@
                 <input type="text" id="trackLast4" required maxlength="4" pattern="\d{4}" inputmode="numeric" placeholder="4321" autocomplete="off" class="w-full bg-transparent border-0 text-base font-bold text-white placeholder-gray-500 tracking-[0.2em] outline-none focus:ring-0">
             </div>
             <button type="button" onclick="verifyAndTrack()" class="w-full py-3 bg-amber-400 hover:bg-amber-300 text-brand-900 font-extrabold rounded-xl transition text-sm shadow-lg">Konfirmasi & Lacak</button>
+            
+            <!-- Filter Brand -->
+            <div class="flex gap-2 my-3 overflow-x-auto" id="trackFilterBrands">
+                <button class="track-filter-btn active" data-brand="all" onclick="filterTrackOrders('all')">Semua</button>
+                <button class="track-filter-btn" data-brand="Kopi Kenangan" onclick="filterTrackOrders('Kopi Kenangan')">Kopi Kenangan</button>
+                <button class="track-filter-btn" data-brand="Tomoro Coffee" onclick="filterTrackOrders('Tomoro Coffee')">Tomoro Coffee</button>
+                <button class="track-filter-btn" data-brand="Fore Coffee" onclick="filterTrackOrders('Fore Coffee')">Fore Coffee</button>
+            </div>
             <div id="trackResultArea" class="mt-4 hidden"></div>
         </div>
     </div>
@@ -1165,35 +910,15 @@
         </div>
     </div>
 
-    <!-- ========== MODAL: Best Seller ========== -->
+    <!-- ========== MODAL: Best Seller (Realtime) ========== -->
     <div id="bestSellerModal" class="modal-content fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-brand-900 text-white w-full max-w-md rounded-3xl p-5 shadow-2xl border border-brand-700 max-h-[90vh] flex flex-col">
             <div class="flex justify-between items-center border-b border-brand-700 pb-3 mb-4">
-                <h3 class="font-black text-lg">⭐ Best Seller</h3>
+                <h3 class="font-black text-lg">⭐ Best Seller (Realtime)</h3>
                 <button onclick="closeModal('bestSellerModal')" class="text-gray-400 hover:text-white text-xl">×</button>
             </div>
-            <div class="space-y-3 overflow-y-auto pr-2 flex-1">
-                <div class="flex items-center justify-between p-3 bg-brand-800/50 rounded-2xl border border-brand-700/50">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-brand-700 flex items-center justify-center text-amber-400"><i class="fa-solid fa-mug-hot"></i></div>
-                        <div><div class="font-bold text-sm">Kopi Kenangan Mantan</div><div class="text-[10px] text-gray-400">615 pcs · Rp6.895.060</div></div>
-                    </div>
-                    <span class="text-[9px] font-black bg-amber-400/20 text-amber-400 px-2 py-1 rounded-full">Top 1</span>
-                </div>
-                <div class="flex items-center justify-between p-3 bg-brand-800/50 rounded-2xl border border-brand-700/50">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-brand-700 flex items-center justify-center text-amber-400"><i class="fa-solid fa-mug-hot"></i></div>
-                        <div><div class="font-bold text-sm">Creamy Aren Latte</div><div class="text-[10px] text-gray-400">182 pcs · Rp2.475.198</div></div>
-                    </div>
-                    <span class="text-[9px] font-black bg-gray-700 text-gray-300 px-2 py-1 rounded-full">Top 2</span>
-                </div>
-                <div class="flex items-center justify-between p-3 bg-brand-800/50 rounded-2xl border border-brand-700/50">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-brand-700 flex items-center justify-center text-amber-400"><i class="fa-solid fa-mug-hot"></i></div>
-                        <div><div class="font-bold text-sm">Spanish Latte</div><div class="text-[10px] text-gray-400">153 pcs · Rp1.749.850</div></div>
-                    </div>
-                    <span class="text-[9px] font-black bg-amber-400/20 text-amber-400 px-2 py-1 rounded-full">Top 3</span>
-                </div>
+            <div id="bestSellerList" class="space-y-3 overflow-y-auto pr-2 flex-1">
+                <!-- Akan diisi oleh JavaScript -->
             </div>
         </div>
     </div>
@@ -1202,10 +927,10 @@
     <div id="loyaltyModal" class="modal-content fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-brand-900 text-white w-full max-w-md rounded-3xl p-5 shadow-2xl border border-brand-700 max-h-[90vh] flex flex-col">
             <div class="flex justify-between items-center border-b border-brand-700 pb-3 mb-4">
-                <h3 class="font-black text-lg">🏆 Jasdor Loyalty</h3>
+                <h3 class="font-black text-lg">🏆 Ngopa Loyalty Card</h3>
                 <button onclick="closeModal('loyaltyModal')" class="text-gray-400 hover:text-white text-xl">×</button>
             </div>
-            <p class="text-xs text-gray-300 mb-4">Masukkan nomor WhatsApp untuk cek level loyalitas Anda.</p>
+            <p class="text-xs text-gray-300 mb-4">Masukkan nomor WhatsApp untuk cek level loyalitas Anda berdasarkan total pesanan.</p>
             <div class="flex gap-2 mb-6">
                 <input type="tel" id="loyaltyPhone" placeholder="08xxxxxxxxxx" class="flex-1 p-3 rounded-xl bg-brand-800 border border-brand-700 text-white text-sm focus:outline-none focus:border-amber-400">
                 <button onclick="checkLoyalty()" class="px-4 py-3 bg-amber-400 text-brand-900 font-extrabold rounded-xl text-xs">Cek</button>
@@ -1228,30 +953,48 @@
         <i class="fa-solid fa-arrow-up text-lg"></i>
     </div>
 
-    <!-- JAVASCRIPT MASTER -->
+    <!-- ========== JAVASCRIPT ========== -->
     <script>
-        
-               const brandCategories = {
+        // ======================== LOYALTY CONFIG ========================
+        const LOYALTY_LEVELS = [
+            { minOrders: 0, level: 'Newbie', icon: '🌱', desc: 'Baru coba', voucher: null },
+            { minOrders: 5, level: 'Anak Jasdor', icon: '🐣', desc: 'Mulai sering', voucher: '3x diskon Rp200/transaksi' },
+            { minOrders: 10, level: 'Jasdor Regular', icon: '⭐', desc: 'Udah langganan', voucher: '3x diskon Rp400/transaksi' },
+            { minOrders: 20, level: 'Jasdor Addict', icon: '🔥', desc: 'Mulai ketagihan', voucher: '5x diskon Rp600/transaksi' },
+            { minOrders: 40, level: 'Jasdor Veteran', icon: '🏅', desc: 'Udah banyak pengalaman', voucher: '6x diskon Rp1000/transaksi' },
+            { minOrders: 80, level: 'Jasdor Legend', icon: '👑', desc: 'Loyal banget', voucher: '10x diskon Rp2000/transaksi' },
+        ];
+
+        function getLoyaltyLevel(totalOrders) {
+            let result = LOYALTY_LEVELS[0];
+            for (let lv of LOYALTY_LEVELS) {
+                if (totalOrders >= lv.minOrders) result = lv;
+            }
+            return result;
+        }
+
+        async function getCustomerOrderCount(phone) {
+            const { count, error } = await supabaseClient
+                .from('orders')
+                .select('*', { count: 'exact', head: true })
+                .eq('customer_phone', phone);
+            if (error) {
+                console.error('Gagal hitung order:', error);
+                return 0;
+            }
+            return count || 0;
+        }
+
+        // ======================== BRAND CATEGORIES ========================
+        const brandCategories = {
             'Kopi Kenangan': ['Semua', 'Paket Hemat', 'Kopi', 'Non-Kopi', 'Snack', 'Korean Food', 'Nasi', 'Pasta', 'Ayam Goreng'],
             'Fore Coffee': [
-                'Semua', 
-                'Americano Series', 
-                'Coffee',
-                'Non Coffee', 
-                'Fore Signature',
-                'Fore Deli', 
-                'Fore Junior', 
-                'Ice Blended', 
-                'Refresher', 
-                'Sunny Burst Series', 
-                'Tea',
-                'Foreveryone 1L',
-                'Others'
+                'Semua', 'Americano Series', 'Coffee', 'Non Coffee', 'Fore Signature',
+                'Fore Deli', 'Fore Junior', 'Ice Blended', 'Refresher', 'Sunny Burst Series', 'Tea', 'Foreveryone 1L', 'Others'
             ],
             'Tomoro Coffee': ['Semua', 'Tomoro Signature', 'Classic Coffee', 'Fruity Series', 'Cloud Series', 'Non Coffee', 'Matcha Series']
         };
 
-       
         const brandWifiData = {
             "Kopi Kenangan": [
                 "TemanKenangan#01", "SelaluSeru@02", "WorkFromKenangan+03", "SahabatSetia=04", "PaduanPas!05",
@@ -1266,7 +1009,6 @@
         };
 
         // ======================== STATE ========================
-
         let currentLanguage = 'id';
         let selectedBrand = 'Kopi Kenangan';
         let activeWifiBrandTab = 'Kopi Kenangan';
@@ -1279,13 +1021,15 @@
         let selectedCustomization = { size: 'Regular', sizeUpcharge: 0, temp: 'Ice', sugar: 'Normal Sugar', ice: 'Normal Ice' };
         let outletCurrentPage = 1;
         const outletItemsPerPage = 10;
-	let outlets = [];
+        let outlets = [];
         let filteredOutletList = [];
         let activeBundlingItem = null;
         let activeSlotIndex = 0;
         let bundlingSlots = [];
         let tempSelectedSlotItem = null;
         let pendingWAUrl = '';
+        let trackOrdersCache = [];
+        let trackFilter = 'all';
 
         // ======================== FUNGSI UTAMA ========================
 
@@ -1437,74 +1181,68 @@
             return { isOpen: isOpen, statusText: isOpen ? "Buka" : "Tutup" };
         }
 
-         async function renderOutlets() {
+        async function renderOutlets() {
             const container = document.getElementById('outletList');
             const searchQuery = document.getElementById('outletSearchInput')?.value?.toLowerCase().trim() || '';
 
-            // 1. Ambil data outlet dari Supabase
-            let query = supabase.from('outlets').select('*');
-
-            // Jika ada pencarian, filter berdasarkan nama atau alamat
-            if (searchQuery) {
-                query = query.or(`name.ilike.%${searchQuery}%,address.ilike.%${searchQuery}%`);
-            }
-
-            const { data: outletsData, error } = await query;
-
-            if (error) {
-                console.error("Gagal mengambil outlet dari Supabase:", error);
-                container.innerHTML = `<p class="text-center text-xs text-red-400 py-8">Gagal memuat outlet.</p>`;
+            if (!supabaseClient || typeof supabaseClient.from !== 'function'){
+                console.error('⚠️ Supabase belum siap di renderOutlets!');
+                container.innerHTML = `<p class="text-center text-xs text-red-400 py-8">⚠️ Supabase belum siap. Refresh halaman.</p>`;
                 return;
             }
 
-            // 2. Filter manual jika sudah ada data (untuk pagination lokal)
-            // Karena Supabase gratis memiliki batas row, kita handle pagination di frontend saja
-            const filteredOutlets = outletsData || [];
-	    filteredOutletList = filteredOutlets;
-            outlets = filteredOutlets;
-            
-            const totalPages = Math.ceil(filteredOutlets.length / outletItemsPerPage) || 1;
-            if (outletCurrentPage > totalPages) outletCurrentPage = totalPages;
-            const startIdx = (outletCurrentPage - 1) * outletItemsPerPage;
-            const pageData = filteredOutlets.slice(startIdx, startIdx + outletItemsPerPage);
+            try {
+                let query = supabaseClient.from('outlets').select('*');
+                if (searchQuery) {
+                    query = query.or(`name.ilike.%${searchQuery}%,address.ilike.%${searchQuery}%`);
+                }
+                const { data: outletsData, error } = await query;
+                if (error) {
+                    console.error("Gagal mengambil outlet dari Supabase:", error);
+                    container.innerHTML = `<p class="text-center text-xs text-red-400 py-8">Gagal memuat outlet.</p>`;
+                    return;
+                }
+                const filteredOutlets = outletsData || [];
+                filteredOutletList = filteredOutlets;
+                outlets = filteredOutlets;
+                
+                const totalPages = Math.ceil(filteredOutlets.length / outletItemsPerPage) || 1;
+                if (outletCurrentPage > totalPages) outletCurrentPage = totalPages;
+                const startIdx = (outletCurrentPage - 1) * outletItemsPerPage;
+                const pageData = filteredOutlets.slice(startIdx, startIdx + outletItemsPerPage);
 
-            document.getElementById('outletPageInfo').innerText = `Halaman ${outletCurrentPage} / ${totalPages}`;
-            document.getElementById('prevPageBtn').disabled = (outletCurrentPage === 1);
-            document.getElementById('nextPageBtn').disabled = (outletCurrentPage === totalPages);
+                document.getElementById('outletPageInfo').innerText = `Halaman ${outletCurrentPage} / ${totalPages}`;
+                document.getElementById('prevPageBtn').disabled = (outletCurrentPage === 1);
+                document.getElementById('nextPageBtn').disabled = (outletCurrentPage === totalPages);
 
-            if (pageData.length === 0) {
-                container.innerHTML = `<p class="text-center text-xs text-gray-400 py-8">Outlet tidak ditemukan.</p>`;
-                return;
-            }
+                if (pageData.length === 0) {
+                    container.innerHTML = `<p class="text-center text-xs text-gray-400 py-8">Outlet tidak ditemukan.</p>`;
+                    return;
+                }
 
-            // 3. Render kartu outlet
-            container.innerHTML = pageData.map(o => {
-                const statusObj = checkOutletStatus(o.hours);
-                const isSelected = selectedOutlet && o.id === selectedOutlet.id;
-
-                const badgeHtml = statusObj.isOpen 
-                    ? `<span class="text-[9px] bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Buka
-                       </span>`
-                    : `<span class="text-[9px] bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                         <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Tutup
-                       </span>`;
-
-                return `
-                    <div onclick="chooseOutlet(${o.id})" class="p-3 border rounded-2xl hover:border-brand-500 cursor-pointer transition flex justify-between items-center bg-white dark:bg-brand-900 ${isSelected ? 'bg-amber-50/50 dark:bg-brand-700 border-amber-400' : 'border-gray-100 dark:border-brand-700'}">
-                        <div class="flex-1 pr-2">
-                            <div class="flex items-center justify-between gap-1.5">
-                                <h4 class="font-extrabold text-xs text-brand-900 dark:text-white">${o.name}</h4>
-                                ${badgeHtml}
+                container.innerHTML = pageData.map(o => {
+                    const statusObj = checkOutletStatus(o.hours);
+                    const isSelected = selectedOutlet && o.id === selectedOutlet.id;
+                    const badgeHtml = statusObj.isOpen 
+                        ? `<span class="text-[9px] bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-bold px-2 py-0.5 rounded-full flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Buka</span>`
+                        : `<span class="text-[9px] bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 font-bold px-2 py-0.5 rounded-full flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Tutup</span>`;
+                    return `
+                        <div onclick="chooseOutlet(${o.id})" class="p-3 border rounded-2xl hover:border-brand-500 cursor-pointer transition flex justify-between items-center bg-white dark:bg-brand-900 ${isSelected ? 'bg-amber-50/50 dark:bg-brand-700 border-amber-400' : 'border-gray-100 dark:border-brand-700'}">
+                            <div class="flex-1 pr-2">
+                                <div class="flex items-center justify-between gap-1.5">
+                                    <h4 class="font-extrabold text-xs text-brand-900 dark:text-white">${o.name}</h4>
+                                    ${badgeHtml}
+                                </div>
+                                <p class="text-[10px] text-amber-600 dark:text-amber-400 font-bold mt-0.5 flex items-center gap-1"><i class="fa-regular fa-clock text-[9px]"></i> ${o.hours || 'Jam operasional tidak tersedia'}</p>
+                                <p class="text-[11px] text-gray-500 dark:text-gray-300 mt-1 line-clamp-2">${o.address}</p>
                             </div>
-                            <p class="text-[10px] text-amber-600 dark:text-amber-400 font-bold mt-0.5 flex items-center gap-1">
-                                <i class="fa-regular fa-clock text-[9px]"></i> ${o.hours || 'Jam operasional tidak tersedia'}
-                            </p>
-                            <p class="text-[11px] text-gray-500 dark:text-gray-300 mt-1 line-clamp-2">${o.address}</p>
                         </div>
-                    </div>
-                `;
-            }).join('');
+                    `;
+                }).join('');
+            } catch (err) {
+                console.error('Error di renderOutlets:', err);
+                container.innerHTML = `<p class="text-center text-xs text-red-400 py-8">Error: ${err.message}</p>`;
+            }
         }
 
         function chooseOutlet(id) {
@@ -1523,7 +1261,7 @@
         }
 
         function onOutletSearch() {
-            outletCurrentPage = 1; // Reset ke halaman 1 saat mencari
+            outletCurrentPage = 1;
             renderOutlets();
         }
 
@@ -1646,61 +1384,55 @@
 
         // ======================== MENU ========================
 
-                // ============================================
-        // RENDER MENU DARI SUPABASE (DINAMIS)
-        // ============================================
-
         async function renderMenu() {
-    const grid = document.getElementById('menuGrid');
-    const keyword = document.getElementById('searchInput').value.toLowerCase();
-    const extraPrice = isOutsideJava(selectedOutlet) ? 2000 : 0;
+            const grid = document.getElementById('menuGrid');
+            const keyword = document.getElementById('searchInput').value.toLowerCase();
+            const extraPrice = isOutsideJava(selectedOutlet) ? 2000 : 0;
 
-    // ✅ CEK SUPABASE
-    if (!supabase || typeof supabase.from !== 'function') {
-        console.error('⚠️ Supabase belum siap!');
-        grid.innerHTML = `<p class="text-center text-red-400 py-8">⚠️ Supabase belum siap. Refresh halaman.</p>`;
-        return;
-    }
+            if (!supabaseClient || typeof supabaseClient.from !== 'function'){
+                console.error('⚠️ Supabase belum siap!');
+                grid.innerHTML = `<p class="text-center text-red-400 py-8">⚠️ Supabase belum siap. Refresh halaman.</p>`;
+                return;
+            }
 
-    try {
-        const { data: products, error } = await supabase
-            .from('products')
-            .select('*')
-            .eq('brand', selectedBrand);
+            try {
+                const { data: products, error } = await supabaseClient
+                    .from('products')
+                    .select('*')
+                    .eq('brand', selectedBrand);
 
-        if (error) {
-            console.error("Gagal mengambil menu:", error);
-            grid.innerHTML = `<p class="text-center text-red-400 py-8">Gagal memuat menu.</p>`;
-            return;
-        }
+                if (error) {
+                    console.error("Gagal mengambil menu:", error);
+                    grid.innerHTML = `<p class="text-center text-red-400 py-8">Gagal memuat menu.</p>`;
+                    return;
+                }
 
-        const filtered = products.filter(item => {
-            const matchCategory = (currentCategory === 'Semua' || item.category === currentCategory);
-            const matchKeyword = item.name.toLowerCase().includes(keyword);
-            return matchCategory && matchKeyword;
-        });
+                const filtered = products.filter(item => {
+                    const matchCategory = (currentCategory === 'Semua' || item.category === currentCategory);
+                    const matchKeyword = item.name.toLowerCase().includes(keyword);
+                    return matchCategory && matchKeyword;
+                });
 
-        grid.innerHTML = filtered.map(item => `
-            <div onclick="openItemDetail(${item.id})" class="bg-white rounded-3xl border border-brand-100 p-3 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between cursor-pointer group">
-                <div>
-                    <div class="relative rounded-2xl overflow-hidden mb-2 aspect-square bg-gray-50/80 p-2 flex items-center justify-center">
-                        <img src="${item.image_url}" alt="${item.name}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300">
+                grid.innerHTML = filtered.map(item => `
+                    <div onclick="openItemDetail(${item.id})" class="bg-white rounded-3xl border border-brand-100 p-3 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between cursor-pointer group">
+                        <div>
+                            <div class="relative rounded-2xl overflow-hidden mb-2 aspect-square bg-gray-50/80 p-2 flex items-center justify-center">
+                                <img src="${item.image_url}" alt="${item.name}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300">
+                            </div>
+                            <h4 class="font-extrabold text-xs md:text-sm text-brand-900 line-clamp-2 group-hover:text-amber-400 transition-colors">${item.name}</h4>
+                            <p class="text-[10px] text-gray-400 font-medium">${item.category}</p>
+                        </div>
+                        <div class="mt-3 flex items-center justify-between pt-2 border-t border-gray-100">
+                            <p class="text-xs font-black text-brand-800">Rp${(item.price + extraPrice).toLocaleString('id-ID')}</p>
+                            <div class="bg-brand-700 group-hover:bg-brand-500 text-white w-8 h-8 rounded-xl flex items-center justify-center transition-all shadow-sm"><i class="fa-solid fa-plus text-xs"></i></div>
+                        </div>
                     </div>
-                    <h4 class="font-extrabold text-xs md:text-sm text-brand-900 line-clamp-2 group-hover:text-amber-400 transition-colors">${item.name}</h4>
-                    <p class="text-[10px] text-gray-400 font-medium">${item.category}</p>
-                </div>
-                <div class="mt-3 flex items-center justify-between pt-2 border-t border-gray-100">
-                    <p class="text-xs font-black text-brand-800">Rp${(item.price + extraPrice).toLocaleString('id-ID')}</p>
-                    <div class="bg-brand-700 group-hover:bg-brand-500 text-white w-8 h-8 rounded-xl flex items-center justify-center transition-all shadow-sm"><i class="fa-solid fa-plus text-xs"></i></div>
-                </div>
-            </div>
-        `).join('');
-        
-    } catch (err) {
-        console.error('Error di renderMenu:', err);
-        grid.innerHTML = `<p class="text-center text-red-400 py-8">Error: ${err.message}</p>`;
-    }
-}
+                `).join('');
+            } catch (err) {
+                console.error('Error di renderMenu:', err);
+                grid.innerHTML = `<p class="text-center text-red-400 py-8">Error: ${err.message}</p>`;
+            }
+        }
 
         function filterMenu() { renderMenu(); }
 
@@ -1708,7 +1440,7 @@
 
         function getAvailableOptions(item) {
             const brand = item.brand;
-            const cat = item.cat;
+            const cat = item.category;
             const name = item.name.toLowerCase();
             let options = { size: true, temp: true, ice: true, sugar: true };
             if (brand === 'Fore Coffee' && cat === 'Fore Junior') options.size = false;
@@ -1720,16 +1452,14 @@
             return options;
         }
 
-        
-             async function openItemDetail(id) {
+        async function openItemDetail(id) {
             if (!validateOutletSelection()) return;
 
-            // 1. Ambil data produk dari Supabase berdasarkan ID
-            const { data: item, error } = await supabase
+            const { data: item, error } = await supabaseClient
                 .from('products')
                 .select('*')
                 .eq('id', id)
-                .single(); // Ambil hanya 1 data
+                .single();
 
             if (error || !item) {
                 console.error("Gagal mengambil detail menu:", error);
@@ -1737,7 +1467,6 @@
                 return;
             }
 
-            // 2. Sisanya sama persis seperti kode Anda sebelumnya
             if (item.category === 'Paket Hemat' && !item.name.toLowerCase().includes('ayam')) {
                 openBundlingModal(item);
                 return;
@@ -1814,7 +1543,7 @@
             if (!currentSelectedItem) return;
             const note = document.getElementById('modalItemNote').value.trim();
             const itemToAdd = { ...currentSelectedItem, brand: selectedBrand, size: selectedCustomization.size, sizeUpcharge: selectedCustomization.sizeUpcharge, temp: selectedCustomization.temp, sugar: selectedCustomization.sugar, ice: selectedCustomization.ice, note: note, cartItemId: Date.now() };
-            flyToCart(currentSelectedItem.img);
+            flyToCart(currentSelectedItem.image_url);
             cart.push(itemToAdd);
             updateCartUI();
             closeModal('itemDetailModal');
@@ -1902,18 +1631,17 @@
             await renderBundleMenuOptions();
         }
 
-       async function renderBundleMenuOptions() {
-             const container = document.getElementById('bundlingItemGrid');
+        async function renderBundleMenuOptions() {
+            const container = document.getElementById('bundlingItemGrid');
             if (!container) return;
             const targetBundle = activeBundlingItem;
             if (!targetBundle) return;
             const pkgName = (targetBundle.name || "").toLowerCase();
-            const { data: products } = await supabase
-        .from('products')
-        .select('*')
-        .eq('brand', selectedBrand);
-    
-    const productList = products || [];
+            const { data: products } = await supabaseClient
+                .from('products')
+                .select('*')
+                .eq('brand', selectedBrand);
+            const productList = products || [];
             let availableProducts = [];
             const cleanName = (str) => (str || "").toLowerCase().replace(/\s*\(.*?\)\s*/g, '').replace(/\s+/g, ' ').trim();
             const isExactMatch = (prod, targetList) => targetList.some(target => cleanName(prod.name) === cleanName(target));
@@ -1947,18 +1675,22 @@
             }
             container.innerHTML = availableProducts.map(prod => {
                 const isSelected = bundlingSlots.some(slot => slot && slot.id === prod.id);
-                return `<div onclick="selectBundlingItemForSlot('${prod.id}')" class="bundle-item-card cursor-pointer p-2 border border-brand-700 rounded-xl bg-brand-900 hover:border-amber-400 transition text-center flex flex-col items-center justify-between relative ${isSelected ? 'selected' : ''}"><img src="${prod.img}" alt="${prod.name}" class="w-full h-20 object-contain rounded-lg mb-1"><p class="text-xs text-white font-bold truncate w-full">${prod.name}</p></div>`;
+                return `<div onclick="selectBundlingItemForSlot('${prod.id}')" class="bundle-item-card cursor-pointer p-2 border border-brand-700 rounded-xl bg-brand-900 hover:border-amber-400 transition text-center flex flex-col items-center justify-between relative ${isSelected ? 'selected' : ''}"><img src="${prod.image_url}" alt="${prod.name}" class="w-full h-20 object-contain rounded-lg mb-1"><p class="text-xs text-white font-bold truncate w-full">${prod.name}</p></div>`;
             }).join('');
         }
 
         async function selectBundlingItemForSlot(id) {
-            const prod = menuItems.find(p => String(p.id) === String(id));
-            if (!prod) return;
+            const { data: prod, error } = await supabaseClient
+                .from('products')
+                .select('*')
+                .eq('id', id)
+                .single();
+            if (error || !prod) return;
             const noteInput = document.getElementById('bundlingNoteInput');
             const existingNote = (noteInput ? noteInput.value.trim() : '') || (bundlingSlots[activeSlotIndex]?.note || '');
-            bundlingSlots[activeSlotIndex] = { id: prod.id, name: prod.name, cat: prod.cat || '', note: existingNote };
+            bundlingSlots[activeSlotIndex] = { id: prod.id, name: prod.name, cat: prod.category || '', note: existingNote };
             renderBundlingSlotsUI();
-            renderBundleMenuOptions();
+            await renderBundleMenuOptions();
             const nextEmptySlot = bundlingSlots.findIndex(s => s === null);
             if (nextEmptySlot !== -1) {
                 setTimeout(() => setActiveSlot(nextEmptySlot), 300);
@@ -1974,8 +1706,8 @@
             const nextEmpty = bundlingSlots.findIndex(s => s === null);
             if (nextEmpty > -1) activeSlotIndex = nextEmpty;
             renderBundlingSlotsUI();
-	    await renderBundleMenuOptions();  // ← TAMBAH AWAIT
-}
+            await renderBundleMenuOptions();
+        }
 
         function confirmAddBundlingToCart() {
             const unfilled = bundlingSlots.findIndex(s => s === null);
@@ -1986,7 +1718,7 @@
             }
             const slotDetailsStr = bundlingSlots.map((s, i) => s ? `Item ${i + 1}: ${s.name}${s.note ? ` (Catatan: ${s.note})` : ''}` : '').filter(Boolean).join(' | ');
             const bundleCartItem = { ...activeBundlingItem, brand: selectedBrand, size: 'Paket Bundling', sizeUpcharge: 0, temp: 'Multi', sugar: 'Multi', ice: 'Multi', note: slotDetailsStr, cartItemId: Date.now() };
-            flyToCart(activeBundlingItem.img);
+            flyToCart(activeBundlingItem.image_url);
             cart.push(bundleCartItem);
             updateCartUI();
             closeModal('bundlingModal');
@@ -2093,7 +1825,7 @@
             if (target) { cart = cart.filter(c => !target.cartItemIds.includes(c.cartItemId)); updateCartUI(); }
         }
 
-        // ======================== DELIVERY TOGGLE (FIX) ========================
+        // ======================== DELIVERY TOGGLE ========================
 
         function toggleDeliveryFields() {
             const methodSelect = document.getElementById('orderMethod');
@@ -2115,23 +1847,7 @@
             updateCartUI();
         }
 
-        // ======================== ORDER VIA WA ========================
-
-        function saveOrderToHistory(orderData) {
-            let history = JSON.parse(localStorage.getItem('ngopaOrderHistory')) || [];
-            orderData.orderId = Date.now();
-            orderData.date = new Date().toLocaleString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-            orderData.createdAt = Date.now();
-            orderData.status = 'Pesanan Diterima';
-            orderData.fullPhone = document.getElementById('custPhone').value.trim();
-            history.push(orderData);
-            localStorage.setItem('ngopaOrderHistory', JSON.stringify(history));
-        }
-
-        function maskPhone(phone) {
-            if (phone.length < 8) return phone;
-            return phone.slice(0, 4) + '****' + phone.slice(-4);
-        }
+        // ======================== ORDER VIA WA & LOYALTY INTEGRATION ========================
 
         function submitOrderViaWA() {
             if (cart.length === 0) { showValidationAlert("Keranjangmu masih kosong! Silakan pilih menu terlebih dahulu."); return; }
@@ -2141,9 +1857,11 @@
             const timeZone = document.getElementById('optTimeZone').value;
             const methodSelect = document.getElementById('orderMethod');
             const method = methodSelect ? methodSelect.value : 'Pickup';
+            
             if (!name) { showValidationAlert("Nama wajib diisi sebelum mengirim pesanan ke admin!"); document.getElementById('custName').focus(); return; }
             if (!phone) { showValidationAlert("Nomor HP wajib diisi sebelum mengirim pesanan ke admin!"); document.getElementById('custPhone').focus(); return; }
             if (!pickupTime) { showValidationAlert("Waktu pickup wajib diisi (Contoh: 12.05)!"); document.getElementById('optPickupTime').focus(); return; }
+            
             let deliveryAndBagCost = 0;
             let deliveryDetailStr = "%0A*METODE:* Pickup (Ambil sendiri di Outlet)";
             if (method === 'Ojol') {
@@ -2157,7 +1875,9 @@
                 deliveryAndBagCost = 8000;
                 deliveryDetailStr = "%0A*METODE:* Delivery (Diantar Tim NgopaNgopiAe)%0A*ALAMAT KIRIM:* " + encodeURIComponent(address);
             }
+            
             const outletName = selectedOutlet ? selectedOutlet.name : 'Outlet tidak dipilih';
+            
             let menuStr = cart.map((c, i) => {
                 const isSnack = ['Snack', 'Nasi', 'Korean Food', 'Pasta', 'Ayam Goreng'].includes(c.cat) || (c.cat === 'Paket Hemat' && c.name.toLowerCase().includes('ayam')) || (c.brand === 'Fore Coffee' && (c.cat === 'Fore Deli' || c.cat === 'Foreveryone 1L'));
                 const isBundle = (c.cat === 'Paket Hemat' && !c.name.toLowerCase().includes('ayam'));
@@ -2173,16 +1893,17 @@
                     return (i + 1) + ". Menu: " + c.name + "%0A" + sizeText + "Temperatur: " + tempText + "%0A" + "Takaran Gula: " + sugarText + "%0A" + "Takaran Es: " + iceText + "%0A" + "Catatan: " + (c.note || '-') + "%0A" + "Subtotal: Rp" + itemPrice.toLocaleString('id-ID');
                 }
             }).join('%0A%0A');
+            
             const subtotalVal = cart.reduce((acc, item) => acc + item.price + (item.sizeUpcharge || 0), 0);
             let jasdorFeeTotal = 0;
             cart.forEach(item => { jasdorFeeTotal += (item.cat === 'Paket Hemat' ? 750 : 500); });
             const grandTotalVal = subtotalVal + jasdorFeeTotal + deliveryAndBagCost;
+            
             let text = "*Hai min aku mau pesan ya*%0A%0A";
             text += "*BRAND:* " + selectedBrand + "%0A";
             text += "*NAMA:* " + name + "%0A";
             text += "*NOMOR HP:* " + phone + "%0A";
-            text += "*OUTLET:* " + outletName;
-            text += deliveryDetailStr + "%0A";
+            text += "*OUTLET:* " + outletName + deliveryDetailStr + "%0A";
             text += "*WAKTU PICKUP:* " + pickupTime + " " + timeZone + "%0A%0A";
             text += "*RINCIAN PESANAN:*%0A" + menuStr + "%0A%0A";
             text += "*SUBTOTAL MENU:* Rp" + subtotalVal.toLocaleString('id-ID') + "%0A";
@@ -2190,6 +1911,38 @@
             if (method === 'Ojol') { text += "*BIAYA DELIVERY OJOL + BAG:* Rp" + deliveryAndBagCost.toLocaleString('id-ID') + "%0A"; } else if (method === 'NgopaNgopi') { text += "*BIAYA DELIVERY TIM NGOPANGOPI:* Rp" + deliveryAndBagCost.toLocaleString('id-ID') + "%0A"; }
             text += "*TOTAL PEMBAYARAN:* Rp" + grandTotalVal.toLocaleString('id-ID') + "%0A%0A";
             text += "Tolong kirimin QRIS / Rekening Pembayaran dong min. Terima kasih!";
+
+            // Simpan ke Supabase (integrasi loyalty: nomor HP tersimpan)
+            const orderData = {
+                customer_name: name,
+                customer_phone: phone,
+                total_price: grandTotalVal,
+                items: cart.map((item, idx) => ({ 
+                    index: idx + 1, 
+                    name: item.name, 
+                    brand: item.brand || selectedBrand,
+                    size: item.size || '', 
+                    temp: item.temp || '', 
+                    sugar: item.sugar || '', 
+                    ice: item.ice || '', 
+                    note: item.note || '', 
+                    price: item.price + (item.sizeUpcharge || 0) 
+                })),
+                notes: `Metode: ${method} | Outlet: ${outletName}`
+            };
+
+            supabaseClient
+                .from('orders')
+                .insert([orderData])
+                .then(() => {
+                    console.log("Pesanan berhasil disimpan ke Supabase!");
+                })
+                .catch(err => {
+                    console.error("Gagal menyimpan pesanan ke Supabase:", err);
+                    showValidationAlert("Gagal menyimpan pesanan. Periksa kembali koneksi database.");
+                    return;
+                });
+
             const waNumber = "62881036705137";
             pendingWAUrl = "https://wa.me/" + waNumber + "?text=" + text;
             openModal('finalWarningModal');
@@ -2200,111 +1953,289 @@
             if (pendingWAUrl) {
                 window.open(pendingWAUrl, '_blank');
                 pendingWAUrl = '';
-                const phone = document.getElementById('custPhone').value.trim();
-                const name = document.getElementById('custName').value.trim() || 'Pelanggan';
-                const orderItems = cart.map(item => ({ name: item.name + (item.size && (item.cat === 'Kopi' || item.cat === 'Non-Kopi') ? ` (${item.size})` : ''), price: item.price + (item.sizeUpcharge || 0), qty: 1 }));
-                const subtotal = cart.reduce((acc, item) => acc + item.price + (item.sizeUpcharge || 0), 0);
-                let jasdorFee = 0;
-                cart.forEach(item => { jasdorFee += (item.cat === 'Paket Hemat' ? 750 : 500); });
-                const methodSelect = document.getElementById('orderMethod');
-                const method = methodSelect ? methodSelect.value : 'Pickup';
-                let deliveryCost = 0;
-                if (method === 'Ojol') deliveryCost = 17000;
-                else if (method === 'NgopaNgopi') deliveryCost = 8000;
-                const grandTotal = subtotal + jasdorFee + deliveryCost;
-                const orderData = { maskedPhone: maskPhone(phone), name: name, items: orderItems, total: grandTotal };
-                saveOrderToHistory(orderData);
             }
             closeModal('cartModal');
-            showToast("Orderan kamu sudah dikirim ke admin");
+            showToast("Orderan kamu sudah dikirim ke admin!");
+            setTimeout(() => {
+                cart = [];
+                updateCartUI();
+            }, 1000);
         }
 
-        // ======================== TRACK ORDER ========================
+        // ======================== TRACK ORDER (dengan filter brand) ========================
 
-        function verifyAndTrack() {
+        async function verifyAndTrack() {
             const inputLast4 = document.getElementById('trackLast4').value.trim();
             if (inputLast4.length !== 4) { showValidationAlert("Masukkan 4 digit terakhir nomor HP Anda!"); return; }
-            const history = JSON.parse(localStorage.getItem('ngopaOrderHistory')) || [];
-            const matchedOrders = history.filter(order => order.fullPhone && order.fullPhone.slice(-4) === inputLast4);
+
             const resultArea = document.getElementById('trackResultArea');
-            if (matchedOrders.length === 0) {
-                resultArea.innerHTML = `<div class="p-4 bg-brand-800/50 rounded-xl border border-brand-700 text-center text-gray-400"><i class="fa-solid fa-face-frown text-2xl mb-2"></i><p class="text-sm">Tidak ada pesanan ditemukan.</p><p class="text-xs mt-1">Pastikan 4 digit yang Anda masukkan benar.</p></div>`;
-                resultArea.classList.remove('hidden');
+            resultArea.innerHTML = `<div class="text-center text-gray-400 p-4">Memuat data...</div>`;
+            resultArea.classList.remove('hidden');
+
+            const { data: orders, error } = await supabaseClient
+                .from('orders')
+                .select('*')
+                .like('customer_phone', `%${inputLast4}`);
+
+            if (error) {
+                console.error("Gagal melacak pesanan:", error);
+                resultArea.innerHTML = `<div class="p-4 bg-brand-800/50 rounded-xl border border-brand-700 text-center text-red-400"><p class="text-sm">Gagal memuat data.</p></div>`;
                 return;
             }
-            const now = Date.now();
-            let updated = false;
-            const updatedOrders = matchedOrders.map(order => {
-                let newStatus = order.status;
-                const created = order.createdAt || order.orderId;
-                const TIME_DITERIMA = 300000, TIME_DIPROSES = 900000, TIME_SIAP = 1200000;
-                if (newStatus === 'Pesanan Diterima' && (now - created) >= TIME_DITERIMA) newStatus = 'Sedang Diproses';
-                if (newStatus === 'Sedang Diproses' && (now - created) >= TIME_DIPROSES) newStatus = 'Siap Diambil/Diantar';
-                if (newStatus === 'Siap Diambil/Diantar' && (now - created) >= TIME_SIAP) newStatus = 'Selesai';
-                if (newStatus !== order.status) { order.status = newStatus; updated = true; }
-                return order;
-            });
-            if (updated) {
-                const allHistory = JSON.parse(localStorage.getItem('ngopaOrderHistory')) || [];
-                updatedOrders.forEach(upOrder => {
-                    const idx = allHistory.findIndex(o => o.orderId === upOrder.orderId);
-                    if (idx !== -1) allHistory[idx].status = upOrder.status;
-                });
-                localStorage.setItem('ngopaOrderHistory', JSON.stringify(allHistory));
+
+            if (!orders || orders.length === 0) {
+                resultArea.innerHTML = `<div class="p-4 bg-brand-800/50 rounded-xl border border-brand-700 text-center text-gray-400"><i class="fa-solid fa-face-frown text-2xl mb-2"></i><p class="text-sm">Tidak ada pesanan ditemukan.</p><p class="text-xs mt-1">Pastikan 4 digit yang Anda masukkan benar.</p></div>`;
+                return;
             }
-            resultArea.innerHTML = updatedOrders.map((order, idx) => {
+
+            trackOrdersCache = orders;
+            trackFilter = 'all';
+            renderTrackOrders();
+        }
+
+        function renderTrackOrders() {
+            const resultArea = document.getElementById('trackResultArea');
+            let orders = trackOrdersCache;
+            if (trackFilter !== 'all') {
+                orders = orders.filter(order => {
+                    if (!order.items) return false;
+                    return order.items.some(item => item.brand === trackFilter);
+                });
+            }
+
+            if (orders.length === 0) {
+                resultArea.innerHTML = `<div class="p-4 bg-brand-800/50 rounded-xl border border-brand-700 text-center text-gray-400"><p class="text-sm">Tidak ada pesanan dengan brand ini.</p></div>`;
+                return;
+            }
+
+            document.querySelectorAll('.track-filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.brand === trackFilter);
+            });
+
+            orders.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+            resultArea.innerHTML = orders.map((order, idx) => {
                 const status = order.status || 'Pesanan Diterima';
                 const steps = ['Pesanan Diterima', 'Sedang Diproses', 'Siap Diambil/Diantar', 'Selesai'];
                 const activeIdx = steps.indexOf(status);
                 const progressWidth = Math.min((activeIdx + 1) * 25, 100);
-                return `<div class="bg-brand-800/70 border border-brand-700 rounded-2xl p-4 mb-3"><div class="flex justify-between items-center border-b border-brand-700 pb-2 mb-2"><span class="font-bold text-amber-400 text-sm">#${idx + 1} - ${order.name || 'Pelanggan'}</span><span class="text-[10px] text-gray-400">${order.date || ''}</span></div><div class="space-y-1 text-xs mb-3">${order.items ? order.items.map(item => `<div class="flex justify-between text-gray-300"><span>${item.name} ${item.qty > 1 ? `(${item.qty}x)` : ''}</span><span class="font-bold text-white">Rp${item.price.toLocaleString('id-ID')}</span></div>`).join('') : ''}<div class="flex justify-between font-black text-amber-400 text-sm border-t border-brand-700 pt-2 mt-2"><span>Total</span><span>Rp${order.total ? order.total.toLocaleString('id-ID') : '0'}</span></div></div><div class="relative flex justify-between mt-4"><div class="absolute top-3 left-0 right-0 h-1 bg-brand-700 rounded-full"><div class="absolute top-0 left-0 h-1 bg-amber-400 rounded-full transition-all duration-500" style="width: ${progressWidth}%"></div></div>${steps.map((s, i) => { const isActive = activeIdx >= i; return `<div class="flex flex-col items-center relative z-10 w-1/4"><div class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-colors duration-300 ${isActive ? 'bg-amber-400 text-brand-900' : 'bg-brand-700 text-gray-400'}">${isActive ? '<i class="fa-solid fa-check"></i>' : i + 1}</div><span class="text-[9px] mt-1 text-center font-bold ${isActive ? 'text-amber-400' : 'text-gray-500'}">${s}</span></div>`; }).join('')}</div></div>`;
+                const orderDate = new Date(order.created_at).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
+
+                let itemsHtml = '';
+                let totalItems = 0;
+                let brands = [];
+                if (order.items) {
+                    order.items.forEach(item => {
+                        totalItems += item.quantity || 1;
+                        if (item.brand) brands.push(item.brand);
+                    });
+                }
+                const uniqueBrands = [...new Set(brands)];
+
+                return `
+                    <div class="bg-brand-800/70 border border-brand-700 rounded-2xl p-4 mb-3">
+                        <div class="flex justify-between items-center border-b border-brand-700 pb-2 mb-2">
+                            <div>
+                                <span class="font-bold text-amber-400 text-sm">#${order.id}</span>
+                                <span class="text-[10px] text-gray-400 ml-2">${uniqueBrands.join(', ')}</span>
+                            </div>
+                            <span class="text-[10px] text-gray-400">${orderDate}</span>
+                        </div>
+                        <div class="space-y-1 text-xs mb-3">
+                            ${order.items ? order.items.map(item => `
+                                <div class="flex justify-between text-gray-300">
+                                    <span>${item.name} ${item.size ? `(${item.size})` : ''} ${item.note ? `- <span class="text-yellow-400">Note: ${item.note}</span>` : ''}</span>
+                                    <span class="font-bold text-white">Rp${Number(item.price).toLocaleString('id-ID')}</span>
+                                </div>
+                            `).join('') : ''}
+                            <div class="flex justify-between text-[10px] text-gray-400">
+                                <span>${totalItems} item</span>
+                                <span>Brand: ${uniqueBrands.join(', ') || 'Tidak diketahui'}</span>
+                            </div>
+                            <div class="flex justify-between font-black text-amber-400 text-sm border-t border-brand-700 pt-2 mt-2">
+                                <span>Total</span>
+                                <span>Rp${Number(order.total_price).toLocaleString('id-ID')}</span>
+                            </div>
+                        </div>
+                        <div class="relative flex justify-between mt-4">
+                            <div class="absolute top-3 left-0 right-0 h-1 bg-brand-700 rounded-full">
+                                <div class="absolute top-0 left-0 h-1 bg-amber-400 rounded-full transition-all duration-500" style="width: ${progressWidth}%"></div>
+                            </div>
+                            ${steps.map((s, i) => { 
+                                const isActive = activeIdx >= i; 
+                                return `<div class="flex flex-col items-center relative z-10 w-1/4">
+                                    <div class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-colors duration-300 ${isActive ? 'bg-amber-400 text-brand-900' : 'bg-brand-700 text-gray-400'}">
+                                        ${isActive ? '<i class="fa-solid fa-check"></i>' : i + 1}
+                                    </div>
+                                    <span class="text-[9px] mt-1 text-center font-bold ${isActive ? 'text-amber-400' : 'text-gray-500'}">${s}</span>
+                                </div>`; 
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
             }).join('');
-            resultArea.classList.remove('hidden');
         }
 
-        // ======================== LOYALTY ========================
+        function filterTrackOrders(brand) {
+            trackFilter = brand;
+            renderTrackOrders();
+        }
 
-        function checkLoyalty() {
+        // ======================== LOYALTY (Ngopa Loyalty Card) ========================
+
+        async function checkLoyalty() {
             const phone = document.getElementById('loyaltyPhone').value.trim();
             if (!phone) { showValidationAlert("Masukkan nomor HP!"); return; }
-            const maskedKey = maskPhone(phone);
-            const history = JSON.parse(localStorage.getItem('ngopaOrderHistory')) || [];
-            const userOrders = history.filter(order => order.maskedPhone === maskedKey);
-            const totalOrders = userOrders.length;
-            let level, desc;
-            if (totalOrders >= 100) { level = "Jasdor Master"; desc = "Sudah level atas"; } else if (totalOrders >= 75) { level = "Jasdor Sultan"; desc = "Transaksi nggak santai"; } else if (totalOrders >= 50) { level = "Jasdor Elite"; desc = "Level tinggi"; } else if (totalOrders >= 30) { level = "Jasdor Legend"; desc = "Loyal banget"; } else if (totalOrders >= 20) { level = "Jasdor Veteran"; desc = "Udah banyak pengalaman"; } else if (totalOrders >= 10) { level = "Jasdor Addict"; desc = "Mulai ketagihan"; } else if (totalOrders >= 5) { level = "Jasdor Regular"; desc = "Udah langganan"; } else if (totalOrders >= 3) { level = "Anak Jasdor"; desc = "Mulai sering"; } else { level = "Newbie"; desc = "Baru coba"; }
-            document.getElementById('loyaltyResult').innerHTML = `<div class="p-6 bg-brand-800/50 rounded-2xl border border-brand-700 text-center"><div class="text-4xl mb-2">🏆</div><div class="font-black text-amber-400 text-lg">${level}</div><div class="text-xs text-gray-400">${desc}</div><div class="mt-2 text-[10px] text-gray-500">Total Pesanan: ${totalOrders} transaksi</div></div>`;
+
+            const totalOrders = await getCustomerOrderCount(phone);
+            const level = getLoyaltyLevel(totalOrders);
+
+            document.getElementById('loyaltyResult').innerHTML = `
+                <div class="p-6 bg-brand-800/50 rounded-2xl border border-brand-700 text-center">
+                    <div class="text-5xl mb-2">${level.icon}</div>
+                    <div class="font-black text-amber-400 text-lg">${level.level}</div>
+                    <div class="text-xs text-gray-400">${level.desc}</div>
+                    <div class="mt-2 text-[10px] text-gray-500">Total Pesanan: ${totalOrders} transaksi</div>
+                    ${level.voucher ? `<div class="mt-2 text-[11px] bg-amber-400/10 border border-amber-400/30 rounded-xl p-2 text-amber-400 font-bold">🎁 Voucher: ${level.voucher}</div>` : ''}
+                </div>
+            `;
         }
 
-        // ======================== ADMIN ========================
+        // ======================== BEST SELLER REALTIME ========================
 
-        function checkAdminAccess() {
+        async function renderBestSellerFromOrders() {
+            const container = document.getElementById('bestSellerList');
+            if (!container) return;
+
+            const { data: orders, error } = await supabaseClient
+                .from('orders')
+                .select('items');
+
+            if (error || !orders) {
+                container.innerHTML = `<p class="text-gray-400 text-center py-6">Belum ada data penjualan.</p>`;
+                return;
+            }
+
+            const freq = {};
+            orders.forEach(order => {
+                if (order.items && Array.isArray(order.items)) {
+                    order.items.forEach(item => {
+                        const name = item.name || item.menu_name || '';
+                        if (name) {
+                            freq[name] = (freq[name] || 0) + 1;
+                        }
+                    });
+                }
+            });
+
+            const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]);
+            const top5 = sorted.slice(0, 5);
+
+            if (top5.length === 0) {
+                container.innerHTML = `<p class="text-gray-400 text-center py-6">Belum ada menu yang dipesan.</p>`;
+                return;
+            }
+
+            container.innerHTML = top5.map(([name, count], idx) => `
+                <div class="flex items-center justify-between p-3 bg-brand-800/50 rounded-2xl border border-brand-700/50">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-brand-700 flex items-center justify-center text-amber-400"><i class="fa-solid fa-mug-hot"></i></div>
+                        <div>
+                            <div class="font-bold text-sm text-white">${name}</div>
+                            <div class="text-[10px] text-gray-400">${count} kali dipesan</div>
+                        </div>
+                    </div>
+                    <span class="text-[9px] font-black bg-amber-400/20 text-amber-400 px-2 py-1 rounded-full">Top ${idx+1}</span>
+                </div>
+            `).join('');
+        }
+
+        async function openBestSellerModal() {
+            await renderBestSellerFromOrders();
+            openModal('bestSellerModal');
+        }
+
+        // ======================== ADMIN DASHBOARD ========================
+
+        async function checkAdminAccess() {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('admin') === '12345') {
-                document.getElementById('mainBody').style.display = 'none';
+                const mainBody = document.getElementById('mainBody');
+                if (mainBody) mainBody.style.display = 'none';
+
                 const container = document.getElementById('adminDashboardContainer');
-                if (container) container.style.display = 'block';
-                renderAdminDashboard();
+                if (container) {
+                    container.style.display = 'block';
+                    container.style.position = 'relative';
+                    container.style.zIndex = '9999';
+                    await renderAdminDashboard();
+                } else {
+                    console.error("Elemen adminDashboardContainer TIDAK DITEMUKAN di HTML!");
+                }
             }
         }
 
-        function renderAdminDashboard() {
-            const history = JSON.parse(localStorage.getItem('ngopaOrderHistory')) || [];
+        async function renderAdminDashboard() {
             const tbody = document.getElementById('adminOrderTableBody');
             const emptyState = document.getElementById('adminEmptyState');
-            if (!tbody) return;
-            if (history.length === 0) { tbody.innerHTML = ''; if (emptyState) emptyState.style.display = 'block'; return; }
+            
+            const { data: orders, error } = await supabaseClient
+                .from('orders')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error("Gagal ambil pesanan:", error);
+                return;
+            }
+
+            if (!orders || orders.length === 0) {
+                tbody.innerHTML = '';
+                if (emptyState) emptyState.style.display = 'block';
+                return;
+            }
+
             if (emptyState) emptyState.style.display = 'none';
-            tbody.innerHTML = history.map((order, index) => {
+
+            tbody.innerHTML = orders.map((order) => {
                 const statusId = order.status.replace(/\s/g, '').toLowerCase();
-                return `<tr><td style="font-weight: bold; color: #FFC107;">#${order.orderId}</td><td>${order.name}</td><td>${order.maskedPhone}</td><td style="color: #FFC107; font-weight: bold;">Rp${order.total ? order.total.toLocaleString('id-ID') : '0'}</td><td><span class="admin-badge ${statusId}">${order.status}</span></td><td><select class="admin-status-select" onchange="updateOrderStatus('${order.orderId}', this.value)"><option value="Pesanan Diterima" ${order.status === 'Pesanan Diterima' ? 'selected' : ''}>Pesanan Diterima</option><option value="Sedang Diproses" ${order.status === 'Sedang Diproses' ? 'selected' : ''}>Sedang Diproses</option><option value="Siap Diambil/Diantar" ${order.status === 'Siap Diambil/Diantar' ? 'selected' : ''}>Siap Diambil/Diantar</option><option value="Selesai" ${order.status === 'Selesai' ? 'selected' : ''}>Selesai</option></select></td></tr>`;
+                const orderDate = new Date(order.created_at).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
+
+                return `
+                    <tr>
+                        <td style="color: #9ca3af; font-size: 11px;">${orderDate}</td>
+                        <td style="font-weight: bold; color: #ffffff;">
+                            ${order.customer_name} <br>
+                            <span style="color:#9ca3af; font-weight: normal;">${order.customer_phone}</span>
+                        </td>
+                        <td style="color: #FFC107; font-weight: bold;">Rp${Number(order.total_price).toLocaleString('id-ID')}</td>
+                        <td><span class="admin-badge ${statusId}">${order.status}</span></td>
+                        <td>
+                            <select class="admin-status-select" onchange="updateOrderStatus('${order.id}', this.value)">
+                                <option value="Pesanan Diterima" ${order.status === 'Pesanan Diterima' ? 'selected' : ''}>Pesanan Diterima</option>
+                                <option value="Sedang Diproses" ${order.status === 'Sedang Diproses' ? 'selected' : ''}>Sedang Diproses</option>
+                                <option value="Siap Diambil/Diantar" ${order.status === 'Siap Diambil/Diantar' ? 'selected' : ''}>Siap Diambil/Diantar</option>
+                                <option value="Selesai" ${order.status === 'Selesai' ? 'selected' : ''}>Selesai</option>
+                            </select>
+                        </td>
+                    </tr>
+                `;
             }).join('');
         }
 
-        function updateOrderStatus(orderId, newStatus) {
-            let history = JSON.parse(localStorage.getItem('ngopaOrderHistory')) || [];
-            const orderIndex = history.findIndex(o => o.orderId == orderId);
-            if (orderIndex !== -1) { history[orderIndex].status = newStatus; localStorage.setItem('ngopaOrderHistory', JSON.stringify(history)); renderAdminDashboard(); }
+        async function updateOrderStatus(orderId, newStatus) {
+            const { error } = await supabaseClient
+                .from('orders')
+                .update({ status: newStatus })
+                .eq('id', orderId);
+
+            if (error) {
+                console.error("Gagal update status:", error);
+                showToast("Gagal mengubah status!");
+            } else {
+                showToast("Status berhasil diperbarui!");
+                await renderAdminDashboard();
+            }
         }
 
         // ======================== WELCOME NOTICE ========================
@@ -2317,7 +2248,7 @@
             }
         }
 
-        // ======================== INIT CUSTOM SELECT (FIX) ========================
+        // ======================== INIT CUSTOM SELECT ========================
 
         function initCustomSelect() {
             const wrapper = document.querySelector('.custom-select');
@@ -2354,9 +2285,6 @@
         // ======================== DOMContentLoaded ========================
 
         document.addEventListener('DOMContentLoaded', async function() {
- // ✅ CEK APAKAH SUPABASE SIAP
-            console.log('Supabase:', supabase);
-            console.log('Supabase.from:', typeof supabase.from);
             renderCategories();
             await renderMenu();
             await renderOutlets();
@@ -2364,25 +2292,36 @@
             checkAndShowWelcomeNotice();
             checkAdminAccess();
             initCustomSelect();
-            // Floating cart & top button visibility
             const floatCart = document.getElementById('floatingCart');
             const floatTop = document.getElementById('floatingTopBtn');
             window.addEventListener('scroll', function() {
                 if (window.scrollY > 300) { floatTop.classList.add('visible'); } else { floatTop.classList.remove('visible'); }
             });
             updateCartUI();
-            
         });
     </script>
 
-    <!-- Admin Dashboard (Hidden by default) -->
-    <div id="adminDashboardContainer" style="display:none; min-height:100vh; padding:20px; background:#0B190E;">
-        <div class="admin-container">
-            <h1>📋 Dashboard Admin Ngopa Ngopi Ae</h1>
+    <!-- Admin Dashboard -->
+    <div id="adminDashboardContainer" style="display:none !important; position: fixed !important; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh; background-color: #0B190E !important; z-index: 99999; overflow-y: auto; padding: 20px;">
+        <div class="admin-container" style="max-width: 1000px; margin: 40px auto; padding: 20px; background: #0F2616; border-radius: 24px; border: 1px solid #2E6F40; min-height: 80vh;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h1 style="color: #FFC107; font-size: 24px; font-weight: 900;">📋 Dashboard Admin Ngopa Ngopi Ae</h1>
+                <button onclick="window.location.href='/'" style="background:#FFC107; color:#0D2213; font-weight:900; padding:10px 20px; border-radius:12px; border:none; cursor:pointer;">Kembali ke Kasir</button>
+            </div>
             <div style="overflow-x:auto;">
                 <table class="admin-table">
-                    <thead><tr><th>Order ID</th><th>Nama</th><th>HP</th><th>Total</th><th>Status</th><th>Aksi</th></tr></thead>
-                    <tbody id="adminOrderTableBody"></tbody>
+                    <thead>
+                        <tr>
+                            <th>Waktu Order</th>
+                            <th>Customer</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminOrderTableBody">
+                        <!-- Data akan diisi oleh Javascript -->
+                    </tbody>
                 </table>
             </div>
             <div id="adminEmptyState" style="display:none; text-align:center; color:#9ca3af; padding:40px 0;">
