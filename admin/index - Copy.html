@@ -162,19 +162,19 @@
 <body>
     <div class="max-w-3xl mx-auto">
 
-        <!-- Header -->
-<div class="flex items-center justify-between mb-4 p-4 rounded-2xl" style="background: linear-gradient(135deg, #0D2213, #1B4326); border: 2px solid #FFC107; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-    <div class="flex items-center gap-3">
-        <img src="logo-ngopa-ngopi-ae.png" alt="Logo" class="h-12 w-auto" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));" />
-        <div>
-            <h1 class="text-xl font-black text-white" style="text-shadow: 0 2px 4px rgba(0,0,0,0.2);">Admin Panel</h1>
-            <p class="text-xs text-amber-400 font-bold">Kelola pesanan customer</p>
+        <!-- ========== HEADER ========== -->
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-3">
+                <img src="logo-ngopa-ngopi-ae.png" alt="Logo" class="h-10 w-auto" />
+                <div>
+                    <h1 class="text-xl font-black text-brand-900">Admin Panel</h1>
+                    <p class="text-xs text-gray-500">Kelola pesanan customer</p>
+                </div>
+            </div>
+            <button onclick="window.location.href='/'" class="back-btn">
+                <i class="fa-solid fa-arrow-left"></i> Kembali
+            </button>
         </div>
-    </div>
-    <button onclick="window.location.href='/'" class="back-btn" style="background: #FFC107; color: #0D2213; padding: 8px 20px; border-radius: 12px; border: none; cursor: pointer; transition: 0.2s; font-weight: 900;">
-        <i class="fa-solid fa-arrow-left"></i> Kembali
-    </button>
-</div>
 
         <!-- ========== LOCK SCREEN ========== -->
         <div id="adminLock" class="admin-lock">
