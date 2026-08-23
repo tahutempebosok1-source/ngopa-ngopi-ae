@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -31,31 +32,121 @@
     <style>
         /* ========== GAYA DASAR ========== */
         .sidebar-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
-            z-index: 999; display: none; opacity: 0; transition: opacity 0.3s ease;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
-        .sidebar-overlay.active { display: block; opacity: 1; }
+
+        .sidebar-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
         .sidebar-content {
-            position: fixed; top: 0; right: -100%; width: 85%; max-width: 380px;
-            height: 100%; background: #ffffff; z-index: 1000;
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 85%;
+            max-width: 380px;
+            height: 100%;
+            background: #ffffff;
+            z-index: 1000;
             transition: right 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
-            padding: 24px; box-shadow: -4px 0 20px rgba(0,0,0,0.1);
+            padding: 24px;
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
             overflow-y: auto;
         }
-        .sidebar-content.open { right: 0; }
-        .sidebar-close { position: absolute; top: 16px; right: 16px; width: 36px; height: 36px; border-radius: 50%; background: #f3f4f6; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; border: none; }
-        .sidebar-close:hover { background: #e5e7eb; }
-        .sidebar-title { font-size: 18px; font-weight: 900; margin-bottom: 20px; }
-        .sidebar-menu-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #f9fafb; border-radius: 16px; margin-bottom: 10px; cursor: pointer; transition: 0.2s; }
-        .sidebar-menu-item:hover { background: #f3f4f6; transform: translateX(4px); }
-        .sidebar-menu-item .left { display: flex; align-items: center; gap: 12px; font-weight: 700; }
-        .sidebar-menu-item .left i { font-size: 18px; color: #2E6F40; width: 24px; text-align: center; }
-        .sidebar-menu-item .arrow { color: #9ca3af; font-size: 12px; }
-        .dark-theme .sidebar-content { background: #0D2213; }
-        .dark-theme .sidebar-close { background: #1B4326; color: white; }
-        .dark-theme .sidebar-menu-item { background: #14331C; }
-        .dark-theme .sidebar-menu-item:hover { background: #1B4326; }
+
+        .sidebar-content.open {
+            right: 0;
+        }
+
+        .sidebar-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+            border: none;
+        }
+
+        .sidebar-close:hover {
+            background: #e5e7eb;
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 900;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-menu-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            background: #f9fafb;
+            border-radius: 16px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .sidebar-menu-item:hover {
+            background: #f3f4f6;
+            transform: translateX(4px);
+        }
+
+        .sidebar-menu-item .left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+        }
+
+        .sidebar-menu-item .left i {
+            font-size: 18px;
+            color: #2E6F40;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-menu-item .arrow {
+            color: #9ca3af;
+            font-size: 12px;
+        }
+
+        .dark-theme .sidebar-content {
+            background: #0D2213;
+        }
+
+        .dark-theme .sidebar-close {
+            background: #1B4326;
+            color: white;
+        }
+
+        .dark-theme .sidebar-menu-item {
+            background: #14331C;
+        }
+
+        .dark-theme .sidebar-menu-item:hover {
+            background: #1B4326;
+        }
 
         /* ========== ADMIN PANEL ========== */
         #adminPanel {
@@ -70,9 +161,11 @@
             overflow-y: auto;
             padding: 20px;
         }
+
         #adminPanel.active {
             display: block;
         }
+
         .admin-lock {
             background: #14331C;
             border: 1px solid #2E6F40;
@@ -82,6 +175,7 @@
             max-width: 400px;
             margin: 80px auto 0;
         }
+
         .admin-lock input {
             width: 100%;
             padding: 14px;
@@ -93,7 +187,11 @@
             font-size: 16px;
             outline: none;
         }
-        .admin-lock input:focus { border-color: #FFC107; }
+
+        .admin-lock input:focus {
+            border-color: #FFC107;
+        }
+
         .admin-card {
             background: #14331C;
             border: 1px solid #2E6F40;
@@ -101,10 +199,47 @@
             padding: 16px;
             margin-bottom: 12px;
         }
-        .admin-badge-diterima { background: #3B82F6; color: white; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; display: inline-block; }
-        .admin-badge-diproses { background: #F59E0B; color: white; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; display: inline-block; }
-        .admin-badge-siap { background: #10B981; color: white; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; display: inline-block; }
-        .admin-badge-selesai { background: #6B7280; color: white; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; display: inline-block; }
+
+        .admin-badge-diterima {
+            background: #3B82F6;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .admin-badge-diproses {
+            background: #F59E0B;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .admin-badge-siap {
+            background: #10B981;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .admin-badge-selesai {
+            background: #6B7280;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
         .admin-status-select {
             background: #1B4326;
             color: white;
@@ -115,58 +250,363 @@
         }
 
         /* ========== GAYA LAINNYA (singkat) ========== */
-        .glass-nav { backdrop-filter: blur(12px); background-color: rgba(20, 51, 28, 0.95); }
-        .floating-cart { position: fixed; bottom: 24px; right: 24px; z-index: 40; background: #1A1A1A; color: #ffffff; padding: 12px 20px; border-radius: 50px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1); transform: translateY(80px); opacity: 0; pointer-events: none; border: 1px solid rgba(255,255,255,0.1); }
-        .floating-cart.visible { transform: translateY(0); opacity: 1; pointer-events: auto; }
-        .floating-top-btn { position: fixed; bottom: 24px; left: 24px; z-index: 40; background: #1A1A1A; color: #ffffff; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 30px rgba(0,0,0,0.3); cursor: pointer; transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1); transform: translateY(80px); opacity: 0; pointer-events: none; border: 1px solid rgba(255,255,255,0.1); }
-        .floating-top-btn.visible { transform: translateY(0); opacity: 1; pointer-events: auto; }
-        .brand-card-custom { transition: all 0.3s ease; border-radius: 20px; padding: 20px 10px; text-align: center; cursor: pointer; position: relative; min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .brand-card-custom:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
-        .brand-kk { background-color: #1A1A1A; color: white; border: 2px solid #333; }
-        .brand-tm { background-color: #FFFFFF; color: #1A1A1A; border: 2px solid #EAEAEA; }
-        .brand-fr { background-color: #1B3A2D; color: white; border: 2px solid #2E5A47; }
-        .brand-logo-wrapper { width: 70px; height: 70px; background: white; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .brand-logo-wrapper img { width: 100%; height: 100%; object-fit: contain; }
-        .checkmark-badge { position: absolute; top: 10px; right: 10px; width: 24px; height: 24px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); border: 1px solid #E5E7EB; }
-        .checkmark-badge i { color: #1A1A1A; font-size: 12px; display: none; }
-        .brand-card-custom.active .checkmark-badge i { display: block; }
-        .cat-item { animation: zoomIn 0.4s cubic-bezier(0.2,0.9,0.4,1) both; transition: all 0.25s cubic-bezier(0.2,0.9,0.4,1); transform-origin: center; border: 2px solid transparent; flex-shrink: 0; outline: none !important; box-shadow: none !important; }
-        .cat-item:hover { transform: scale(1.05) !important; }
-        .cat-item:active { transform: scale(0.94) !important; transition-duration: 0.1s; }
-        .cat-item.active { transform: scale(1); background-color: #1B4326 !important; color: white !important; border: 2px solid #FFC107 !important; outline: none !important; box-shadow: none !important; }
-        @keyframes zoomIn { 0% { transform: scale(0.85); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        #categoryContainer { scroll-behavior: smooth; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; }
-        #categoryContainer::-webkit-scrollbar { display: none; }
-        .custom-select-wrapper { position: relative; user-select: none; width: 100%; }
-        .custom-select { position: relative; display: flex; flex-direction: column; }
-        .custom-select-trigger { position: relative; display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; font-size: 13px; font-weight: 700; color: #0D2213; background: #ffffff; border: 2px solid #e5e7eb; border-radius: 12px; cursor: pointer; transition: all 0.3s ease; }
-        .custom-select-trigger:hover, .custom-select-trigger:focus { border-color: #2E6F40; box-shadow: 0 0 0 3px rgba(46,111,64,0.1); }
-        .custom-select-trigger::after { content: '▼'; font-size: 10px; color: #9ca3af; transition: transform 0.3s ease; }
-        .custom-select.open .custom-select-trigger::after { transform: rotate(180deg); }
-        .custom-options { position: absolute; display: none; top: 100%; left: 0; right: 0; margin-top: 4px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); z-index: 50; padding: 6px; max-height: 200px; overflow-y: auto; }
-        .custom-select.open .custom-options { display: block; }
-        .custom-option { padding: 10px 14px; font-size: 13px; font-weight: 600; color: #374151; border-radius: 8px; cursor: pointer; transition: background 0.2s ease; }
-        .custom-option:hover { background-color: #f3f4f6; }
-        .custom-option.selected { background-color: #F2F9F4; color: #2E6F40; }
-        .custom-options::-webkit-scrollbar { width: 4px; }
-        .custom-options::-webkit-scrollbar-thumb { background: #2E6F40; border-radius: 4px; }
-        .qty-btn { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; transition: all 0.2s ease; cursor: pointer; border: none; }
-        .qty-btn:hover { transform: scale(1.1); }
-        .qty-btn-minus { background: #f3f4f6; color: #333; }
-        .qty-btn-minus:hover { background: #e5e7eb; }
-        .qty-btn-plus { background: #2E6F40; color: white; }
-        .qty-btn-plus:hover { background: #1B4326; }
-        #aboutNgopaModal:not(.hidden) #aboutModalContent { transform: scale(1) !important; opacity: 1 !important; }
-        #aboutModalContent { transition: transform 0.3s cubic-bezier(0.2,0.9,0.4,1), opacity 0.3s ease; }
-        .dark-theme { background-color: #0B190E !important; color: #ffffff !important; }
-        .dark-theme .bg-white { background-color: #14331C !important; color: #ffffff !important; border-color: #2E6F40 !important; }
-        .dark-theme input, .dark-theme select { background-color: #1B4326 !important; color: #ffffff !important; border-color: #2E6F40 !important; }
+        .glass-nav {
+            backdrop-filter: blur(12px);
+            background-color: rgba(20, 51, 28, 0.95);
+        }
+
+        .floating-cart {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 40;
+            background: #1A1A1A;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 50px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            transform: translateY(80px);
+            opacity: 0;
+            pointer-events: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .floating-cart.visible {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .floating-top-btn {
+            position: fixed;
+            bottom: 80px;
+            left: 24px;
+            z-index: 40;
+            background: #1A1A1A;
+            color: #ffffff;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            transform: translateY(80px);
+            opacity: 0;
+            pointer-events: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .floating-top-btn.visible {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .brand-card-custom {
+            transition: all 0.3s ease;
+            border-radius: 20px;
+            padding: 20px 10px;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .brand-card-custom:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .brand-kk {
+            background-color: #1A1A1A;
+            color: white;
+            border: 2px solid #333;
+        }
+
+        .brand-tm {
+            background-color: #FFFFFF;
+            color: #1A1A1A;
+            border: 2px solid #EAEAEA;
+        }
+
+        .brand-fr {
+            background-color: #1B3A2D;
+            color: white;
+            border: 2px solid #2E5A47;
+        }
+
+        .brand-logo-wrapper {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .brand-logo-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .checkmark-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            border: 1px solid #E5E7EB;
+        }
+
+        .checkmark-badge i {
+            color: #1A1A1A;
+            font-size: 12px;
+            display: none;
+        }
+
+        .brand-card-custom.active .checkmark-badge i {
+            display: block;
+        }
+
+        .cat-item {
+            animation: zoomIn 0.4s cubic-bezier(0.2, 0.9, 0.4, 1) both;
+            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1);
+            transform-origin: center;
+            border: 2px solid transparent;
+            flex-shrink: 0;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .cat-item:hover {
+            transform: scale(1.05) !important;
+        }
+
+        .cat-item:active {
+            transform: scale(0.94) !important;
+            transition-duration: 0.1s;
+        }
+
+        .cat-item.active {
+            transform: scale(1);
+            background-color: #1B4326 !important;
+            color: white !important;
+            border: 2px solid #FFC107 !important;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        @keyframes zoomIn {
+            0% {
+                transform: scale(0.85);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        #categoryContainer {
+            scroll-behavior: smooth;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        #categoryContainer::-webkit-scrollbar {
+            display: none;
+        }
+
+        .custom-select-wrapper {
+            position: relative;
+            user-select: none;
+            width: 100%;
+        }
+
+        .custom-select {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .custom-select-trigger {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #0D2213;
+            background: #ffffff;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .custom-select-trigger:hover,
+        .custom-select-trigger:focus {
+            border-color: #2E6F40;
+            box-shadow: 0 0 0 3px rgba(46, 111, 64, 0.1);
+        }
+
+        .custom-select-trigger::after {
+            content: '▼';
+            font-size: 10px;
+            color: #9ca3af;
+            transition: transform 0.3s ease;
+        }
+
+        .custom-select.open .custom-select-trigger::after {
+            transform: rotate(180deg);
+        }
+
+        .custom-options {
+            position: absolute;
+            display: none;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: 4px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+            padding: 6px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .custom-select.open .custom-options {
+            display: block;
+        }
+
+        .custom-option {
+            padding: 10px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .custom-option:hover {
+            background-color: #f3f4f6;
+        }
+
+        .custom-option.selected {
+            background-color: #F2F9F4;
+            color: #2E6F40;
+        }
+
+        .custom-options::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-options::-webkit-scrollbar-thumb {
+            background: #2E6F40;
+            border-radius: 4px;
+        }
+
+        .qty-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .qty-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .qty-btn-minus {
+            background: #f3f4f6;
+            color: #333;
+        }
+
+        .qty-btn-minus:hover {
+            background: #e5e7eb;
+        }
+
+        .qty-btn-plus {
+            background: #2E6F40;
+            color: white;
+        }
+
+        .qty-btn-plus:hover {
+            background: #1B4326;
+        }
+
+        #aboutNgopaModal:not(.hidden) #aboutModalContent {
+            transform: scale(1) !important;
+            opacity: 1 !important;
+        }
+
+        #aboutModalContent {
+            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1), opacity 0.3s ease;
+        }
+
+        .dark-theme {
+            background-color: #0B190E !important;
+            color: #ffffff !important;
+        }
+
+        .dark-theme .bg-white {
+            background-color: #14331C !important;
+            color: #ffffff !important;
+            border-color: #2E6F40 !important;
+        }
+
+        .dark-theme input,
+        .dark-theme select {
+            background-color: #1B4326 !important;
+            color: #ffffff !important;
+            border-color: #2E6F40 !important;
+        }
     </style>
 </head>
+
 <body id="mainBody" class="bg-brand-50 text-brand-900 font-sans pb-24 md:pb-8 transition-colors duration-300">
 
     <!-- Toast -->
-    <div id="toastNotification" class="fixed top-20 right-4 z-50 bg-brand-900 text-white border-2 border-amber-400 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-2.5 transition-all duration-300 transform translate-x-full opacity-0">
+    <div id="toastNotification"
+        class="fixed top-20 right-4 z-50 bg-brand-900 text-white border-2 border-amber-400 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-2.5 transition-all duration-300 transform translate-x-full opacity-0">
         <i class="fa-solid fa-circle-check text-amber-400 text-lg"></i>
         <span class="text-xs font-black" id="toastMessage">Item sudah dimasukkan ke keranjang</span>
     </div>
@@ -178,22 +618,30 @@
                 <img src="logo-ngopa-ngopi-ae.png" alt="Logo" class="h-11 w-auto object-contain" />
                 <div>
                     <h1 class="font-black text-lg leading-tight text-white tracking-wide">Ngopa Ngopi Ae</h1>
-                    <p class="text-[11px] font-bold flex items-center gap-1.5 cursor-pointer group transition-colors duration-200 hover:text-amber-300" onclick="openModal('outletModal')">
-                        <i class="fa-solid fa-location-dot text-amber-400 text-sm group-hover:scale-110 transition-transform duration-200"></i>
+                    <p class="text-[11px] font-bold flex items-center gap-1.5 cursor-pointer group transition-colors duration-200 hover:text-amber-300"
+                        onclick="openModal('outletModal')">
+                        <i
+                            class="fa-solid fa-location-dot text-amber-400 text-sm group-hover:scale-110 transition-transform duration-200"></i>
                         <span id="currentOutletName" class="text-white/90 group-hover:text-white">Pilih Outlet</span>
-                        <i class="fa-solid fa-chevron-down text-[10px] text-amber-400/70 group-hover:text-amber-400 transition-colors"></i>
+                        <i
+                            class="fa-solid fa-chevron-down text-[10px] text-amber-400/70 group-hover:text-amber-400 transition-colors"></i>
                     </p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
-                <button onclick="toggleTheme()" class="p-2.5 bg-brand-700 hover:bg-brand-500 rounded-xl transition border border-brand-500/30 text-white" title="Ganti Mode">
+                <button onclick="toggleTheme()"
+                    class="p-2.5 bg-brand-700 hover:bg-brand-500 rounded-xl transition border border-brand-500/30 text-white"
+                    title="Ganti Mode">
                     <i id="themeIcon" class="fa-solid fa-moon text-lg"></i>
                 </button>
-                <button onclick="openModal('cartModal')" class="relative p-2.5 bg-brand-700 hover:bg-brand-500 rounded-xl transition border border-brand-500/30">
+                <button onclick="openModal('cartModal')"
+                    class="relative p-2.5 bg-brand-700 hover:bg-brand-500 rounded-xl transition border border-brand-500/30">
                     <i class="fa-solid fa-cart-shopping text-white text-lg"></i>
-                    <span id="cartCount" class="absolute -top-1.5 -right-1.5 bg-amber-400 text-brand-900 font-black text-xs w-5 h-5 rounded-full flex items-center justify-center hidden shadow">0</span>
+                    <span id="cartCount"
+                        class="absolute -top-1.5 -right-1.5 bg-amber-400 text-brand-900 font-black text-xs w-5 h-5 rounded-full flex items-center justify-center hidden shadow">0</span>
                 </button>
-                <button onclick="toggleSidebar()" class="p-2.5 bg-brand-700 hover:bg-brand-500 rounded-xl transition border border-brand-500/30 text-white">
+                <button onclick="toggleSidebar()"
+                    class="p-2.5 bg-brand-700 hover:bg-brand-500 rounded-xl transition border border-brand-500/30 text-white">
                     <i class="fa-solid fa-bars text-lg"></i>
                 </button>
             </div>
@@ -218,14 +666,14 @@
             <span class="arrow"><i class="fa-solid fa-chevron-right"></i></span>
         </div>
         <div class="sidebar-menu-item" onclick="toggleSidebar(); window.location.href='tracking/';">
-    <div class="left"><i class="fa-solid fa-truck-fast"></i> Lacak Pesanan</div>
-    <i class="fa-solid fa-chevron-right arrow"></i>
-</div>
+            <div class="left"><i class="fa-solid fa-truck-fast"></i> Lacak Pesanan</div>
+            <i class="fa-solid fa-chevron-right arrow"></i>
+        </div>
         <!-- TOMBOL ADMIN PANEL -->
         <div class="sidebar-menu-item" onclick="toggleSidebar(); window.location.href='admin/';">
-    <div class="left"><i class="fa-solid fa-user-shield"></i> Admin Panel</div>
-    <i class="fa-solid fa-chevron-right arrow"></i>
-</div>
+            <div class="left"><i class="fa-solid fa-user-shield"></i> Admin Panel</div>
+            <i class="fa-solid fa-chevron-right arrow"></i>
+        </div>
         <div class="sidebar-menu-item" onclick="openModal('jasdorInfoModal'); toggleSidebar();">
             <div class="left"><i class="fa-solid fa-coins"></i> Informasi Fee Jasdor</div>
             <i class="fa-solid fa-chevron-right arrow"></i>
@@ -250,27 +698,34 @@
 
     <!-- ========== BANNER ========== -->
     <section class="max-w-4xl mx-auto p-4">
-        <div class="bg-gradient-to-br from-brand-800 to-brand-900 text-white rounded-3xl p-6 shadow-xl border border-brand-700 relative overflow-hidden text-center md:text-left md:flex md:items-center md:justify-between gap-6">
+        <div
+            class="bg-gradient-to-br from-brand-800 to-brand-900 text-white rounded-3xl p-6 shadow-xl border border-brand-700 relative overflow-hidden text-center md:text-left md:flex md:items-center md:justify-between gap-6">
             <div class="relative z-10 flex-1">
-                <div class="inline-flex items-center gap-2 bg-amber-400 text-brand-900 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider mb-2">
+                <div
+                    class="inline-flex items-center gap-2 bg-amber-400 text-brand-900 text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider mb-2">
                     <i class="fa-solid fa-bolt"></i> PROSES SATSET WATWET
                 </div>
                 <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight">Beli Kopi Murah Disini Ya!</h2>
-                <p class="text-xs md:text-sm text-brand-100 mt-2 max-w-lg leading-relaxed">Pesan kopi kesukaanmu hemat hingga 50%. Tidak perlu repot antri, tidak nunggu lama & aku tunggu pesananmu ya!</p>
+                <p class="text-xs md:text-sm text-brand-100 mt-2 max-w-lg leading-relaxed">Pesan kopi kesukaanmu hemat
+                    hingga 50%. Tidak perlu repot antri, tidak nunggu lama & aku tunggu pesananmu ya!</p>
                 <div class="mt-4 flex flex-wrap justify-center md:justify-start gap-2">
-                    <button onclick="openModal('aboutNgopaModal')" class="bg-brand-700 hover:bg-brand-500 text-xs font-bold px-3.5 py-2 rounded-xl border border-brand-500/40 text-white transition flex items-center gap-1.5 shadow-sm">
+                    <button onclick="openModal('aboutNgopaModal')"
+                        class="bg-brand-700 hover:bg-brand-500 text-xs font-bold px-3.5 py-2 rounded-xl border border-brand-500/40 text-white transition flex items-center gap-1.5 shadow-sm">
                         <i class="fa-solid fa-mug-hot text-amber-400"></i> Apa itu Ngopa Ngopi Ae?
                     </button>
-                    <button onclick="openModal('panduanOrderModal')" class="bg-brand-700 hover:bg-brand-500 text-xs font-bold px-3.5 py-2 rounded-xl border border-brand-500/40 text-white transition flex items-center gap-1.5 shadow-sm">
+                    <button onclick="openModal('panduanOrderModal')"
+                        class="bg-brand-700 hover:bg-brand-500 text-xs font-bold px-3.5 py-2 rounded-xl border border-brand-500/40 text-white transition flex items-center gap-1.5 shadow-sm">
                         <i class="fa-solid fa-route text-amber-400"></i> Cara Order
                     </button>
-                    <button onclick="openModal('paymentInfoModal')" class="bg-brand-700 hover:bg-brand-500 text-xs font-bold px-3.5 py-2 rounded-xl border border-brand-500/40 text-white transition flex items-center gap-1.5 shadow-sm">
+                    <button onclick="openModal('paymentInfoModal')"
+                        class="bg-brand-700 hover:bg-brand-500 text-xs font-bold px-3.5 py-2 rounded-xl border border-brand-500/40 text-white transition flex items-center gap-1.5 shadow-sm">
                         <i class="fa-solid fa-wallet text-amber-400"></i> Pembayaran
                     </button>
                 </div>
             </div>
             <div class="mt-4 md:mt-0 flex justify-center shrink-0">
-                <img src="logo-ngopa-ngopi-ae.png" alt="Logo Big" class="w-32 md:w-40 h-auto drop-shadow-2xl object-contain" />
+                <img src="logo-ngopa-ngopi-ae.png" alt="Logo Big"
+                    class="w-32 md:w-40 h-auto drop-shadow-2xl object-contain" />
             </div>
         </div>
     </section>
@@ -278,9 +733,11 @@
     <!-- ========== MAIN ========== -->
     <main class="max-w-4xl mx-auto px-4">
         <div class="mb-8">
-            <h3 class="text-sm md:text-base font-black mb-4 flex items-center gap-2">Pilih Brand Favoritmu <span class="text-amber-500">✨</span></h3>
+            <h3 class="text-sm md:text-base font-black mb-4 flex items-center gap-2">Pilih Brand Favoritmu <span
+                    class="text-amber-500">✨</span></h3>
             <div class="grid grid-cols-3 gap-3 md:gap-4" id="brandContainer">
-                <div onclick="selectBrand('Kopi Kenangan')" id="brand-Kopi-Kenangan" class="brand-card-custom brand-kk active">
+                <div onclick="selectBrand('Kopi Kenangan')" id="brand-Kopi-Kenangan"
+                    class="brand-card-custom brand-kk active">
                     <div class="checkmark-badge"><i class="fa-solid fa-check"></i></div>
                     <div class="brand-logo-wrapper"><img src="logo-kopi-kenangan.png" alt="Kopi Kenangan" /></div>
                     <h4 class="font-extrabold text-sm">Kopi Kenangan</h4>
@@ -299,28 +756,43 @@
         </div>
 
         <!-- WIFI -->
-        <div class="mb-5 bg-white dark:bg-brand-900 border-2 border-brand-200 dark:border-brand-700 rounded-3xl p-3.5 shadow-sm">
+        <div
+            class="mb-5 bg-white dark:bg-brand-900 border-2 border-brand-200 dark:border-brand-700 rounded-3xl p-3.5 shadow-sm">
             <div class="flex items-center justify-between pb-2.5 border-b border-brand-100 dark:border-brand-700">
                 <div class="flex items-center gap-2">
-                    <span class="w-7 h-7 rounded-xl bg-brand-500 text-white flex items-center justify-center text-xs"><i class="fa-solid fa-wifi"></i></span>
+                    <span class="w-7 h-7 rounded-xl bg-brand-500 text-white flex items-center justify-center text-xs"><i
+                            class="fa-solid fa-wifi"></i></span>
                     <div>
                         <h4 class="font-black text-xs text-brand-900 dark:text-white">WiFi Hari Ini</h4>
                         <p class="text-[10px] text-gray-500 dark:text-gray-400" id="todayWifiDateStr"></p>
                     </div>
                 </div>
-                <span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-amber-400 text-brand-900" id="activeWifiBrandBadge">Kopi Kenangan</span>
+                <span class="text-[10px] font-black px-2.5 py-1 rounded-full bg-amber-400 text-brand-900"
+                    id="activeWifiBrandBadge">Kopi Kenangan</span>
             </div>
             <div class="grid grid-cols-3 gap-1.5 my-2.5">
-                <button type="button" onclick="switchWifiTab('Kopi Kenangan')" id="wifiTab-Kopi-Kenangan" class="wifi-tab-btn py-1.5 px-2 rounded-xl text-[11px] font-black transition border text-center bg-brand-800 text-white border-brand-700 shadow-sm">Kopi Kenangan</button>
-                <button type="button" onclick="switchWifiTab('Tomoro Coffee')" id="wifiTab-Tomoro-Coffee" class="wifi-tab-btn py-1.5 px-2 rounded-xl text-[11px] font-black transition border text-center bg-brand-50 dark:bg-brand-800 text-gray-600 dark:text-gray-300 border-brand-200 dark:border-brand-700">Tomoro Coffee</button>
-                <button type="button" onclick="switchWifiTab('Fore Coffee')" id="wifiTab-Fore-Coffee" class="wifi-tab-btn py-1.5 px-2 rounded-xl text-[11px] font-black transition border text-center bg-brand-50 dark:bg-brand-800 text-gray-600 dark:text-gray-300 border-brand-200 dark:border-brand-700">Fore Coffee</button>
+                <button type="button" onclick="switchWifiTab('Kopi Kenangan')" id="wifiTab-Kopi-Kenangan"
+                    class="wifi-tab-btn py-1.5 px-2 rounded-xl text-[11px] font-black transition border text-center bg-brand-800 text-white border-brand-700 shadow-sm">Kopi
+                    Kenangan</button>
+                <button type="button" onclick="switchWifiTab('Tomoro Coffee')" id="wifiTab-Tomoro-Coffee"
+                    class="wifi-tab-btn py-1.5 px-2 rounded-xl text-[11px] font-black transition border text-center bg-brand-50 dark:bg-brand-800 text-gray-600 dark:text-gray-300 border-brand-200 dark:border-brand-700">Tomoro
+                    Coffee</button>
+                <button type="button" onclick="switchWifiTab('Fore Coffee')" id="wifiTab-Fore-Coffee"
+                    class="wifi-tab-btn py-1.5 px-2 rounded-xl text-[11px] font-black transition border text-center bg-brand-50 dark:bg-brand-800 text-gray-600 dark:text-gray-300 border-brand-200 dark:border-brand-700">Fore
+                    Coffee</button>
             </div>
-            <div class="p-3 bg-brand-50 dark:bg-brand-800 border border-brand-200 dark:border-brand-700 rounded-2xl flex items-center justify-between">
+            <div
+                class="p-3 bg-brand-50 dark:bg-brand-800 border border-brand-200 dark:border-brand-700 rounded-2xl flex items-center justify-between">
                 <div>
-                    <p class="text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">PASSWORD <span id="wifiTargetBrandLabel">KOPI KENANGAN</span></p>
-                    <p id="currentWifiDisplayVal" class="text-base md:text-lg font-black text-brand-900 dark:text-amber-400 font-mono tracking-wider"></p>
+                    <p class="text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">PASSWORD
+                        <span id="wifiTargetBrandLabel">KOPI KENANGAN</span>
+                    </p>
+                    <p id="currentWifiDisplayVal"
+                        class="text-base md:text-lg font-black text-brand-900 dark:text-amber-400 font-mono tracking-wider">
+                    </p>
                 </div>
-                <button onclick="copyCurrentWifi()" class="bg-brand-700 hover:bg-brand-500 text-white text-xs font-black px-3.5 py-2 rounded-xl transition shadow flex items-center gap-1.5 shrink-0 active:scale-95">
+                <button onclick="copyCurrentWifi()"
+                    class="bg-brand-700 hover:bg-brand-500 text-white text-xs font-black px-3.5 py-2 rounded-xl transition shadow flex items-center gap-1.5 shrink-0 active:scale-95">
                     <i class="fa-regular fa-copy"></i> Salin
                 </button>
             </div>
@@ -330,135 +802,212 @@
         <div class="mb-5">
             <div class="relative mb-3">
                 <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-brand-500"></i>
-                <input type="text" id="searchInput" oninput="filterMenu()" placeholder="Cari kopi, snack atau makanan kesukaanmu..." class="w-full pl-11 pr-4 py-3 rounded-2xl border-2 border-brand-200 focus:outline-none focus:border-brand-500 bg-white shadow-sm text-sm font-medium transition" />
+                <input type="text" id="searchInput" oninput="filterMenu()"
+                    placeholder="Cari kopi, snack atau makanan kesukaanmu..."
+                    class="w-full pl-11 pr-4 py-3 rounded-2xl border-2 border-brand-200 focus:outline-none focus:border-brand-500 bg-white shadow-sm text-sm font-medium transition" />
             </div>
             <div class="flex gap-2 overflow-x-auto pb-4 scrollbar-none items-center" id="categoryContainer"></div>
         </div>
 
         <!-- MENU GRID -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 transition-all duration-300 menu-animate-enter" id="menuGrid"></div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 transition-all duration-300 menu-animate-enter"
+            id="menuGrid"></div>
     </main>
 
     <!-- ========== FOOTER ========== -->
     <footer class="max-w-4xl mx-auto px-4 mt-8 mb-4">
-        <div class="bg-brand-100 border border-brand-200 rounded-2xl p-3 flex justify-around items-center text-center text-[11px] font-bold text-brand-800">
-            <span class="flex items-center gap-1"><i class="fa-solid fa-shield-halved text-brand-500"></i> AMAN & TERPERCAYA</span>
+        <div
+            class="bg-brand-100 border border-brand-200 rounded-2xl p-3 flex justify-around items-center text-center text-[11px] font-bold text-brand-800">
+            <span class="flex items-center gap-1"><i class="fa-solid fa-shield-halved text-brand-500"></i> AMAN &
+                TERPERCAYA</span>
             <span class="text-brand-300">|</span>
-            <span class="flex items-center gap-1"><i class="fa-solid fa-bolt text-brand-500"></i> PROSES SATSET WATWET</span>
+            <span class="flex items-center gap-1"><i class="fa-solid fa-bolt text-brand-500"></i> PROSES SATSET
+                WATWET</span>
             <span class="text-brand-300">|</span>
-            <span class="flex items-center gap-1"><i class="fa-solid fa-store text-brand-500"></i> TERSEDIA DI OUTLET & APLIKASI</span>
+            <span class="flex items-center gap-1"><i class="fa-solid fa-store text-brand-500"></i> TERSEDIA DI OUTLET &
+                APLIKASI</span>
         </div>
     </footer>
 
     <!-- ========== FLOATING BOTTOM NAV ========== -->
-    <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] md:hidden z-30 pb-[env(safe-area-inset-bottom)]">
+    <div
+        class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-200 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] md:hidden z-30 pb-[env(safe-area-inset-bottom)]">
         <div class="max-w-6xl mx-auto flex items-end justify-around pt-2 pb-2 relative">
-            <button onclick="window.scrollTo({top:0, behavior:'smooth'})" class="flex flex-col items-center gap-0.5 text-brand-700 hover:text-brand-500 transition group">
+            <button onclick="window.scrollTo({top:0, behavior:'smooth'})"
+                class="flex flex-col items-center gap-0.5 text-brand-700 hover:text-brand-500 transition group">
                 <i class="fa-solid fa-house text-lg group-hover:-translate-y-0.5 transition-transform"></i>
                 <span class="text-[10px] font-bold">Beranda</span>
             </button>
-            <button onclick="document.getElementById('categoryContainer').scrollIntoView({behavior:'smooth'})" class="flex flex-col items-center gap-0.5 text-gray-500 hover:text-brand-700 transition group">
+            <button onclick="openCategoryModal()"
+                class="flex flex-col items-center gap-0.5 text-gray-500 hover:text-brand-700 transition group">
                 <i class="fa-solid fa-border-all text-lg group-hover:-translate-y-0.5 transition-transform"></i>
                 <span class="text-[10px] font-bold">Kategori</span>
             </button>
             <div class="relative flex flex-col items-center -mt-4">
-                <button onclick="openModal('outletModal')" class="w-14 h-14 rounded-full bg-brand-700 hover:bg-brand-500 text-white flex items-center justify-center shadow-lg border-4 border-white transition-transform active:scale-95 hover:-translate-y-1">
+                <button onclick="openModal('outletModal')"
+                    class="w-14 h-14 rounded-full bg-brand-700 hover:bg-brand-500 text-white flex items-center justify-center shadow-lg border-4 border-white transition-transform active:scale-95 hover:-translate-y-1">
                     <i class="fa-solid fa-location-dot text-xl"></i>
                 </button>
                 <span class="text-[10px] font-bold text-brand-700 mt-1">Lokasi</span>
             </div>
-            <button onclick="openModal('cartModal')" class="flex flex-col items-center gap-0.5 text-gray-500 hover:text-brand-700 transition group relative">
+            <button onclick="openModal('cartModal')"
+                class="flex flex-col items-center gap-0.5 text-gray-500 hover:text-brand-700 transition group relative">
                 <i class="fa-solid fa-cart-shopping text-lg group-hover:-translate-y-0.5 transition-transform"></i>
                 <span class="text-[10px] font-bold">Keranjang</span>
-                <span id="mobileCartBadge" class="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center hidden shadow">0</span>
+                <span id="mobileCartBadge"
+                    class="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center hidden shadow">0</span>
             </button>
-            <button onclick="window.location.href='tracking/'" class="flex flex-col items-center gap-0.5 text-gray-500 hover:text-brand-700 transition group">
-    <i class="fa-solid fa-receipt text-lg group-hover:-translate-y-0.5 transition-transform"></i>
-    <span class="text-[10px] font-bold">Order</span>
-</button>
+            <button onclick="window.location.href='tracking/'"
+                class="flex flex-col items-center gap-0.5 text-gray-500 hover:text-brand-700 transition group">
+                <i class="fa-solid fa-receipt text-lg group-hover:-translate-y-0.5 transition-transform"></i>
+                <span class="text-[10px] font-bold">Order</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ========== MODAL: KATEGORI POPUP ========== -->
+    <div id="categoryModal"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end md:items-center justify-center hidden">
+        <div
+            class="bg-white dark:bg-brand-900 w-full max-w-md rounded-t-3xl md:rounded-3xl max-h-[80vh] flex flex-col p-5 shadow-2xl border dark:border-brand-700 transform transition-all duration-300">
+            <div class="flex justify-between items-center pb-3 border-b border-gray-200 dark:border-brand-700 shrink-0">
+                <h3 class="font-extrabold text-base text-brand-900 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-border-all text-brand-500"></i>
+                    Kategori Menu <span id="categoryBrandLabel" class="text-xs font-bold text-amber-400">(Kopi
+                        Kenangan)</span>
+                </h3>
+                <button onclick="closeModal('categoryModal')"
+                    class="text-gray-400 hover:text-gray-600 dark:hover:text-white text-xl font-bold">×</button>
+            </div>
+            <div id="categoryModalList" class="overflow-y-auto py-4 flex-1">
+                <!-- Akan diisi oleh JavaScript -->
+            </div>
+            <button onclick="closeModal('categoryModal')"
+                class="w-full py-2.5 bg-brand-800 hover:bg-brand-700 text-white font-extrabold rounded-xl text-xs transition shrink-0 mt-2">
+                Tutup
+            </button>
         </div>
     </div>
 
     <!-- ========== MODALS ========== -->
     <!-- Item Detail Modal -->
-    <div id="itemDetailModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-end md:items-center justify-center hidden">
-        <div class="bg-brand-900 text-white w-full max-w-md rounded-t-3xl md:rounded-3xl max-h-[90vh] flex flex-col p-5 shadow-2xl border border-brand-700 overflow-y-auto">
+    <div id="itemDetailModal"
+        class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-end md:items-center justify-center hidden">
+        <div
+            class="bg-brand-900 text-white w-full max-w-md rounded-t-3xl md:rounded-3xl max-h-[90vh] flex flex-col p-5 shadow-2xl border border-brand-700 overflow-y-auto">
             <div class="flex justify-between items-start pb-3 border-b border-brand-700">
                 <div>
                     <h3 id="modalItemTitle" class="font-black text-lg text-white"></h3>
                     <p id="modalItemPrice" class="text-sm font-bold text-amber-400"></p>
                 </div>
-                <button onclick="closeModal('itemDetailModal')" class="text-gray-400 hover:text-white text-2xl font-bold">×</button>
+                <button onclick="closeModal('itemDetailModal')"
+                    class="text-gray-400 hover:text-white text-2xl font-bold">×</button>
             </div>
-            <div id="SnackStockWarning" class="mt-3 p-3 bg-amber-500/15 border border-amber-400/50 rounded-2xl flex items-start gap-2.5 text-amber-200 hidden shrink-0">
+            <div id="SnackStockWarning"
+                class="mt-3 p-3 bg-amber-500/15 border border-amber-400/50 rounded-2xl flex items-start gap-2.5 text-amber-200 hidden shrink-0">
                 <i class="fa-solid fa-triangle-exclamation text-amber-400 text-sm mt-0.5 shrink-0"></i>
-                <p class="text-[11px] leading-relaxed font-semibold text-amber-300"><span class="font-extrabold underline uppercase">PENTING:</span> Stok menu ini menyesuaikan ketersediaan di outlet & Harap konfirmasi terlebih dahulu ke admin.</p>
+                <p class="text-[11px] leading-relaxed font-semibold text-amber-300"><span
+                        class="font-extrabold underline uppercase">PENTING:</span> Stok menu ini menyesuaikan
+                    ketersediaan di outlet & Harap konfirmasi terlebih dahulu ke admin.</p>
             </div>
             <div class="py-4 space-y-4 text-xs">
-                <div id="sizeSection"><label class="block text-gray-300 font-bold mb-2 uppercase tracking-wider text-[10px]">SIZE</label>
+                <div id="sizeSection"><label
+                        class="block text-gray-300 font-bold mb-2 uppercase tracking-wider text-[10px]">SIZE</label>
                     <div class="grid grid-cols-2 gap-2">
-                        <button type="button" onclick="selectOption('size','Regular',0)" id="opt-size-Regular" class="size-btn py-2.5 px-3 rounded-xl border font-extrabold text-center transition">Regular</button>
-                        <button type="button" onclick="selectOption('size','Large',5000)" id="opt-size-Large" class="size-btn py-2.5 px-3 rounded-xl border font-extrabold text-center transition">Large (+5.000)</button>
+                        <button type="button" onclick="selectOption('size','Regular',0)" id="opt-size-Regular"
+                            class="size-btn py-2.5 px-3 rounded-xl border font-extrabold text-center transition">Regular</button>
+                        <button type="button" onclick="selectOption('size','Large',5000)" id="opt-size-Large"
+                            class="size-btn py-2.5 px-3 rounded-xl border font-extrabold text-center transition">Large
+                            (+5.000)</button>
                     </div>
                 </div>
-                <div id="tempSection"><label class="block text-gray-300 font-bold mb-2 uppercase tracking-wider text-[10px]">TEMPERATURE</label>
+                <div id="tempSection"><label
+                        class="block text-gray-300 font-bold mb-2 uppercase tracking-wider text-[10px]">TEMPERATURE</label>
                     <div class="grid grid-cols-2 gap-2">
-                        <button type="button" onclick="selectOption('temp','Ice',0)" id="opt-temp-Ice" class="temp-btn py-2.5 px-3 rounded-xl border font-extrabold text-center transition">Ice</button>
-                        <button type="button" onclick="selectOption('temp','Hot',0)" id="opt-temp-Hot" class="temp-btn py-2.5 px-3 rounded-xl border font-extrabold text-center transition">Hot</button>
+                        <button type="button" onclick="selectOption('temp','Ice',0)" id="opt-temp-Ice"
+                            class="temp-btn py-2.5 px-3 rounded-xl border font-extrabold text-center transition">Ice</button>
+                        <button type="button" onclick="selectOption('temp','Hot',0)" id="opt-temp-Hot"
+                            class="temp-btn py-2.5 px-3 rounded-xl border font-extrabold text-center transition">Hot</button>
                     </div>
                 </div>
-                <div id="iceSection"><label class="block text-gray-300 font-bold mb-2 uppercase tracking-wider text-[10px]">ICE LEVEL</label>
+                <div id="iceSection"><label
+                        class="block text-gray-300 font-bold mb-2 uppercase tracking-wider text-[10px]">ICE
+                        LEVEL</label>
                     <div class="grid grid-cols-3 gap-2">
-                        <button type="button" onclick="selectOption('ice','Normal Ice',0)" id="opt-ice-NormalIce" class="ice-btn py-2 px-2 rounded-xl border font-extrabold text-center transition">Normal</button>
-                        <button type="button" onclick="selectOption('ice','Less Ice',0)" id="opt-ice-LessIce" class="ice-btn py-2 px-2 rounded-xl border font-extrabold text-center transition">Less Ice</button>
-                        <button type="button" onclick="selectOption('ice','No Ice',0)" id="opt-ice-NoIce" class="ice-btn py-2 px-2 rounded-xl border font-extrabold text-center transition">No Ice</button>
+                        <button type="button" onclick="selectOption('ice','Normal Ice',0)" id="opt-ice-NormalIce"
+                            class="ice-btn py-2 px-2 rounded-xl border font-extrabold text-center transition">Normal</button>
+                        <button type="button" onclick="selectOption('ice','Less Ice',0)" id="opt-ice-LessIce"
+                            class="ice-btn py-2 px-2 rounded-xl border font-extrabold text-center transition">Less
+                            Ice</button>
+                        <button type="button" onclick="selectOption('ice','No Ice',0)" id="opt-ice-NoIce"
+                            class="ice-btn py-2 px-2 rounded-xl border font-extrabold text-center transition">No
+                            Ice</button>
                     </div>
                 </div>
-                <div id="sugarSection"><label class="block text-gray-300 font-bold mb-2 uppercase tracking-wider text-[10px]">SUGAR LEVEL</label>
+                <div id="sugarSection"><label
+                        class="block text-gray-300 font-bold mb-2 uppercase tracking-wider text-[10px]">SUGAR
+                        LEVEL</label>
                     <div class="grid grid-cols-3 gap-2">
-                        <button type="button" onclick="selectOption('sugar','Normal Sugar',0)" id="opt-sugar-NormalSugar" class="sugar-btn py-2 px-2 rounded-xl border font-extrabold text-center transition">Normal</button>
-                        <button type="button" onclick="selectOption('sugar','Less Sugar',0)" id="opt-sugar-LessSugar" class="sugar-btn py-2 px-2 rounded-xl border font-extrabold text-center transition">Less Sugar</button>
-                        <button type="button" onclick="selectOption('sugar','No Sugar',0)" id="opt-sugar-NoSugar" class="sugar-btn py-2 px-2 rounded-xl border font-extrabold text-center transition">No Sugar</button>
+                        <button type="button" onclick="selectOption('sugar','Normal Sugar',0)"
+                            id="opt-sugar-NormalSugar"
+                            class="sugar-btn py-2 px-2 rounded-xl border font-extrabold text-center transition">Normal</button>
+                        <button type="button" onclick="selectOption('sugar','Less Sugar',0)" id="opt-sugar-LessSugar"
+                            class="sugar-btn py-2 px-2 rounded-xl border font-extrabold text-center transition">Less
+                            Sugar</button>
+                        <button type="button" onclick="selectOption('sugar','No Sugar',0)" id="opt-sugar-NoSugar"
+                            class="sugar-btn py-2 px-2 rounded-xl border font-extrabold text-center transition">No
+                            Sugar</button>
                     </div>
                 </div>
                 <div>
-                    <label class="block text-gray-300 font-bold mb-1 uppercase tracking-wider text-[10px]">Catatan Tambahan:</label>
-                    <input type="text" id="modalItemNote" placeholder="Catatan tambahan..." class="w-full p-3 rounded-xl bg-brand-800 border border-brand-700 text-white focus:outline-none focus:border-amber-400" />
+                    <label class="block text-gray-300 font-bold mb-1 uppercase tracking-wider text-[10px]">Catatan
+                        Tambahan:</label>
+                    <input type="text" id="modalItemNote" placeholder="Catatan tambahan..."
+                        class="w-full p-3 rounded-xl bg-brand-800 border border-brand-700 text-white focus:outline-none focus:border-amber-400" />
                 </div>
             </div>
             <div class="grid grid-cols-2 gap-3 pt-3 border-t border-brand-700">
-                <button type="button" onclick="closeModal('itemDetailModal')" class="py-3 bg-brand-800 hover:bg-brand-700 text-gray-300 font-extrabold rounded-xl transition text-xs">Batal</button>
-                <button type="button" onclick="confirmAddToCart()" id="btnConfirmAdd" class="py-3 bg-amber-400 hover:bg-amber-300 text-brand-900 font-extrabold rounded-xl transition text-xs shadow-lg">Tambah</button>
+                <button type="button" onclick="closeModal('itemDetailModal')"
+                    class="py-3 bg-brand-800 hover:bg-brand-700 text-gray-300 font-extrabold rounded-xl transition text-xs">Batal</button>
+                <button type="button" onclick="confirmAddToCart()" id="btnConfirmAdd"
+                    class="py-3 bg-amber-400 hover:bg-amber-300 text-brand-900 font-extrabold rounded-xl transition text-xs shadow-lg">Tambah</button>
             </div>
         </div>
     </div>
 
     <!-- Bundling Modal -->
-    <div id="bundlingModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-end md:items-center justify-center hidden">
-        <div class="bg-brand-900 text-white w-full max-w-lg rounded-t-3xl md:rounded-3xl max-h-[90vh] flex flex-col p-5 shadow-2xl border border-brand-700 overflow-y-auto">
+    <div id="bundlingModal"
+        class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-end md:items-center justify-center hidden">
+        <div
+            class="bg-brand-900 text-white w-full max-w-lg rounded-t-3xl md:rounded-3xl max-h-[90vh] flex flex-col p-5 shadow-2xl border border-brand-700 overflow-y-auto">
             <div class="flex justify-between items-start pb-3 border-b border-brand-700">
                 <div>
                     <h3 id="bundlingTitle" class="font-black text-lg text-white"></h3>
                     <p id="bundlingSub" class="text-xs text-gray-300 mt-0.5"></p>
                     <p id="bundlingPrice" class="text-sm font-black text-amber-400 mt-1"></p>
                 </div>
-                <button onclick="closeModal('bundlingModal')" class="text-gray-400 hover:text-white text-2xl font-bold">×</button>
+                <button onclick="closeModal('bundlingModal')"
+                    class="text-gray-400 hover:text-white text-2xl font-bold">×</button>
             </div>
             <div class="my-3 flex gap-2 overflow-x-auto pb-1" id="bundlingSlotsContainer"></div>
-            <div class="my-2"><p class="text-xs font-bold text-gray-300 mb-2">Pilihan Menu (Pilih untuk Slot Aktif):</p>
+            <div class="my-2">
+                <p class="text-xs font-bold text-gray-300 mb-2">Pilihan Menu (Pilih untuk Slot Aktif):</p>
                 <div class="grid grid-cols-4 gap-4 max-h-48 overflow-y-auto pr-1" id="bundlingItemGrid"></div>
             </div>
-            <div id="bundlingCustomizeArea" class="bg-brand-800/80 p-3 rounded-2xl border border-brand-700 my-2 hidden text-xs space-y-3">
+            <div id="bundlingCustomizeArea"
+                class="bg-brand-800/80 p-3 rounded-2xl border border-brand-700 my-2 hidden text-xs space-y-3">
                 <p class="font-extrabold text-amber-400 text-[11px]" id="selectedSlotItemName"></p>
                 <div class="grid grid-cols-2 gap-2">
                     <div><label class="block text-gray-300 font-bold mb-1 text-[9px] uppercase">TEMPERATURE</label>
-                        <select id="bundleTempSelect" class="w-full p-2 bg-brand-900 border border-brand-700 rounded-xl text-white">
+                        <select id="bundleTempSelect"
+                            class="w-full p-2 bg-brand-900 border border-brand-700 rounded-xl text-white">
                             <option value="Ice">Ice</option>
                             <option value="Hot">Hot</option>
                         </select>
                     </div>
                     <div><label class="block text-gray-300 font-bold mb-1 text-[9px] uppercase">SUGAR LEVEL</label>
-                        <select id="bundleSugarSelect" class="w-full p-2 bg-brand-900 border border-brand-700 rounded-xl text-white">
+                        <select id="bundleSugarSelect"
+                            class="w-full p-2 bg-brand-900 border border-brand-700 rounded-xl text-white">
                             <option value="Normal Sugar">Normal Sugar</option>
                             <option value="Less Sugar">Less Sugar</option>
                             <option value="No Sugar">No Sugar</option>
@@ -466,100 +1015,147 @@
                     </div>
                 </div>
                 <div><label class="block text-gray-300 font-bold mb-1 text-[9px] uppercase">ICE LEVEL</label>
-                    <select id="bundleIceSelect" class="w-full p-2 bg-brand-900 border border-brand-700 rounded-xl text-white">
+                    <select id="bundleIceSelect"
+                        class="w-full p-2 bg-brand-900 border border-brand-700 rounded-xl text-white">
                         <option value="Normal Ice">Normal Ice</option>
                         <option value="Less Ice">Less Ice</option>
                         <option value="No Ice">No Ice</option>
                     </select>
                 </div>
-                <button onclick="confirmSlotSelection()" class="w-full py-2 bg-amber-400 text-brand-900 font-extrabold rounded-xl text-xs hover:bg-amber-300 transition">Konfirmasi Pilihan Slot</button>
+                <button onclick="confirmSlotSelection()"
+                    class="w-full py-2 bg-amber-400 text-brand-900 font-extrabold rounded-xl text-xs hover:bg-amber-300 transition">Konfirmasi
+                    Pilihan Slot</button>
             </div>
-            <div class="mt-2"><label class="block text-gray-300 font-bold mb-1 text-[10px]">Catatan tambahan untuk bundling ini:</label>
-                <input type="text" id="bundlingNoteInput" placeholder="Contoh: Tanpa sedotan / pisah es..." class="w-full p-2.5 rounded-xl bg-brand-800 border border-brand-700 text-white text-xs" />
+            <div class="mt-2"><label class="block text-gray-300 font-bold mb-1 text-[10px]">Catatan tambahan untuk
+                    bundling ini:</label>
+                <input type="text" id="bundlingNoteInput" placeholder="Contoh: Tanpa sedotan / pisah es..."
+                    class="w-full p-2.5 rounded-xl bg-brand-800 border border-brand-700 text-white text-xs" />
             </div>
             <div class="grid grid-cols-2 gap-3 pt-4 border-t border-brand-700 mt-4">
-                <button type="button" onclick="closeModal('bundlingModal')" class="py-3 bg-brand-800 text-gray-300 font-extrabold rounded-xl text-xs">Batal</button>
-                <button type="button" onclick="confirmAddBundlingToCart()" id="btnConfirmBundling" class="py-3 bg-amber-400 text-brand-900 font-black rounded-xl text-xs shadow-lg">Tambah ke Keranjang</button>
+                <button type="button" onclick="closeModal('bundlingModal')"
+                    class="py-3 bg-brand-800 text-gray-300 font-extrabold rounded-xl text-xs">Batal</button>
+                <button type="button" onclick="confirmAddBundlingToCart()" id="btnConfirmBundling"
+                    class="py-3 bg-amber-400 text-brand-900 font-black rounded-xl text-xs shadow-lg">Tambah ke
+                    Keranjang</button>
             </div>
         </div>
     </div>
 
     <!-- Change Brand Modal -->
-    <div id="changeBrandModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-brand-900 text-white w-full max-w-sm rounded-3xl p-5 shadow-2xl border border-brand-700 text-center">
+    <div id="changeBrandModal"
+        class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div
+            class="bg-brand-900 text-white w-full max-w-sm rounded-3xl p-5 shadow-2xl border border-brand-700 text-center">
             <i class="fa-solid fa-triangle-exclamation text-amber-400 text-3xl mb-2"></i>
             <h3 class="font-extrabold text-base text-white mb-1">Ganti Brand?</h3>
-            <p class="text-xs text-gray-300 mb-4 leading-relaxed">Keranjangmu berisi item dari brand yang berbeda. Melanjutkan akan mereset keranjang.</p>
+            <p class="text-xs text-gray-300 mb-4 leading-relaxed">Keranjangmu berisi item dari brand yang berbeda.
+                Melanjutkan akan mereset keranjang.</p>
             <div class="space-y-2">
-                <button onclick="confirmChangeBrand()" class="w-full py-3 bg-amber-400 hover:bg-amber-300 text-brand-900 font-black rounded-xl text-xs transition">Ya, Ganti Brand</button>
-                <button onclick="closeModal('changeBrandModal')" class="w-full py-2.5 bg-brand-800 hover:bg-brand-700 text-gray-300 font-bold rounded-xl text-xs transition">Batal</button>
+                <button onclick="confirmChangeBrand()"
+                    class="w-full py-3 bg-amber-400 hover:bg-amber-300 text-brand-900 font-black rounded-xl text-xs transition">Ya,
+                    Ganti Brand</button>
+                <button onclick="closeModal('changeBrandModal')"
+                    class="w-full py-2.5 bg-brand-800 hover:bg-brand-700 text-gray-300 font-bold rounded-xl text-xs transition">Batal</button>
             </div>
         </div>
     </div>
 
     <!-- Outlet Notice Modal -->
-    <div id="outletNoticeModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-[60] flex items-center justify-center p-4 hidden transition-opacity duration-300">
-        <div class="bg-brand-900 text-white w-full max-w-sm rounded-3xl p-5 shadow-2xl border-2 border-amber-400 text-center animate-bounce-short">
-            <div class="w-12 h-12 rounded-full bg-amber-400/20 text-amber-400 mx-auto flex items-center justify-center text-xl mb-3 shadow-inner border border-amber-400/30">
+    <div id="outletNoticeModal"
+        class="fixed inset-0 bg-black/75 backdrop-blur-sm z-[60] flex items-center justify-center p-4 hidden transition-opacity duration-300">
+        <div
+            class="bg-brand-900 text-white w-full max-w-sm rounded-3xl p-5 shadow-2xl border-2 border-amber-400 text-center animate-bounce-short">
+            <div
+                class="w-12 h-12 rounded-full bg-amber-400/20 text-amber-400 mx-auto flex items-center justify-center text-xl mb-3 shadow-inner border border-amber-400/30">
                 <i class="fa-solid fa-store text-amber-400 text-xl"></i>
             </div>
-            <span class="bg-amber-400 text-brand-900 text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">LOKASI BELUM DIPILIH</span>
+            <span
+                class="bg-amber-400 text-brand-900 text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">LOKASI
+                BELUM DIPILIH</span>
             <h3 class="font-extrabold text-base mt-2 text-white">Pilih Outlet Terlebih Dahulu!</h3>
             <div class="my-3 p-3 bg-brand-800/80 rounded-2xl border border-brand-700 text-left">
-                <p class="text-[11px] text-amber-200 leading-relaxed font-semibold">Sebelum memilih menu atau memesan, tentukan lokasi outlet terdekatmu terlebih dahulu agar ketersediaan stok menu dan harga terupdate sesuai outlet pilihanmu.</p>
+                <p class="text-[11px] text-amber-200 leading-relaxed font-semibold">Sebelum memilih menu atau memesan,
+                    tentukan lokasi outlet terdekatmu terlebih dahulu agar ketersediaan stok menu dan harga terupdate
+                    sesuai outlet pilihanmu.</p>
             </div>
             <div class="space-y-2 mt-4">
-                <button type="button" onclick="proceedToChooseOutlet()" class="w-full py-3 bg-amber-400 hover:bg-amber-300 text-brand-900 font-black rounded-xl text-xs transition shadow-lg flex items-center justify-center gap-2 cursor-pointer">
+                <button type="button" onclick="proceedToChooseOutlet()"
+                    class="w-full py-3 bg-amber-400 hover:bg-amber-300 text-brand-900 font-black rounded-xl text-xs transition shadow-lg flex items-center justify-center gap-2 cursor-pointer">
                     <i class="fa-solid fa-location-dot"></i> Pilih Lokasi Outlet Sekarang
                 </button>
-                <button type="button" onclick="closeModal('outletNoticeModal')" class="w-full py-2.5 bg-brand-800 hover:bg-brand-700 text-gray-300 font-bold rounded-xl text-xs transition cursor-pointer">Nanti Saja</button>
+                <button type="button" onclick="closeModal('outletNoticeModal')"
+                    class="w-full py-2.5 bg-brand-800 hover:bg-brand-700 text-gray-300 font-bold rounded-xl text-xs transition cursor-pointer">Nanti
+                    Saja</button>
             </div>
         </div>
     </div>
 
     <!-- Outlet Picker Modal -->
-    <div id="outletModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end md:items-center justify-center hidden">
-        <div class="bg-white dark:bg-brand-900 w-full max-w-lg rounded-t-3xl md:rounded-3xl max-h-[88vh] flex flex-col p-5 shadow-2xl border dark:border-brand-700">
+    <div id="outletModal"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end md:items-center justify-center hidden">
+        <div
+            class="bg-white dark:bg-brand-900 w-full max-w-lg rounded-t-3xl md:rounded-3xl max-h-[88vh] flex flex-col p-5 shadow-2xl border dark:border-brand-700">
             <div class="flex justify-between items-center pb-2 border-b border-gray-100 dark:border-brand-700">
                 <div>
-                    <h3 class="font-extrabold text-base text-brand-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-store text-brand-500"></i>Pilih Outlet Terlebih Dahulu</h3>
-                    <p class="text-[10px] text-gray-500 dark:text-gray-400">Pilih outlet terdekat untuk melihat ketersediaan & harga menu</p>
+                    <h3 class="font-extrabold text-base text-brand-900 dark:text-white flex items-center gap-2"><i
+                            class="fa-solid fa-store text-brand-500"></i>Pilih Outlet Terlebih Dahulu</h3>
+                    <p class="text-[10px] text-gray-500 dark:text-gray-400">Pilih outlet terdekat untuk melihat
+                        ketersediaan & harga menu</p>
                 </div>
-                <button onclick="closeModal('outletModal')" class="text-gray-400 hover:text-gray-600 dark:hover:text-white text-xl font-bold">×</button>
+                <button onclick="closeModal('outletModal')"
+                    class="text-gray-400 hover:text-gray-600 dark:hover:text-white text-xl font-bold">×</button>
             </div>
-            <div id="lastOutletBanner" class="mt-3 p-3 bg-amber-50 dark:bg-brand-800 border border-amber-200 dark:border-brand-700 rounded-2xl hidden">
-                <p class="text-[10px] font-black text-amber-800 dark:text-amber-400 uppercase tracking-wider">OUTLET TERAKHIR</p>
+            <div id="lastOutletBanner"
+                class="mt-3 p-3 bg-amber-50 dark:bg-brand-800 border border-amber-200 dark:border-brand-700 rounded-2xl hidden">
+                <p class="text-[10px] font-black text-amber-800 dark:text-amber-400 uppercase tracking-wider">OUTLET
+                    TERAKHIR</p>
                 <h4 id="lastOutletName" class="font-bold text-xs text-brand-900 dark:text-white mt-0.5"></h4>
                 <p id="lastOutletAddr" class="text-[10px] text-gray-500 dark:text-gray-300 truncate"></p>
                 <div class="mt-2 flex gap-2">
-                    <button onclick="confirmLastOutlet()" class="bg-amber-400 hover:bg-amber-300 text-brand-900 font-black px-3 py-1.5 rounded-xl text-[10px] transition">Lanjut pesan di sini</button>
-                    <button onclick="closeLastOutletBanner()" class="bg-gray-200 dark:bg-brand-700 text-gray-700 dark:text-white font-bold px-3 py-1.5 rounded-xl text-[10px] transition">Nanti</button>
+                    <button onclick="confirmLastOutlet()"
+                        class="bg-amber-400 hover:bg-amber-300 text-brand-900 font-black px-3 py-1.5 rounded-xl text-[10px] transition">Lanjut
+                        pesan di sini</button>
+                    <button onclick="closeLastOutletBanner()"
+                        class="bg-gray-200 dark:bg-brand-700 text-gray-700 dark:text-white font-bold px-3 py-1.5 rounded-xl text-[10px] transition">Nanti</button>
                 </div>
             </div>
             <div class="my-3 space-y-2">
                 <div class="relative">
                     <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-gray-400 text-xs"></i>
-                    <input type="text" id="outletSearchInput" oninput="onOutletSearch()" placeholder="Cari nama outlet atau alamat..." class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-brand-700 bg-gray-50 dark:bg-brand-800 text-xs font-medium focus:outline-none focus:border-brand-500" />
+                    <input type="text" id="outletSearchInput" oninput="onOutletSearch()"
+                        placeholder="Cari nama outlet atau alamat..."
+                        class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-brand-700 bg-gray-50 dark:bg-brand-800 text-xs font-medium focus:outline-none focus:border-brand-500" />
                 </div>
             </div>
             <div class="overflow-y-auto space-y-3 pr-2 flex-1 max-h-[380px]" id="outletList"></div>
-            <div class="pt-3 border-t border-gray-100 dark:border-brand-700 flex justify-between items-center text-xs font-bold text-gray-600 dark:text-gray-300">
-                <button onclick="changeOutletPage(-1)" id="prevPageBtn" class="px-3 py-1.5 rounded-xl bg-gray-100 dark:bg-brand-800 disabled:opacity-30 disabled:cursor-not-allowed"><i class="fa-solid fa-chevron-left"></i></button>
+            <div
+                class="pt-3 border-t border-gray-100 dark:border-brand-700 flex justify-between items-center text-xs font-bold text-gray-600 dark:text-gray-300">
+                <button onclick="changeOutletPage(-1)" id="prevPageBtn"
+                    class="px-3 py-1.5 rounded-xl bg-gray-100 dark:bg-brand-800 disabled:opacity-30 disabled:cursor-not-allowed"><i
+                        class="fa-solid fa-chevron-left"></i></button>
                 <span id="outletPageInfo" class="text-[11px]">Halaman 1 / 1</span>
-                <button onclick="changeOutletPage(1)" id="nextPageBtn" class="px-3 py-1.5 rounded-xl bg-gray-100 dark:bg-brand-800 disabled:opacity-30 disabled:cursor-not-allowed"><i class="fa-solid fa-chevron-right"></i></button>
+                <button onclick="changeOutletPage(1)" id="nextPageBtn"
+                    class="px-3 py-1.5 rounded-xl bg-gray-100 dark:bg-brand-800 disabled:opacity-30 disabled:cursor-not-allowed"><i
+                        class="fa-solid fa-chevron-right"></i></button>
             </div>
         </div>
     </div>
 
     <!-- Outlet Success Modal -->
-    <div id="outletSuccessModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white dark:bg-brand-900 text-brand-900 dark:text-white w-full max-w-xs rounded-3xl p-5 shadow-2xl border border-brand-100 dark:border-brand-700 text-center animate-bounce-short">
-            <div class="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-400/20 text-amber-500 mx-auto flex items-center justify-center text-xl mb-3 shadow-inner">
+    <div id="outletSuccessModal"
+        class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div
+            class="bg-white dark:bg-brand-900 text-brand-900 dark:text-white w-full max-w-xs rounded-3xl p-5 shadow-2xl border border-brand-100 dark:border-brand-700 text-center animate-bounce-short">
+            <div
+                class="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-400/20 text-amber-500 mx-auto flex items-center justify-center text-xl mb-3 shadow-inner">
                 <i class="fa-solid fa-location-dot"></i>
             </div>
-            <span class="bg-amber-400 text-brand-900 text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">OUTLET DIPILIH</span>
+            <span
+                class="bg-amber-400 text-brand-900 text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">OUTLET
+                DIPILIH</span>
             <h3 class="font-extrabold text-base mt-1.5">Outlet Berhasil Dipilih!</h3>
-            <div class="my-3 p-3 bg-brand-50 dark:bg-brand-800 rounded-2xl border border-brand-100 dark:border-brand-700 text-left text-xs">
+            <div
+                class="my-3 p-3 bg-brand-50 dark:bg-brand-800 rounded-2xl border border-brand-100 dark:border-brand-700 text-left text-xs">
                 <p id="successOutletTitle" class="font-black text-brand-900 dark:text-amber-300 truncate"></p>
                 <p id="successOutletAddr" class="text-[10px] text-gray-500 dark:text-gray-300 mt-0.5 line-clamp-2"></p>
             </div>
@@ -569,231 +1165,359 @@
     </div>
 
     <!-- Panduan Modal -->
-    <div id="panduanOrderModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white w-full max-w-md rounded-3xl p-5 max-h-[85vh] overflow-y-auto shadow-2xl border border-brand-200">
+    <div id="panduanOrderModal"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div
+            class="bg-white w-full max-w-md rounded-3xl p-5 max-h-[85vh] overflow-y-auto shadow-2xl border border-brand-200">
             <div class="flex justify-between items-center pb-3 border-b">
-                <h3 class="font-extrabold text-lg text-brand-900 flex items-center gap-2"><i class="fa-solid fa-route text-brand-500"></i> Cara Order</h3>
+                <h3 class="font-extrabold text-lg text-brand-900 flex items-center gap-2"><i
+                        class="fa-solid fa-route text-brand-500"></i> Cara Order</h3>
                 <button onclick="closeModal('panduanOrderModal')" class="text-gray-400 text-xl font-bold">×</button>
             </div>
             <div class="mt-4 bg-brand-800 p-4 rounded-2xl text-white">
                 <div class="grid grid-cols-4 gap-2 text-center text-[10px] font-extrabold">
-                    <div class="flex flex-col items-center"><div class="w-10 h-10 rounded-full bg-brand-500 flex items-center justify-center text-lg mb-1 shadow"><i class="fa-brands fa-whatsapp"></i></div><span>1. CHAT ADMIN</span></div>
-                    <div class="flex flex-col items-center"><div class="w-10 h-10 rounded-full bg-brand-500 flex items-center justify-center text-lg mb-1 shadow"><i class="fa-solid fa-list"></i></div><span>2. PILIH MENU</span></div>
-                    <div class="flex flex-col items-center"><div class="w-10 h-10 rounded-full bg-brand-500 flex items-center justify-center text-lg mb-1 shadow"><i class="fa-solid fa-qrcode"></i></div><span>3. BAYAR</span></div>
-                    <div class="flex flex-col items-center"><div class="w-10 h-10 rounded-full bg-brand-500 flex items-center justify-center text-lg mb-1 shadow"><i class="fa-solid fa-store"></i></div><span>4. AMBIL DI OUTLET</span></div>
+                    <div class="flex flex-col items-center">
+                        <div
+                            class="w-10 h-10 rounded-full bg-brand-500 flex items-center justify-center text-lg mb-1 shadow">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </div><span>1. CHAT ADMIN</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div
+                            class="w-10 h-10 rounded-full bg-brand-500 flex items-center justify-center text-lg mb-1 shadow">
+                            <i class="fa-solid fa-list"></i>
+                        </div><span>2. PILIH MENU</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div
+                            class="w-10 h-10 rounded-full bg-brand-500 flex items-center justify-center text-lg mb-1 shadow">
+                            <i class="fa-solid fa-qrcode"></i>
+                        </div><span>3. BAYAR</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div
+                            class="w-10 h-10 rounded-full bg-brand-500 flex items-center justify-center text-lg mb-1 shadow">
+                            <i class="fa-solid fa-store"></i>
+                        </div><span>4. AMBIL DI OUTLET</span>
+                    </div>
                 </div>
             </div>
             <div class="mt-4 bg-brand-50 border-2 border-brand-500 p-4 rounded-2xl text-center">
                 <p class="text-xs font-black text-brand-700 uppercase tracking-wide">PESAN SEKARANG KE MIMIN YA!</p>
                 <div class="my-2 space-y-1">
-                    <a href="https://wa.me/62881036705137" target="_blank" class="block font-black text-lg text-brand-900 hover:text-brand-500 transition"><i class="fa-brands fa-whatsapp text-emerald-600 mr-1"></i> +62 8810-3670-5137</a>
-                    <a href="https://wa.me/62895327811763" target="_blank" class="block font-black text-lg text-brand-900 hover:text-brand-500 transition"><i class="fa-brands fa-whatsapp text-emerald-600 mr-1"></i> +62 8953-2781-1763</a>
+                    <a href="https://wa.me/62881036705137" target="_blank"
+                        class="block font-black text-lg text-brand-900 hover:text-brand-500 transition"><i
+                            class="fa-brands fa-whatsapp text-emerald-600 mr-1"></i> +62 8810-3670-5137</a>
+                    <a href="https://wa.me/62895327811763" target="_blank"
+                        class="block font-black text-lg text-brand-900 hover:text-brand-500 transition"><i
+                            class="fa-brands fa-whatsapp text-emerald-600 mr-1"></i> +62 8953-2781-1763</a>
                 </div>
             </div>
-            <button onclick="closeModal('panduanOrderModal')" class="mt-4 w-full bg-brand-800 text-white py-3 rounded-2xl text-xs font-extrabold shadow-md">Siap mengerti</button>
+            <button onclick="closeModal('panduanOrderModal')"
+                class="mt-4 w-full bg-brand-800 text-white py-3 rounded-2xl text-xs font-extrabold shadow-md">Siap
+                mengerti</button>
         </div>
     </div>
 
     <!-- Payment Info Modal -->
-    <div id="paymentInfoModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white w-full max-w-md rounded-3xl p-5 max-h-[85vh] overflow-y-auto shadow-2xl border border-brand-200">
+    <div id="paymentInfoModal"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div
+            class="bg-white w-full max-w-md rounded-3xl p-5 max-h-[85vh] overflow-y-auto shadow-2xl border border-brand-200">
             <div class="flex justify-between items-center pb-3 border-b">
-                <h3 class="font-extrabold text-lg text-brand-900 flex items-center gap-2"><i class="fa-solid fa-wallet text-brand-500"></i> METODE PEMBAYARAN</h3>
+                <h3 class="font-extrabold text-lg text-brand-900 flex items-center gap-2"><i
+                        class="fa-solid fa-wallet text-brand-500"></i> METODE PEMBAYARAN</h3>
                 <button onclick="closeModal('paymentInfoModal')" class="text-gray-400 text-xl font-bold">×</button>
             </div>
             <div class="mt-4 space-y-3">
-                <div class="p-4 bg-gradient-to-br from-brand-50 to-emerald-50 border-2 border-brand-500 rounded-2xl text-center shadow-sm">
-                    <div class="flex justify-center items-center gap-1.5 mb-2"><i class="fa-solid fa-qrcode text-brand-500 text-lg"></i><p class="text-xs font-black text-brand-900 uppercase">SCAN QRIS ALL PAYMENT</p></div>
-                    <div class="bg-white p-2.5 rounded-2xl inline-block shadow border border-brand-100"><img src="QRIS.jpeg" alt="QRIS" class="w-52 h-auto rounded-xl mx-auto object-contain" /></div>
+                <div
+                    class="p-4 bg-gradient-to-br from-brand-50 to-emerald-50 border-2 border-brand-500 rounded-2xl text-center shadow-sm">
+                    <div class="flex justify-center items-center gap-1.5 mb-2"><i
+                            class="fa-solid fa-qrcode text-brand-500 text-lg"></i>
+                        <p class="text-xs font-black text-brand-900 uppercase">SCAN QRIS ALL PAYMENT</p>
+                    </div>
+                    <div class="bg-white p-2.5 rounded-2xl inline-block shadow border border-brand-100"><img
+                            src="QRIS.jpeg" alt="QRIS" class="w-52 h-auto rounded-xl mx-auto object-contain" /></div>
                     <p class="text-[11px] font-black text-brand-900 mt-2">NGOPA NGOPI AE</p>
                     <p class="text-[10px] font-bold text-gray-500">NMID: ID1026563587553</p>
                 </div>
             </div>
-            <button onclick="closeModal('paymentInfoModal')" class="mt-4 w-full bg-brand-800 text-white py-3 rounded-2xl text-xs font-extrabold shadow-md">Tutup</button>
+            <button onclick="closeModal('paymentInfoModal')"
+                class="mt-4 w-full bg-brand-800 text-white py-3 rounded-2xl text-xs font-extrabold shadow-md">Tutup</button>
         </div>
     </div>
 
     <!-- Cart Modal -->
-    <div id="cartModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end md:items-center justify-center hidden">
+    <div id="cartModal"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end md:items-center justify-center hidden">
         <div class="bg-white w-full max-w-lg rounded-t-3xl md:rounded-3xl max-h-[92vh] flex flex-col p-5 shadow-2xl">
             <div class="flex justify-between items-center pb-2 border-b border-gray-100 shrink-0">
-                <h3 class="font-extrabold text-base text-brand-900 flex items-center gap-2"><i class="fa-solid fa-cart-shopping text-brand-500"></i>Keranjangmu</h3>
-                <button onclick="closeModal('cartModal')" class="text-gray-400 hover:text-gray-600 text-xl font-bold">×</button>
+                <h3 class="font-extrabold text-base text-brand-900 flex items-center gap-2"><i
+                        class="fa-solid fa-cart-shopping text-brand-500"></i>Keranjangmu</h3>
+                <button onclick="closeModal('cartModal')"
+                    class="text-gray-400 hover:text-gray-600 text-xl font-bold">×</button>
             </div>
-            <div id="cartItems" class="my-2 space-y-2 max-h-36 overflow-y-auto pr-1 shrink-0 border-b border-gray-100 pb-2"></div>
+            <div id="cartItems"
+                class="my-2 space-y-2 max-h-36 overflow-y-auto pr-1 shrink-0 border-b border-gray-100 pb-2"></div>
             <div class="bg-brand-50 p-2.5 rounded-xl border border-brand-200 space-y-1 text-xs shrink-0 my-1">
-                <div class="flex justify-between text-gray-600"><span>Subtotal Menu:</span><span id="subtotalPrice" class="font-bold">Rp0</span></div>
-                <div class="flex justify-between text-gray-600"><span>Fee Jasdor:</span><span id="jasdorFee" class="font-bold">Rp0</span></div>
-                <div id="deliveryFeeRow" class="flex justify-between text-gray-600 hidden"><span id="deliveryFeeLabel">Biaya Delivery:</span><span id="deliveryFeeVal" class="font-bold">Rp0</span></div>
-                <div class="border-t border-brand-200 pt-1 mt-1 flex justify-between text-xs font-black text-brand-900"><span>Total Pembayaran:</span><span id="grandTotal" class="text-brand-500 text-sm">Rp0</span></div>
+                <div class="flex justify-between text-gray-600"><span>Subtotal Menu:</span><span id="subtotalPrice"
+                        class="font-bold">Rp0</span></div>
+                <div class="flex justify-between text-gray-600"><span>Fee Jasdor:</span><span id="jasdorFee"
+                        class="font-bold">Rp0</span></div>
+                <div id="deliveryFeeRow" class="flex justify-between text-gray-600 hidden"><span
+                        id="deliveryFeeLabel">Biaya Delivery:</span><span id="deliveryFeeVal"
+                        class="font-bold">Rp0</span></div>
+                <div class="border-t border-brand-200 pt-1 mt-1 flex justify-between text-xs font-black text-brand-900">
+                    <span>Total Pembayaran:</span><span id="grandTotal" class="text-brand-500 text-sm">Rp0</span>
+                </div>
             </div>
             <div class="space-y-2 text-xs overflow-y-auto pr-1 flex-1 max-h-48">
-                <p class="font-extrabold text-brand-900 border-b pb-1 flex items-center gap-1"><i class="fa-solid fa-pen-to-square text-brand-500"></i> FORMAT ORDER</p>
-                <div><label class="block font-bold text-gray-700 mb-0.5">NAMAMU:</label><input type="text" id="custName" placeholder="Masukkan namamu..." class="w-full p-2 border border-brand-200 rounded-xl bg-gray-50"></div>
-                <div><label class="block font-bold text-gray-700 mb-0.5">NOMOR HP:</label><input type="tel" id="custPhone" placeholder="Contoh: 08123456789" class="w-full p-2 border border-brand-200 rounded-xl bg-gray-50"></div>
+                <p class="font-extrabold text-brand-900 border-b pb-1 flex items-center gap-1"><i
+                        class="fa-solid fa-pen-to-square text-brand-500"></i> FORMAT ORDER</p>
+                <div><label class="block font-bold text-gray-700 mb-0.5">NAMAMU:</label><input type="text" id="custName"
+                        placeholder="Masukkan namamu..."
+                        class="w-full p-2 border border-brand-200 rounded-xl bg-gray-50"></div>
+                <div><label class="block font-bold text-gray-700 mb-0.5">NOMOR HP:</label><input type="tel"
+                        id="custPhone" placeholder="Contoh: 08123456789"
+                        class="w-full p-2 border border-brand-200 rounded-xl bg-gray-50"></div>
                 <div class="grid grid-cols-2 gap-2">
-                    <div><label class="block font-bold text-gray-700 mb-0.5">WAKTU PICKUP :</label><input type="text" id="optPickupTime" placeholder="20.05" class="w-full p-2 border border-brand-200 rounded-xl bg-gray-50"></div>
-                    <div><label class="block font-bold text-gray-700 mb-0.5">ZONA WAKTU:</label><select id="optTimeZone" class="w-full p-2 border border-brand-200 rounded-xl bg-gray-50 font-bold">
-                        <option value="WIB">WIB</option>
-                        <option value="WITA">WITA</option>
-                        <option value="WIT">WIT</option>
-                    </select></div>
+                    <div><label class="block font-bold text-gray-700 mb-0.5">WAKTU PICKUP :</label><input type="text"
+                            id="optPickupTime" placeholder="20.05"
+                            class="w-full p-2 border border-brand-200 rounded-xl bg-gray-50"></div>
+                    <div><label class="block font-bold text-gray-700 mb-0.5">ZONA WAKTU:</label><select id="optTimeZone"
+                            class="w-full p-2 border border-brand-200 rounded-xl bg-gray-50 font-bold">
+                            <option value="WIB">WIB</option>
+                            <option value="WITA">WITA</option>
+                            <option value="WIT">WIT</option>
+                        </select></div>
                 </div>
                 <div><label class="block font-bold text-gray-700 mb-0.5">METODE PESANAN:</label>
                     <select id="orderMethod" class="hidden">
                         <option value="Pickup">Pickup (Ambil sendiri di outlet)</option>
                         <option value="Ojol">Delivery (Grab / Gojek)</option>
-                        <option value="NgopaNgopi">Delivery (Tim NgopaNgopiAe (08.00 - 13.00 khusus Surabaya Utara/Timur/Pusat)</option>
+                        <option value="NgopaNgopi">Delivery (Tim NgopaNgopiAe (08.00 - 13.00 khusus Surabaya
+                            Utara/Timur/Pusat)</option>
                     </select>
                     <div class="custom-select-wrapper">
                         <div class="custom-select" id="customOrderMethod">
-                            <div class="custom-select-trigger"><span id="orderMethodText">Pickup (Ambil sendiri di outlet)</span></div>
+                            <div class="custom-select-trigger"><span id="orderMethodText">Pickup (Ambil sendiri di
+                                    outlet)</span></div>
                             <div class="custom-options">
-                                <div class="custom-option selected" data-value="Pickup">Pickup (Ambil sendiri di outlet)</div>
+                                <div class="custom-option selected" data-value="Pickup">Pickup (Ambil sendiri di outlet)
+                                </div>
                                 <div class="custom-option" data-value="Ojol">Delivery (Grab / Gojek)</div>
-                                <div class="custom-option" data-value="NgopaNgopi">Delivery (Tim NgopaNgopiAe (08.00 - 13.00 khusus Surabaya Utara/Timur/Pusat)</div>
+                                <div class="custom-option" data-value="NgopaNgopi">Delivery (Tim NgopaNgopiAe (08.00 -
+                                    13.00 khusus Surabaya Utara/Timur/Pusat)</div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div id="deliveryAddressSection" class="hidden space-y-1 bg-brand-50 p-2.5 rounded-xl border border-brand-200">
+                <div id="deliveryAddressSection"
+                    class="hidden space-y-1 bg-brand-50 p-2.5 rounded-xl border border-brand-200">
                     <label class="block font-bold text-gray-700 mb-0.5">ALAMAT LENGKAP PENGIRIMAN:</label>
-                    <textarea id="deliveryAddress" placeholder="Masukkan nama jalan, nomor rumah, patokan..." class="w-full p-2 border border-brand-200 rounded-xl bg-white text-xs" rows="2"></textarea>
-                    <p id="deliveryInfoText" class="text-[10px] text-brand-700 font-bold mt-1">Biaya Delivery (Rp11.000) + Bag Fee (Rp6.000) ditambahkan otomatis.</p>
+                    <textarea id="deliveryAddress" placeholder="Masukkan nama jalan, nomor rumah, patokan..."
+                        class="w-full p-2 border border-brand-200 rounded-xl bg-white text-xs" rows="2"></textarea>
+                    <p id="deliveryInfoText" class="text-[10px] text-brand-700 font-bold mt-1">Biaya Delivery (Rp11.000)
+                        + Bag Fee (Rp6.000) ditambahkan otomatis.</p>
                 </div>
             </div>
-            <button onclick="submitOrderViaWA()" class="mt-3 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3 rounded-2xl shadow-lg flex items-center justify-center gap-2 transition text-xs shrink-0"><i class="fa-brands fa-whatsapp text-lg"></i> Kirim Format Order ke Admin</button>
+            <button onclick="submitOrderViaWA()"
+                class="mt-3 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3 rounded-2xl shadow-lg flex items-center justify-center gap-2 transition text-xs shrink-0"><i
+                    class="fa-brands fa-whatsapp text-lg"></i> Kirim Format Order ke Admin</button>
         </div>
     </div>
 
     <!-- Final Warning Modal -->
-    <div id="finalWarningModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-brand-900 text-white w-full max-w-sm rounded-3xl p-5 shadow-2xl border border-amber-400/40 text-center animate-bounce-short">
-            <div class="w-12 h-12 rounded-full bg-amber-400/20 text-amber-400 mx-auto flex items-center justify-center text-xl mb-3 shadow-inner border border-amber-400/30">
+    <div id="finalWarningModal"
+        class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div
+            class="bg-brand-900 text-white w-full max-w-sm rounded-3xl p-5 shadow-2xl border border-amber-400/40 text-center animate-bounce-short">
+            <div
+                class="w-12 h-12 rounded-full bg-amber-400/20 text-amber-400 mx-auto flex items-center justify-center text-xl mb-3 shadow-inner border border-amber-400/30">
                 <i class="fa-solid fa-triangle-exclamation text-amber-400 text-xl"></i>
             </div>
-            <span class="bg-amber-400 text-brand-900 text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">PERINGATAN PENTING</span>
+            <span
+                class="bg-amber-400 text-brand-900 text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">PERINGATAN
+                PENTING</span>
             <h3 class="font-extrabold text-base mt-2 text-white">Konfirmasi akhir pesanan</h3>
             <div class="my-3 p-3 bg-brand-800/80 rounded-2xl border border-brand-700 text-left">
-                <p class="text-[11px] text-amber-200 leading-relaxed font-semibold">Diberitahukan kepada seluruh customer bahwa proses pengisian order yang telah dilakukan bersifat final & tidak ada dispensasi atas kelalaian, kesalahan input maupun ketidaksesuaian proses sebelum dikirim Admin.</p>
+                <p class="text-[11px] text-amber-200 leading-relaxed font-semibold">Diberitahukan kepada seluruh
+                    customer bahwa proses pengisian order yang telah dilakukan bersifat final & tidak ada dispensasi
+                    atas kelalaian, kesalahan input maupun ketidaksesuaian proses sebelum dikirim Admin.</p>
             </div>
             <div class="space-y-2 mt-4">
-                <button type="button" onclick="executeSendWA()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold rounded-xl text-xs transition shadow-lg flex items-center justify-center gap-2"><i class="fa-brands fa-whatsapp text-base"></i> Ya, Saya mengerti min & Kirim</button>
-                <button type="button" onclick="closeModal('finalWarningModal')" class="w-full py-2.5 bg-brand-800 hover:bg-brand-700 text-gray-300 font-bold rounded-xl text-xs transition">Periksa kembali</button>
+                <button type="button" onclick="executeSendWA()"
+                    class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold rounded-xl text-xs transition shadow-lg flex items-center justify-center gap-2"><i
+                        class="fa-brands fa-whatsapp text-base"></i> Ya, Saya mengerti min & Kirim</button>
+                <button type="button" onclick="closeModal('finalWarningModal')"
+                    class="w-full py-2.5 bg-brand-800 hover:bg-brand-700 text-gray-300 font-bold rounded-xl text-xs transition">Periksa
+                    kembali</button>
             </div>
         </div>
     </div>
 
     <!-- About Modal -->
-    <div id="aboutNgopaModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div id="aboutModalContent" class="bg-brand-900 text-white w-full max-w-md rounded-3xl p-6 shadow-2xl border border-brand-700 transform transition-all duration-300 scale-95 opacity-0">
+    <div id="aboutNgopaModal"
+        class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div id="aboutModalContent"
+            class="bg-brand-900 text-white w-full max-w-md rounded-3xl p-6 shadow-2xl border border-brand-700 transform transition-all duration-300 scale-95 opacity-0">
             <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-full bg-amber-400/20 flex items-center justify-center"><i class="fa-solid fa-mug-hot text-amber-400 text-xl"></i></div>
-                    <div><h3 class="font-black text-lg text-white">Ngopa Ngopi Ae</h3><p class="text-xs text-gray-400">Jasa Order Kopi & Delivery</p></div>
+                    <div class="w-12 h-12 rounded-full bg-amber-400/20 flex items-center justify-center"><i
+                            class="fa-solid fa-mug-hot text-amber-400 text-xl"></i></div>
+                    <div>
+                        <h3 class="font-black text-lg text-white">Ngopa Ngopi Ae</h3>
+                        <p class="text-xs text-gray-400">Jasa Order Kopi & Delivery</p>
+                    </div>
                 </div>
-                <button onclick="closeModal('aboutNgopaModal')" class="text-gray-400 hover:text-white text-2xl font-bold">×</button>
+                <button onclick="closeModal('aboutNgopaModal')"
+                    class="text-gray-400 hover:text-white text-2xl font-bold">×</button>
             </div>
             <div class="border-t border-brand-700 mb-4"></div>
             <div class="space-y-4">
-                <p class="text-sm text-gray-300 leading-relaxed text-justify"><span class="font-bold text-amber-400">Ngopa Ngopi Ae</span> adalah jasa pemesanan kopi yang memudahkan kamu untuk mendapatkan kopi favorit dari berbagai brand ternama dengan <span class="font-bold text-amber-400">harga spesial</span>!</p>
+                <p class="text-sm text-gray-300 leading-relaxed text-justify"><span
+                        class="font-bold text-amber-400">Ngopa Ngopi Ae</span> adalah jasa pemesanan kopi yang
+                    memudahkan kamu untuk mendapatkan kopi favorit dari berbagai brand ternama dengan <span
+                        class="font-bold text-amber-400">harga spesial</span>!</p>
                 <div class="bg-brand-800/50 rounded-2xl p-4 border border-brand-700/50">
                     <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Tersedia Brand Pilihan:</p>
                     <div class="grid grid-cols-3 gap-3">
-                        <div class="bg-black rounded-xl p-3 text-center flex flex-col items-center gap-1 border border-gray-800">
-                            <img src="logo-kopi-kenangan.png" alt="Kopi Kenangan" class="w-8 h-8 object-contain rounded bg-white p-1">
+                        <div
+                            class="bg-black rounded-xl p-3 text-center flex flex-col items-center gap-1 border border-gray-800">
+                            <img src="logo-kopi-kenangan.png" alt="Kopi Kenangan"
+                                class="w-8 h-8 object-contain rounded bg-white p-1">
                             <span class="text-[10px] font-bold text-white">Kopi Kenangan</span>
                             <span class="text-[9px] text-amber-400 font-black">Harga Spesial!</span>
                         </div>
-                        <div class="bg-white rounded-xl p-3 text-center flex flex-col items-center gap-1 border border-gray-200">
+                        <div
+                            class="bg-white rounded-xl p-3 text-center flex flex-col items-center gap-1 border border-gray-200">
                             <img src="logo-tomoro-coffee.png" alt="Tomoro Coffee" class="w-8 h-8 object-contain">
                             <span class="text-[10px] font-bold text-gray-900">Tomoro Coffee</span>
                             <span class="text-[9px] text-amber-400 font-black">Harga Spesial!</span>
                         </div>
-                        <div class="bg-[#1B3A2D] rounded-xl p-3 text-center flex flex-col items-center gap-1 border border-[#2E5A47]">
+                        <div
+                            class="bg-[#1B3A2D] rounded-xl p-3 text-center flex flex-col items-center gap-1 border border-[#2E5A47]">
                             <img src="logo-fore-coffee.png" alt="Fore Coffee" class="w-8 h-8 object-contain">
                             <span class="text-[10px] font-bold text-white">Fore Coffee</span>
                             <span class="text-[9px] text-amber-400 font-black">Harga Spesial!</span>
                         </div>
                     </div>
                 </div>
-                <div class="flex items-center gap-2 text-[11px] text-gray-400 bg-brand-800/30 rounded-xl p-3 border border-brand-700/30">
+                <div
+                    class="flex items-center gap-2 text-[11px] text-gray-400 bg-brand-800/30 rounded-xl p-3 border border-brand-700/30">
                     <i class="fa-solid fa-bolt text-amber-400"></i>
                     <span>Proses cepat, tinggal pilih menu, pesan via WhatsApp, dan minuman siap dinikmati!</span>
                 </div>
             </div>
-            <button onclick="closeModal('aboutNgopaModal')" class="w-full mt-5 py-3 bg-amber-400 hover:bg-amber-300 text-brand-900 font-extrabold rounded-2xl transition text-sm shadow-lg">Mengerti, Saya Mau Order!</button>
+            <button onclick="closeModal('aboutNgopaModal')"
+                class="w-full mt-5 py-3 bg-amber-400 hover:bg-amber-300 text-brand-900 font-extrabold rounded-2xl transition text-sm shadow-lg">Mengerti,
+                Saya Mau Order!</button>
         </div>
     </div>
 
     <!-- Validation Alert Modal -->
-    <div id="validationAlertModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[70] flex items-center justify-center p-4 hidden transition-opacity duration-300">
-        <div class="bg-brand-900 text-white w-full max-w-sm rounded-3xl p-5 shadow-2xl border-2 border-amber-400 text-center transform transition-all duration-300 scale-95 opacity-0">
-            <div class="w-12 h-12 rounded-full bg-amber-400/20 text-amber-400 mx-auto flex items-center justify-center text-xl mb-3 shadow-inner border border-amber-400/30">
+    <div id="validationAlertModal"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[70] flex items-center justify-center p-4 hidden transition-opacity duration-300">
+        <div
+            class="bg-brand-900 text-white w-full max-w-sm rounded-3xl p-5 shadow-2xl border-2 border-amber-400 text-center transform transition-all duration-300 scale-95 opacity-0">
+            <div
+                class="w-12 h-12 rounded-full bg-amber-400/20 text-amber-400 mx-auto flex items-center justify-center text-xl mb-3 shadow-inner border border-amber-400/30">
                 <i class="fa-solid fa-triangle-exclamation text-amber-400 text-xl"></i>
             </div>
-            <span class="bg-amber-400 text-brand-900 text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">PERINGATAN</span>
+            <span
+                class="bg-amber-400 text-brand-900 text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">PERINGATAN</span>
             <h3 class="font-extrabold text-base mt-2 text-white" id="validationAlertTitle">Informasi Belum Lengkap</h3>
             <div class="my-3 p-3 bg-brand-800/80 rounded-2xl border border-brand-700 text-left">
-                <p class="text-[13px] text-gray-300 leading-relaxed font-medium text-center" id="validationAlertMessage">Harap lengkapi data yang diperlukan terlebih dahulu.</p>
+                <p class="text-[13px] text-gray-300 leading-relaxed font-medium text-center"
+                    id="validationAlertMessage">Harap lengkapi data yang diperlukan terlebih dahulu.</p>
             </div>
-            <button type="button" onclick="closeModal('validationAlertModal')" class="w-full py-2.5 bg-brand-800 hover:bg-brand-700 text-white font-extrabold rounded-xl text-xs transition shadow-lg mt-2">Oke, Mengerti</button>
+            <button type="button" onclick="closeModal('validationAlertModal')"
+                class="w-full py-2.5 bg-brand-800 hover:bg-brand-700 text-white font-extrabold rounded-xl text-xs transition shadow-lg mt-2">Oke,
+                Mengerti</button>
         </div>
     </div>
 
     <!-- Welcome Notice Modal -->
-    <div id="welcomeNoticeModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm transition-opacity duration-300">
-        <div class="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl transform transition-all p-5 flex flex-col items-center text-center">
+    <div id="welcomeNoticeModal"
+        class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm transition-opacity duration-300">
+        <div
+            class="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl transform transition-all p-5 flex flex-col items-center text-center">
             <div class="w-12 h-12 bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center mb-3">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
             </div>
             <h3 class="text-lg font-black text-gray-900">Pemberitahuan</h3>
-            <p class="text-xs text-gray-500 mb-4">Jasa Order & Delivery <span class="font-bold text-emerald-600">by Ngopa Ngopi Ae</span></p>
+            <p class="text-xs text-gray-500 mb-4">Jasa Order & Delivery <span class="font-bold text-emerald-600">by
+                    Ngopa Ngopi Ae</span></p>
             <p class="font-bold text-orange-500 mb-4">Operasional 08.00 - 23.00</p>
             <div class="w-full bg-stone-900 text-white rounded-2xl p-3 mb-4 shadow">
                 <p class="text-[10px] uppercase tracking-wider text-amber-400 font-semibold">Biaya Jasdor Termurah</p>
                 <p class="text-xl font-black mt-0.5">Mulai Rp 500</p>
                 <p class="text-[10px] text-gray-300">per item pesanan</p>
             </div>
-            <div class="w-full bg-gray-50 border border-gray-200 rounded-2xl p-3 text-left mb-4 text-xs text-gray-700 space-y-1.5">
-                <div class="flex items-center gap-1.5 font-bold text-gray-900 mb-1"><span>☕</span><p class="text-xs">Ketentuan Biaya Jasa Order:</p></div>
-                <div class="flex justify-between text-[11px] text-gray-600 border-b border-gray-200 pb-1"><span>Menu Satuan</span><span class="font-bold text-gray-900">+Rp 500 / item</span></div>
-                <div class="flex justify-between text-[11px] text-gray-600"><span>Menu Paket Hemat / Bundling</span><span class="font-bold text-gray-900">+Rp 750 / paket</span></div>
+            <div
+                class="w-full bg-gray-50 border border-gray-200 rounded-2xl p-3 text-left mb-4 text-xs text-gray-700 space-y-1.5">
+                <div class="flex items-center gap-1.5 font-bold text-gray-900 mb-1"><span>☕</span>
+                    <p class="text-xs">Ketentuan Biaya Jasa Order:</p>
+                </div>
+                <div class="flex justify-between text-[11px] text-gray-600 border-b border-gray-200 pb-1"><span>Menu
+                        Satuan</span><span class="font-bold text-gray-900">+Rp 500 / item</span></div>
+                <div class="flex justify-between text-[11px] text-gray-600"><span>Menu Paket Hemat /
+                        Bundling</span><span class="font-bold text-gray-900">+Rp 750 / paket</span></div>
             </div>
-            <label class="flex items-center gap-2 text-xs text-gray-600 cursor-pointer select-none mb-4 w-full justify-start pl-1">
-                <input type="checkbox" id="chkHideWelcomeNotice" class="w-4 h-4 rounded text-emerald-600 border-gray-300">
+            <label
+                class="flex items-center gap-2 text-xs text-gray-600 cursor-pointer select-none mb-4 w-full justify-start pl-1">
+                <input type="checkbox" id="chkHideWelcomeNotice"
+                    class="w-4 h-4 rounded text-emerald-600 border-gray-300">
                 <span>Jangan tampilkan lagi</span>
             </label>
-            <button type="button" onclick="document.getElementById('welcomeNoticeModal').style.display='none'; if(document.getElementById('chkHideWelcomeNotice')?.checked){localStorage.setItem('hideNgopaNotice','true');}" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-2xl transition shadow-lg text-sm cursor-pointer">Saya mengerti</button>
+            <button type="button"
+                onclick="document.getElementById('welcomeNoticeModal').style.display='none'; if(document.getElementById('chkHideWelcomeNotice')?.checked){localStorage.setItem('hideNgopaNotice','true');}"
+                class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-2xl transition shadow-lg text-sm cursor-pointer">Saya
+                mengerti</button>
         </div>
     </div>
 
     <!-- Jasdor Info Modal -->
-    <div id="jasdorInfoModal" class="modal-content fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-brand-900 text-white w-full max-w-md rounded-3xl p-5 shadow-2xl border border-brand-700 max-h-[90vh] flex flex-col">
+    <div id="jasdorInfoModal"
+        class="modal-content fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div
+            class="bg-brand-900 text-white w-full max-w-md rounded-3xl p-5 shadow-2xl border border-brand-700 max-h-[90vh] flex flex-col">
             <div class="flex justify-between items-center border-b border-brand-700 pb-3 mb-4">
                 <h3 class="font-black text-lg">💰 Informasi Fee Jasdor</h3>
-                <button onclick="closeModal('jasdorInfoModal')" class="text-gray-400 hover:text-white text-xl">×</button>
+                <button onclick="closeModal('jasdorInfoModal')"
+                    class="text-gray-400 hover:text-white text-xl">×</button>
             </div>
             <div class="space-y-3 overflow-y-auto pr-2 flex-1">
                 <div class="bg-brand-800/50 p-4 rounded-2xl border border-brand-700/50">
-                    <div class="flex justify-between items-center"><div class="font-bold text-sm">Menu Satuan</div><span class="text-amber-400 font-black">Rp500 / item</span></div>
+                    <div class="flex justify-between items-center">
+                        <div class="font-bold text-sm">Menu Satuan</div><span class="text-amber-400 font-black">Rp500 /
+                            item</span>
+                    </div>
                     <div class="text-[10px] text-gray-400 mt-1">Biaya per item untuk kopi/minuman reguler.</div>
                 </div>
                 <div class="bg-brand-800/50 p-4 rounded-2xl border border-brand-700/50">
-                    <div class="flex justify-between items-center"><div class="font-bold text-sm">Paket Hemat / Bundling</div><span class="text-amber-400 font-black">Rp750 / paket</span></div>
+                    <div class="flex justify-between items-center">
+                        <div class="font-bold text-sm">Paket Hemat / Bundling</div><span
+                            class="text-amber-400 font-black">Rp750 / paket</span>
+                    </div>
                     <div class="text-[10px] text-gray-400 mt-1">Biaya per paket untuk menu bundle atau promo.</div>
                 </div>
-                <div class="p-4 bg-amber-400/10 rounded-2xl border border-amber-400/30 text-xs"><span class="font-bold text-amber-400">💡 Tips Cuán:</span> Semakin sering anda order semakin banyak voucher diskon yang anda dapatkan!</div>
+                <div class="p-4 bg-amber-400/10 rounded-2xl border border-amber-400/30 text-xs"><span
+                        class="font-bold text-amber-400">💡 Tips Cuán:</span> Semakin sering anda order semakin banyak
+                    voucher diskon yang anda dapatkan!</div>
             </div>
         </div>
     </div>
 
     <!-- FAQ Modal -->
-    <div id="faqModal" class="modal-content fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-brand-900 text-white w-full max-w-md rounded-3xl p-5 shadow-2xl border border-brand-700 max-h-[90vh] flex flex-col">
+    <div id="faqModal"
+        class="modal-content fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div
+            class="bg-brand-900 text-white w-full max-w-md rounded-3xl p-5 shadow-2xl border border-brand-700 max-h-[90vh] flex flex-col">
             <div class="flex justify-between items-center border-b border-brand-700 pb-3 mb-4">
                 <h3 class="font-black text-lg">❓ FAQ (Pertanyaan Umum)</h3>
                 <button onclick="closeModal('faqModal')" class="text-gray-400 hover:text-white text-xl">×</button>
@@ -801,38 +1525,48 @@
             <div class="space-y-4 overflow-y-auto pr-2 flex-1 text-sm">
                 <div class="bg-brand-800/50 p-4 rounded-2xl border border-brand-700/50">
                     <div class="font-bold text-amber-400 mb-1">Apa itu Ngopa Ngopi Ae?</div>
-                    <div class="text-gray-300 text-xs leading-relaxed">Ngopa Ngopi Ae adalah jasa order kopi yang membantu kamu memesan menu Kopi Kenangan, Tomoro, dan Fore dengan harga lebih hemat.</div>
+                    <div class="text-gray-300 text-xs leading-relaxed">Ngopa Ngopi Ae adalah jasa order kopi yang
+                        membantu kamu memesan menu Kopi Kenangan, Tomoro, dan Fore dengan harga lebih hemat.</div>
                 </div>
                 <div class="bg-brand-800/50 p-4 rounded-2xl border border-brand-700/50">
                     <div class="font-bold text-amber-400 mb-1">Berapa biaya jasa pemesanan (Fee Jasdor)?</div>
-                    <div class="text-gray-300 text-xs leading-relaxed">Fee Jasdor dimulai dari Rp500/item untuk menu satuan, dan Rp750/paket untuk menu hemat.</div>
+                    <div class="text-gray-300 text-xs leading-relaxed">Fee Jasdor dimulai dari Rp500/item untuk menu
+                        satuan, dan Rp750/paket untuk menu hemat.</div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Best Seller Modal -->
-    <div id="bestSellerModal" class="modal-content fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-brand-900 text-white w-full max-w-md rounded-3xl p-5 shadow-2xl border border-brand-700 max-h-[90vh] flex flex-col">
+    <div id="bestSellerModal"
+        class="modal-content fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div
+            class="bg-brand-900 text-white w-full max-w-md rounded-3xl p-5 shadow-2xl border border-brand-700 max-h-[90vh] flex flex-col">
             <div class="flex justify-between items-center border-b border-brand-700 pb-3 mb-4">
                 <h3 class="font-black text-lg">⭐ Best Seller (Realtime)</h3>
-                <button onclick="closeModal('bestSellerModal')" class="text-gray-400 hover:text-white text-xl">×</button>
+                <button onclick="closeModal('bestSellerModal')"
+                    class="text-gray-400 hover:text-white text-xl">×</button>
             </div>
             <div id="bestSellerList" class="space-y-3 overflow-y-auto pr-2 flex-1"></div>
         </div>
     </div>
 
     <!-- Loyalty Modal -->
-    <div id="loyaltyModal" class="modal-content fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-brand-900 text-white w-full max-w-md rounded-3xl p-5 shadow-2xl border border-brand-700 max-h-[90vh] flex flex-col">
+    <div id="loyaltyModal"
+        class="modal-content fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div
+            class="bg-brand-900 text-white w-full max-w-md rounded-3xl p-5 shadow-2xl border border-brand-700 max-h-[90vh] flex flex-col">
             <div class="flex justify-between items-center border-b border-brand-700 pb-3 mb-4">
                 <h3 class="font-black text-lg">🏆 Ngopa Loyalty Card</h3>
                 <button onclick="closeModal('loyaltyModal')" class="text-gray-400 hover:text-white text-xl">×</button>
             </div>
-            <p class="text-xs text-gray-300 mb-4">Masukkan nomor WhatsApp untuk cek level loyalitas Anda berdasarkan total pesanan.</p>
+            <p class="text-xs text-gray-300 mb-4">Masukkan nomor WhatsApp untuk cek level loyalitas Anda berdasarkan
+                total pesanan.</p>
             <div class="flex gap-2 mb-6">
-                <input type="tel" id="loyaltyPhone" placeholder="08xxxxxxxxxx" class="flex-1 p-3 rounded-xl bg-brand-800 border border-brand-700 text-white text-sm focus:outline-none focus:border-amber-400">
-                <button onclick="checkLoyalty()" class="px-4 py-3 bg-amber-400 text-brand-900 font-extrabold rounded-xl text-xs">Cek</button>
+                <input type="tel" id="loyaltyPhone" placeholder="08xxxxxxxxxx"
+                    class="flex-1 p-3 rounded-xl bg-brand-800 border border-brand-700 text-white text-sm focus:outline-none focus:border-amber-400">
+                <button onclick="checkLoyalty()"
+                    class="px-4 py-3 bg-amber-400 text-brand-900 font-extrabold rounded-xl text-xs">Cek</button>
             </div>
             <div id="loyaltyResult" class="space-y-1 text-xs text-gray-300">
                 <p class="text-center text-gray-500">Masukkan nomor HP untuk melihat level Anda.</p>
@@ -844,7 +1578,8 @@
     <div id="adminPanel">
         <div style="max-width:600px; margin:0 auto;">
             <!-- Tombol Kembali -->
-            <button onclick="closeAdminPanel()" style="color:white; font-size:14px; font-weight:bold; display:flex; align-items:center; gap:8px; margin-bottom:16px; background:#1B4326; border:1px solid #2E6F40; padding:10px 20px; border-radius:12px; cursor:pointer;">
+            <button onclick="closeAdminPanel()"
+                style="color:white; font-size:14px; font-weight:bold; display:flex; align-items:center; gap:8px; margin-bottom:16px; background:#1B4326; border:1px solid #2E6F40; padding:10px 20px; border-radius:12px; cursor:pointer;">
                 <i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda
             </button>
 
@@ -852,19 +1587,24 @@
             <div id="adminLock" class="admin-lock">
                 <i class="fa-solid fa-lock text-amber-400 text-5xl mb-3"></i>
                 <h2 style="color:white; font-size:24px; font-weight:900;">🔐 Admin Only</h2>
-                <p style="color:#9ca3af; font-size:14px; margin-bottom:16px;">Masukkan password untuk mengelola order</p>
-                <input type="password" id="adminPasswordInput" placeholder="Masukkan password..." onkeypress="if(event.key==='Enter') unlockAdmin()">
-                <button onclick="unlockAdmin()" style="width:100%; margin-top:12px; background:#FFC107; color:#0D2213; font-weight:900; padding:14px; border:none; border-radius:12px; cursor:pointer; transition:0.2s;">
+                <p style="color:#9ca3af; font-size:14px; margin-bottom:16px;">Masukkan password untuk mengelola order
+                </p>
+                <input type="password" id="adminPasswordInput" placeholder="Masukkan password..."
+                    onkeypress="if(event.key==='Enter') unlockAdmin()">
+                <button onclick="unlockAdmin()"
+                    style="width:100%; margin-top:12px; background:#FFC107; color:#0D2213; font-weight:900; padding:14px; border:none; border-radius:12px; cursor:pointer; transition:0.2s;">
                     <i class="fa-solid fa-key"></i> Buka Dashboard
                 </button>
-                <p style="color:#6b7280; font-size:10px; margin-top:8px;">Password default: <strong style="color:#FFC107;">rahasia123</strong></p>
+                <p style="color:#6b7280; font-size:10px; margin-top:8px;">Password default: <strong
+                        style="color:#FFC107;">rahasia123</strong></p>
             </div>
 
             <!-- Dashboard Admin -->
             <div id="adminDashboardContent" style="display:none;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
                     <h2 style="color:white; font-size:20px; font-weight:900;">📋 Dashboard Admin</h2>
-                    <button onclick="loadAdminOrders()" style="background:#2E6F40; color:white; padding:6px 16px; border:none; border-radius:10px; cursor:pointer; font-size:12px; font-weight:bold;">
+                    <button onclick="loadAdminOrders()"
+                        style="background:#2E6F40; color:white; padding:6px 16px; border:none; border-radius:10px; cursor:pointer; font-size:12px; font-weight:bold;">
                         <i class="fa-solid fa-rotate"></i> Refresh
                     </button>
                 </div>
@@ -1055,8 +1795,8 @@
                 container.innerHTML = orders.map(order => {
                     const statusClass = (order.status || 'Pesanan Diterima').toLowerCase().replace(/\s/g, '');
                     const date = new Date(order.created_at).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
-                    const orderCode = order.order_code || `NGOP-${new Date(order.created_at).getFullYear()}${String(new Date(order.created_at).getMonth()+1).padStart(2,'0')}-${String(order.id).padStart(4,'0')}`;
-                    
+                    const orderCode = order.order_code || `NGOP-${new Date(order.created_at).getFullYear()}${String(new Date(order.created_at).getMonth() + 1).padStart(2, '0')}-${String(order.id).padStart(4, '0')}`;
+
                     let totalItems = 0;
                     let itemsText = '';
                     let brands = [];
@@ -1123,7 +1863,7 @@
                     }
                 );
                 const result = await response.json();
-                
+
                 if (result.success) {
                     alert('✅ Status berhasil diperbarui!');
                     loadAdminOrders();
@@ -2225,14 +2965,80 @@
             });
             updateCartUI();
         });
+        // ======================== KATEGORI POPUP ========================
+
+        function openCategoryModal() {
+            renderCategoryModal();
+            openModal('categoryModal');
+        }
+
+        function renderCategoryModal() {
+            const list = document.getElementById('categoryModalList');
+            const label = document.getElementById('categoryBrandLabel');
+            if (!list) return;
+
+            const currentCatList = brandCategories[selectedBrand] || ['Semua', 'Kopi', 'Non-Kopi', 'Paket Hemat'];
+            label.textContent = `(${selectedBrand})`;
+
+            // Fungsi helper untuk icon
+            function getCategoryIcon(catName) {
+                const name = catName.toLowerCase();
+                if (name.includes('semua')) return 'fa-solid fa-th-large';
+                if (name.includes('kopi') || name.includes('coffee')) return 'fa-solid fa-mug-hot';
+                if (name.includes('non-kopi') || name.includes('non coffee')) return 'fa-solid fa-glass-water';
+                if (name.includes('paket') || name.includes('bundling')) return 'fa-solid fa-gift';
+                if (name.includes('snack') || name.includes('food')) return 'fa-solid fa-utensils';
+                if (name.includes('pasta')) return 'fa-solid fa-bowl-food';
+                if (name.includes('nasi')) return 'fa-solid fa-bowl-rice';
+                if (name.includes('ayam')) return 'fa-solid fa-drumstick-bite';
+                if (name.includes('korean')) return 'fa-solid fa-bowl-hot';
+                if (name.includes('tea') || name.includes('thai')) return 'fa-solid fa-mug-saucer';
+                if (name.includes('matcha')) return 'fa-solid fa-leaf';
+                if (name.includes('frappe') || name.includes('blended')) return 'fa-solid fa-snowflake';
+                if (name.includes('series')) return 'fa-solid fa-list-ul';
+                if (name.includes('deli')) return 'fa-solid fa-bread-slice';
+                if (name.includes('junior')) return 'fa-solid fa-child';
+                if (name.includes('signature')) return 'fa-solid fa-star';
+                if (name.includes('refresher')) return 'fa-solid fa-wine-bottle';
+                if (name.includes('1l')) return 'fa-solid fa-flask';
+                return 'fa-solid fa-tag';
+            }
+
+            list.innerHTML = currentCatList.map(cat => {
+                const iconClass = getCategoryIcon(cat);
+                const isActive = currentCategory === cat;
+                return `
+            <div onclick="selectCategoryFromModal('${cat}')" 
+                 class="flex items-center justify-between p-3 rounded-xl cursor-pointer transition-all duration-200 hover:bg-brand-50 dark:hover:bg-brand-800 border border-transparent hover:border-brand-200 dark:hover:border-brand-700 ${isActive ? 'bg-brand-50 dark:bg-brand-800 border-brand-200 dark:border-brand-700' : ''}">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-xl bg-brand-100 dark:bg-brand-700 flex items-center justify-center text-brand-500">
+                        <i class="${iconClass} text-xs"></i>
+                    </div>
+                    <span class="font-bold text-sm text-brand-900 dark:text-white">${cat}</span>
+                </div>
+                ${isActive ? '<i class="fa-solid fa-check-circle text-amber-400"></i>' : '<i class="fa-solid fa-chevron-right text-gray-300"></i>'}
+            </div>
+        `;
+            }).join('');
+        }
+
+        function selectCategoryFromModal(cat) {
+            setCategory(cat);
+            closeModal('categoryModal');
+            showToast(`Menampilkan: ${cat}`);
+        }
     </script>
 
     <!-- Admin Dashboard (via URL ?admin=12345) -->
-    <div id="adminDashboardContainer" style="display:none !important; position: fixed !important; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh; background-color: #0B190E !important; z-index: 99999; overflow-y: auto; padding: 20px;">
-        <div class="admin-container" style="max-width: 1000px; margin: 40px auto; padding: 20px; background: #0F2616; border-radius: 24px; border: 1px solid #2E6F40; min-height: 80vh;">
+    <div id="adminDashboardContainer"
+        style="display:none !important; position: fixed !important; top: 0; left: 0; right: 0; bottom: 0; width: 100vw; height: 100vh; background-color: #0B190E !important; z-index: 99999; overflow-y: auto; padding: 20px;">
+        <div class="admin-container"
+            style="max-width: 1000px; margin: 40px auto; padding: 20px; background: #0F2616; border-radius: 24px; border: 1px solid #2E6F40; min-height: 80vh;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
                 <h1 style="color: #FFC107; font-size: 24px; font-weight: 900;">📋 Dashboard Admin Ngopa Ngopi Ae</h1>
-                <button onclick="window.location.href='/'" style="background:#FFC107; color:#0D2213; font-weight:900; padding:10px 20px; border-radius:12px; border:none; cursor:pointer;">Kembali ke Kasir</button>
+                <button onclick="window.location.href='/'"
+                    style="background:#FFC107; color:#0D2213; font-weight:900; padding:10px 20px; border-radius:12px; border:none; cursor:pointer;">Kembali
+                    ke Kasir</button>
             </div>
             <div style="overflow-x:auto;">
                 <table class="admin-table">
@@ -2256,4 +3062,5 @@
     </div>
 
 </body>
+
 </html>
