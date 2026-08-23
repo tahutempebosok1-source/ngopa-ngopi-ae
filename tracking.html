@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lacak Pesanan - Ngopa Ngopi Ae</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const supabaseUrl = 'https://aenpbsmaazkebxfkbwid.supabase.co'
+        const supabaseKey = 'sb_publishable_Zcka6Mi0CzlFLrIYGlQdMg_GKLBiHlz'
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey)
+    </script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0D2213; color: #e5e7eb; }
+        .track-card { background: #14331C; border: 1px solid #2E6F40; border-radius: 20px; padding: 16px; margin-bottom: 16px; }
+        .track-filter-btn { padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: bold; background: #1B4326; color: #9ca3af; border: 1px solid transparent; cursor: pointer; transition: all 0.2s; }
+        .track-filter-btn.active { background: #FFC107; color: #0D2213; border-color: #FFC107; }
+        .track-filter-btn:hover { opacity: 0.8; }
+        .progress-step { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; }
+        .progress-step .circle { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; background: #1B4326; color: #6b7280; border: 2px solid #2E6F40; transition: all 0.3s; }
+        .progress-step.active .circle { background: #FFC107; color: #0D2213; border-color: #FFC107; }
+        .progress-step .label { font-size: 9px; margin-top: 4px; color: #6b7280; text-align: center; font-weight: bold; }
+        .progress-step.active .label { color: #FFC107; }
+        .progress-line { position: absolute; top: 14px; left: 50%; right: -50%; height: 2px; background: #2E6F40; z-index: 0; }
+        .progress-step:last-child .progress-line { display: none; }
+        .progress-step.active .progress-line { background: #FFC107; }
+        .back-btn { background: #1B4326; color: #e5e7eb; padding: 8px 20px; border-radius: 12px; border: 1px solid #2E6F40; cursor: pointer; transition: 0.2s; }
+        .back-btn:hover { background: #2E6F40; }
+        .input-phone { background: #14331C; border: 2px solid #2E6F40; border-radius: 12px; padding: 12px 16px; color: white; width: 100%; outline: none; }
+        .input-phone:focus { border-color: #FFC107; }
+        .btn-primary { background: #FFC107; color: #0D2213; font-weight: 900; padding: 12px 24px; border-radius: 12px; border: none; cursor: pointer; transition: 0.2s; }
+        .btn-primary:hover { background: #e5a800; }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+
+    <!-- Header -->
+    <div class="max-w-3xl mx-auto">
+        <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-3">
+                <img src="logo-ngopa-ngopi-ae.png" alt="Logo" class="h-10 w-auto" />
+                <div>
+                    <h1 class="text-xl font-black text-white">Ngopa Ngopi Ae</h1>
+                    <p class="text-xs text-gray-400">Lacak Status Pesanan</p>
+                </div>
+            </div>
+            <button onclick="window.location.href='/'">
+                <i class="fa-solid fa-arrow-left text-white text-lg"></i>
+            </button>
+        </div>
+
+        <!-- Form Pencarian -->
+        <div class="track-card">
+            <p class="text-sm text-gray-300 mb-3">Masukkan <strong class="text-amber-400">4 angka terakhir</strong> nomor WhatsApp yang Anda gunakan saat memesan.</p>
+            <div class="flex items-center gap-2 mb-3">
+                <span class="text-sm font-bold text-gray-400 shrink-0">+62 8**-****-</span>
+                <input type="text" id="trackLast4" maxlength="4" pattern="\d{4}" inputmode="numeric" placeholder="2978" class="input-phone text-center text-lg font-bold tracking-[0.2em]" />
+            </div>
+            <button onclick="verifyAndTrack()" class="btn-primary w-full">Konfirmasi & Lacak</button>
+        </div>
+
+        <!-- Filter Brand -->
+        <div class="flex flex-wrap gap-2 my-4" id="trackFilterBrands">
+            <button class="track-filter-btn active" data-brand="all" onclick="filterTrackOrders('all')">Semua</button>
+            <button class="track-filter-btn" data-brand="Kopi Kenangan" onclick="filterTrackOrders('Kopi Kenangan')">Kopi Kenangan</button>
+            <button class="track-filter-btn" data-brand="Tomoro Coffee" onclick="filterTrackOrders('Tomoro Coffee')">Tomoro Coffee</button>
+            <button class="track-filter-btn" data-brand="Fore Coffee" onclick="filterTrackOrders('Fore Coffee')">Fore Coffee</button>
+        </div>
+
+        <!-- Hasil Pencarian -->
+        <div id="trackResultArea">
+            <p class="text-center text-gray-500 text-sm">Masukkan 4 digit terakhir HP Anda untuk melacak pesanan.</p>
+        </div>
+    </div>
+
+    <script>
+        let trackOrdersCache = [];
+        let trackFilter = 'all';
+
+        async function verifyAndTrack() {
+            const inputLast4 = document.getElementById('trackLast4').value.trim();
+            if (inputLast4.length !== 4) {
+                alert("Masukkan 4 digit terakhir nomor HP Anda!");
+                return;
+            }
+
+            const resultArea = document.getElementById('trackResultArea');
+            resultArea.innerHTML = `<div class="text-center text-gray-400 p-4">Memuat data...</div>`;
+
+            const { data: orders, error } = await supabaseClient
+                .from('orders')
+                .select('*')
+                .like('customer_phone', `%${inputLast4}`);
+
+            if (error) {
+                console.error("Gagal melacak pesanan:", error);
+                resultArea.innerHTML = `<div class="p-4 bg-red-500/20 rounded-xl border border-red-500/30 text-center text-red-400">Gagal memuat data.</div>`;
+                return;
+            }
+
+            if (!orders || orders.length === 0) {
+                resultArea.innerHTML = `
+                    <div class="p-6 bg-brand-800/50 rounded-xl border border-brand-700 text-center text-gray-400">
+                        <i class="fa-solid fa-face-frown text-3xl mb-2"></i>
+                        <p>Tidak ada pesanan ditemukan.</p>
+                        <p class="text-xs mt-1">Pastikan 4 digit yang Anda masukkan benar.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            trackOrdersCache = orders;
+            trackFilter = 'all';
+            renderTrackOrders();
+        }
+
+        function renderTrackOrders() {
+            const resultArea = document.getElementById('trackResultArea');
+            let orders = trackOrdersCache;
+
+            if (trackFilter !== 'all') {
+                orders = orders.filter(order => {
+                    if (!order.items || !Array.isArray(order.items)) return false;
+                    return order.items.some(item => item.brand === trackFilter);
+                });
+            }
+
+            if (orders.length === 0) {
+                resultArea.innerHTML = `<div class="p-4 bg-brand-800/50 rounded-xl border border-brand-700 text-center text-gray-400">Tidak ada pesanan dengan brand ini.</div>`;
+                return;
+            }
+
+            // Update filter buttons
+            document.querySelectorAll('.track-filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.brand === trackFilter);
+            });
+
+            orders.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+            resultArea.innerHTML = orders.map((order, idx) => {
+                const status = order.status || 'Pesanan Diterima';
+                const steps = ['Pesanan Diterima', 'Sedang Diproses', 'Siap Diambil/Diantar', 'Selesai'];
+                const activeIdx = steps.indexOf(status);
+                const progressWidth = Math.min((activeIdx + 1) * 25, 100);
+                const orderDate = new Date(order.created_at).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
+
+                // Hitung total item dan brand unik
+                let totalItems = 0;
+                let brands = [];
+                let itemsHtml = '';
+                if (order.items && Array.isArray(order.items)) {
+                    order.items.forEach(item => {
+                        totalItems += 1;
+                        if (item.brand) brands.push(item.brand);
+                        itemsHtml += `
+                            <div class="flex justify-between text-gray-300 text-sm">
+                                <span>${item.name} ${item.size ? `(${item.size})` : ''} ${item.note ? `- <span class="text-yellow-400">${item.note}</span>` : ''}</span>
+                                <span class="font-bold text-white">Rp${Number(item.price).toLocaleString('id-ID')}</span>
+                            </div>
+                        `;
+                    });
+                }
+                const uniqueBrands = [...new Set(brands)];
+                const orderCode = order.order_code || `NGOP-${new Date(order.created_at).getFullYear()}${String(new Date(order.created_at).getMonth()+1).padStart(2,'0')}-${String(order.id).padStart(4,'0')}`;
+
+                return `
+                    <div class="track-card">
+                        <div class="flex justify-between items-center border-b border-brand-700 pb-2 mb-2">
+                            <div>
+                                <span class="font-black text-amber-400 text-sm">${orderCode}</span>
+                                <span class="text-[10px] text-gray-400 ml-2">${uniqueBrands.join(', ') || 'Tidak diketahui'}</span>
+                            </div>
+                            <span class="text-[10px] text-gray-400">${orderDate}</span>
+                        </div>
+                        <div class="space-y-1 text-sm mb-3">
+                            ${itemsHtml || '<span class="text-gray-500">Tidak ada item</span>'}
+                            <div class="flex justify-between text-[10px] text-gray-400 mt-1">
+                                <span>${totalItems} item</span>
+                                <span>Brand: ${uniqueBrands.join(', ') || 'Tidak diketahui'}</span>
+                            </div>
+                            <div class="flex justify-between font-black text-amber-400 text-sm border-t border-brand-700 pt-2 mt-2">
+                                <span>Total</span>
+                                <span>Rp${Number(order.total_price).toLocaleString('id-ID')}</span>
+                            </div>
+                        </div>
+                        <!-- Progress Bar -->
+                        <div class="relative flex justify-between mt-4">
+                            ${steps.map((s, i) => {
+                                const isActive = activeIdx >= i;
+                                return `
+                                    <div class="progress-step ${isActive ? 'active' : ''}">
+                                        <div class="circle">${isActive ? '<i class="fa-solid fa-check text-xs"></i>' : i+1}</div>
+                                        <div class="label">${s}</div>
+                                        ${i < steps.length - 1 ? '<div class="progress-line"></div>' : ''}
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterTrackOrders(brand) {
+            trackFilter = brand;
+            renderTrackOrders();
+        }
+
+        // Auto-search jika ada input dari URL (opsional)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Jika ada query ?phone=xxxx, otomatis cari
+            const params = new URLSearchParams(window.location.search);
+            const phone = params.get('phone');
+            if (phone && phone.length === 4) {
+                document.getElementById('trackLast4').value = phone;
+                verifyAndTrack();
+            }
+        });
+    </script>
+</body>
+</html>
