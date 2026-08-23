@@ -433,18 +433,10 @@
         }
 
         #categoryContainer {
-            display: flex;
-            overflow-x: auto;
-            overflow-y: hidden;
             scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
-            /* Penting untuk iOS */
+            overflow-x: auto;
             scrollbar-width: none;
             -ms-overflow-style: none;
-            padding-bottom: 8px;
-            gap: 8px;
-            padding-left: 4px;
-            padding-right: 4px;
         }
 
         #categoryContainer::-webkit-scrollbar {
@@ -2147,39 +2139,7 @@
                     btn.classList.add('bg-white', 'text-brand-800', 'border-brand-200');
                 }
             });
-
             renderMenu();
-
-            // 🔥 SCROLL HORIZONTAL KE KATEGORI YANG DIPILIH (AGAR TERLIHAT DI MOBILE)
-            scrollToCategory(cat);
-        }
-        // 🔥 FUNGSI BARU: SCROLL HORIZONTAL KE KATEGORI TERTENTU
-        function scrollToCategory(catName) {
-            const container = document.getElementById('categoryContainer');
-            if (!container) return;
-
-            // Cari tombol kategori yang sesuai
-            const buttons = container.querySelectorAll('.cat-item');
-            let targetBtn = null;
-            buttons.forEach(btn => {
-                if (btn.textContent.trim() === catName) {
-                    targetBtn = btn;
-                }
-            });
-
-            if (!targetBtn) return;
-
-            // Hitung posisi scroll agar tombol berada di tengah container
-            const containerWidth = container.clientWidth;
-            const btnLeft = targetBtn.offsetLeft;
-            const btnWidth = targetBtn.offsetWidth;
-            const scrollPosition = btnLeft - (containerWidth / 2) + (btnWidth / 2);
-
-            // Scroll ke posisi yang dihitung
-            container.scrollTo({
-                left: Math.max(0, scrollPosition),
-                behavior: 'smooth'
-            });
         }
 
         function triggerGridAnimation() {
@@ -3066,20 +3026,6 @@
             setCategory(cat);
             closeModal('categoryModal');
             showToast(`Menampilkan: ${cat}`);
-
-            // 🔥 SCROLL KE KATEGORI CONTAINER SETELAH MODAL TERTUTUP
-            setTimeout(() => {
-                const container = document.getElementById('categoryContainer');
-                if (container) {
-                    const headerHeight = document.querySelector('header')?.offsetHeight || 70;
-                    const targetPosition = container.getBoundingClientRect().top + window.pageYOffset - headerHeight - 10;
-
-                    window.scrollTo({
-                        top: Math.max(0, targetPosition),
-                        behavior: 'smooth'
-                    });
-                }
-            }, 350);
         }
     </script>
 
