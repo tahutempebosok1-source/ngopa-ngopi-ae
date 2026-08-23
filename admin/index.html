@@ -14,61 +14,183 @@
         const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey)
     </script>
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0D2213; color: #e5e7eb; min-height: 100vh; padding: 16px; }
-        .admin-card { background: #14331C; border: 1px solid #2E6F40; border-radius: 16px; padding: 16px; margin-bottom: 12px; }
-        .admin-lock { background: #14331C; border: 1px solid #2E6F40; border-radius: 20px; padding: 30px; text-align: center; max-width: 400px; margin: 80px auto 0; }
-        .admin-lock input { width: 100%; padding: 14px; background: #1B4326; border: 1px solid #2E6F40; border-radius: 12px; color: white; text-align: center; font-size: 16px; outline: none; }
-        .admin-lock input:focus { border-color: #FFC107; }
+        /* ========== BACKGROUND BODY ========== */
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: #eef2f7; 
+            color: #1a1a1a; 
+            min-height: 100vh; 
+            padding: 16px; 
+        }
+        
+        /* ========== CARD ORDER ========== */
+        .admin-card { 
+            background: #ffffff; 
+            border: 1px solid #e5e7eb; 
+            border-radius: 16px; 
+            padding: 16px; 
+            margin-bottom: 12px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: box-shadow 0.2s;
+        }
+        .admin-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+        
+        /* ========== ITEM CHIP ========== */
+        .item-chip {
+            display: inline-block;
+            background: #f3f4f6;
+            padding: 2px 10px;
+            border-radius: 6px;
+            margin: 2px 4px 2px 0;
+            font-size: 12px;
+            color: #1a1a1a;
+            border: 1px solid #e5e7eb;
+        }
+        .item-chip .note {
+            color: #b45309;
+            font-style: italic;
+        }
+        .item-chip .price {
+            color: #2E6F40;
+            font-weight: 600;
+        }
+        
+        /* ========== LOCK SCREEN ========== */
+        .admin-lock { 
+            background: #ffffff; 
+            border: 2px solid #2E6F40; 
+            border-radius: 20px; 
+            padding: 30px; 
+            text-align: center; 
+            max-width: 400px; 
+            margin: 80px auto 0; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .admin-lock input { 
+            width: 100%; 
+            padding: 14px; 
+            background: #f3f4f6; 
+            border: 1px solid #d1d5db; 
+            border-radius: 12px; 
+            color: #1a1a1a; 
+            text-align: center; 
+            font-size: 16px; 
+            outline: none; 
+        }
+        .admin-lock input:focus { border-color: #2E6F40; }
+        .admin-lock h2 { color: #1a1a1a; }
+        .admin-lock p { color: #6b7280; }
+        
+        /* ========== BADGE STATUS ========== */
         .admin-badge-diterima { background: #3B82F6; color: white; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; display: inline-block; }
         .admin-badge-diproses { background: #F59E0B; color: white; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; display: inline-block; }
         .admin-badge-siap { background: #10B981; color: white; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; display: inline-block; }
         .admin-badge-selesai { background: #6B7280; color: white; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; display: inline-block; }
-        .admin-status-select { background: #1B4326; color: white; border: 1px solid #2E6F40; padding: 4px 8px; border-radius: 8px; font-size: 11px; cursor: pointer; }
-        .btn-primary { background: #FFC107; color: #0D2213; font-weight: 900; padding: 12px 24px; border-radius: 12px; border: none; cursor: pointer; transition: 0.2s; width: 100%; }
-        .btn-primary:hover { background: #e5a800; }
-        .back-btn { background: #1B4326; color: #e5e7eb; padding: 8px 20px; border-radius: 12px; border: 1px solid #2E6F40; cursor: pointer; transition: 0.2s; }
-        .back-btn:hover { background: #2E6F40; }
+        
+        /* ========== SELECT STATUS ========== */
+        .admin-status-select { 
+            background: #ffffff; 
+            color: #1a1a1a; 
+            border: 1px solid #d1d5db; 
+            padding: 4px 8px; 
+            border-radius: 8px; 
+            font-size: 11px; 
+            cursor: pointer; 
+        }
+        
+        /* ========== BUTTON ========== */
+        .btn-primary { 
+            background: #2E6F40; 
+            color: #ffffff; 
+            font-weight: 900; 
+            padding: 12px 24px; 
+            border-radius: 12px; 
+            border: none; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            width: 100%; 
+        }
+        .btn-primary:hover { background: #1B4326; }
+        
+        .back-btn { 
+            background: #2E6F40; 
+            color: #ffffff; 
+            padding: 8px 20px; 
+            border-radius: 12px; 
+            border: none; 
+            cursor: pointer; 
+            transition: 0.2s; 
+        }
+        .back-btn:hover { background: #1B4326; }
+        
+        .refresh-btn { 
+            background: #2E6F40; 
+            color: white; 
+            padding: 6px 16px; 
+            border: none; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            font-size: 12px; 
+            font-weight: bold; 
+        }
+        .refresh-btn:hover { background: #1B4326; }
+        
+        /* ========== UTILITY ========== */
         .max-w-3xl { max-width: 48rem; }
         .mx-auto { margin-left: auto; margin-right: auto; }
-        .refresh-btn { background: #2E6F40; color: white; padding: 6px 16px; border: none; border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: bold; }
-        .refresh-btn:hover { background: #1B4326; }
-        .loading { text-align: center; color: #9ca3af; padding: 20px; }
-        .empty { text-align: center; color: #9ca3af; padding: 20px; }
+        .loading { text-align: center; color: #6b7280; padding: 20px; }
+        .empty { text-align: center; color: #6b7280; padding: 20px; }
         .error-text { text-align: center; color: #ef4444; padding: 20px; }
+        
+        /* ========== HEADER ========== */
+        .header-title { color: #1a1a1a; }
+        .header-sub { color: #6b7280; }
+        
+        /* ========== TEXT COLOR IN CARD ========== */
+        .admin-card .order-code { color: #2E6F40; font-weight: 900; }
+        .admin-card .order-date { color: #6b7280; }
+        .admin-card .customer-name { color: #1a1a1a; font-weight: bold; }
+        .admin-card .customer-phone { color: #6b7280; }
+        .admin-card .items-text { color: #4b5563; }
+        .admin-card .total-price { color: #2E6F40; font-weight: 900; font-size: 16px; }
+        .admin-card .brand-tag { color: #b45309; }
+        .admin-card .border-divider { border-color: #e5e7eb; }
     </style>
 </head>
 <body>
     <div class="max-w-3xl mx-auto">
 
-        <!-- Header -->
+        <!-- ========== HEADER ========== -->
         <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-3">
                 <img src="logo-ngopa-ngopi-ae.png" alt="Logo" class="h-10 w-auto" />
                 <div>
-                    <h1 class="text-xl font-black text-white">Admin Panel</h1>
-                    <p class="text-xs text-gray-400">Kelola pesanan customer</p>
+                    <h1 class="text-xl font-black text-brand-900">Admin Panel</h1>
+                    <p class="text-xs text-gray-500">Kelola pesanan customer</p>
                 </div>
             </div>
-            <button onclick="window.location.href='/'">
+            <button onclick="window.location.href='/'" class="back-btn">
                 <i class="fa-solid fa-arrow-left"></i> Kembali
             </button>
         </div>
 
-        <!-- Lock Screen -->
+        <!-- ========== LOCK SCREEN ========== -->
         <div id="adminLock" class="admin-lock">
-            <i class="fa-solid fa-lock text-amber-400 text-5xl mb-3"></i>
-            <h2 style="color:white; font-size:24px; font-weight:900;">🔐 Admin Only</h2>
-            <p style="color:#9ca3af; font-size:14px; margin-bottom:16px;">Masukkan password untuk mengelola order</p>
+            <i class="fa-solid fa-lock text-amber-500 text-5xl mb-3"></i>
+            <h2 class="text-2xl font-black text-gray-900">🔐 Admin Only</h2>
+            <p class="text-sm text-gray-500 mb-4">Masukkan password untuk mengelola order</p>
             <input type="password" id="adminPasswordInput" placeholder="Masukkan password..." onkeypress="if(event.key==='Enter') unlockAdmin()">
             <button onclick="unlockAdmin()" class="btn-primary" style="margin-top:12px;">
                 <i class="fa-solid fa-key"></i> Buka Dashboard
             </button>
-                    </div>
+        </div>
 
-        <!-- Dashboard Admin -->
+        <!-- ========== DASHBOARD ========== -->
         <div id="adminDashboard" style="display:none;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-                <h2 style="color:white; font-size:20px; font-weight:900;">📋 Daftar Pesanan</h2>
+                <h2 class="text-xl font-black text-gray-900">📋 Daftar Pesanan</h2>
                 <button onclick="loadAdminOrders()" class="refresh-btn">
                     <i class="fa-solid fa-rotate"></i> Refresh
                 </button>
@@ -96,7 +218,6 @@
             }
         }
 
-        // Enter key untuk unlock
         document.getElementById('adminPasswordInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') unlockAdmin();
         });
@@ -125,14 +246,15 @@
                     const orderCode = order.order_code || `NGOP-${new Date(order.created_at).getFullYear()}${String(new Date(order.created_at).getMonth()+1).padStart(2,'0')}-${String(order.id).padStart(4,'0')}`;
                     
                     let totalItems = 0;
-                    let itemsText = '';
+                    let itemsHtml = '';
                     let brands = [];
                     if (order.items && Array.isArray(order.items)) {
                         totalItems = order.items.length;
-                        itemsText = order.items.map(item => {
+                        itemsHtml = order.items.map(item => {
                             if (item.brand) brands.push(item.brand);
-                            return `<span style="color:#9ca3af; font-size:11px;">${item.name} ${item.size ? `(${item.size})` : ''}</span>`;
-                        }).join(', ');
+                            const noteHtml = item.note ? ` <span class="note">(${item.note})</span>` : '';
+                            return `<span class="item-chip">${item.name} ${item.size ? `(${item.size})` : ''}${noteHtml}</span>`;
+                        }).join(' ');
                     }
                     const uniqueBrands = [...new Set(brands)];
 
@@ -140,23 +262,23 @@
                         <div class="admin-card">
                             <div style="display:flex; justify-content:space-between; align-items:start;">
                                 <div>
-                                    <span style="color:#FFC107; font-weight:900; font-size:14px;">${orderCode}</span>
-                                    <span style="color:#6b7280; font-size:10px; margin-left:8px;">${date}</span>
-                                    ${uniqueBrands.length > 0 ? `<span style="color:#fde047; font-size:9px; margin-left:8px;">${uniqueBrands.join(', ')}</span>` : ''}
+                                    <span class="order-code text-sm">${orderCode}</span>
+                                    <span class="order-date text-xs ml-2">${date}</span>
+                                    ${uniqueBrands.length > 0 ? `<span class="brand-tag text-xs ml-2 font-bold">${uniqueBrands.join(', ')}</span>` : ''}
                                 </div>
                                 <span class="admin-badge-${statusClass}">${order.status || 'Pesanan Diterima'}</span>
                             </div>
-                            <div style="margin-top:4px;">
-                                <span style="color:white; font-weight:bold; font-size:14px;">${order.customer_name}</span>
-                                <span style="color:#6b7280; font-size:11px; margin-left:8px;">${order.customer_phone}</span>
+                            <div style="margin-top:6px;">
+                                <span class="customer-name text-sm">${order.customer_name}</span>
+                                <span class="customer-phone text-xs ml-2">${order.customer_phone}</span>
                             </div>
-                            <div style="color:#9ca3af; font-size:11px; margin-top:4px;">
-                                ${itemsText || order.notes || 'Tidak ada item'}
-                                <span style="margin-left:8px;">(${totalItems} item)</span>
+                            <div style="margin-top:6px; display:flex; flex-wrap:wrap; gap:4px;">
+                                ${itemsHtml || '<span class="text-gray-400 text-xs">Tidak ada item</span>'}
                             </div>
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; padding-top:12px; border-top:1px solid #1B4326;">
-                                <span style="color:#FFC107; font-weight:900;">Rp${Number(order.total_price).toLocaleString('id-ID')}</span>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; padding-top:12px; border-top:1px solid #e5e7eb;">
+                                <span class="total-price">Rp${Number(order.total_price).toLocaleString('id-ID')}</span>
                                 <div style="display:flex; align-items:center; gap:8px;">
+                                    <span style="font-size:10px; color:#6b7280;">${totalItems} item</span>
                                     <select class="admin-status-select" onchange="updateOrderStatus('${order.id}', this.value)">
                                         <option value="Pesanan Diterima" ${order.status === 'Pesanan Diterima' ? 'selected' : ''}>Diterima</option>
                                         <option value="Sedang Diproses" ${order.status === 'Sedang Diproses' ? 'selected' : ''}>Diproses</option>
@@ -175,21 +297,14 @@
             }
         }
 
-        // ==================== UPDATE STATUS (Direct Supabase) ====================
+        // ==================== UPDATE STATUS ====================
         async function updateOrderStatus(orderId, newStatus) {
-            // Konfirmasi sebelum update
             if (!confirm(`Ubah status order #${orderId} menjadi "${newStatus}"?`)) {
-                // Reset dropdown ke nilai sebelumnya
-                const select = document.querySelector(`.admin-status-select[onchange*="updateOrderStatus('${orderId}'"]`);
-                if (select) {
-                    // Reload data untuk reset dropdown
-                    loadAdminOrders();
-                }
+                loadAdminOrders();
                 return;
             }
 
             try {
-                // 🔥 UPDATE LANGSUNG KE SUPABASE (tanpa Edge Function)
                 const { error } = await supabaseClient
                     .from('orders')
                     .update({ status: newStatus })
@@ -200,7 +315,7 @@
                     console.error(error);
                 } else {
                     alert('✅ Status berhasil diperbarui!');
-                    loadAdminOrders(); // Refresh daftar
+                    loadAdminOrders();
                 }
             } catch (err) {
                 alert('❌ Gagal terhubung ke database!');

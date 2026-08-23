@@ -14,22 +14,85 @@
         const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey)
     </script>
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0D2213; color: #e5e7eb; min-height: 100vh; padding: 16px; }
-        .track-card { background: #14331C; border: 1px solid #2E6F40; border-radius: 20px; padding: 16px; margin-bottom: 16px; }
-        .track-filter-btn { padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: bold; background: #1B4326; color: #9ca3af; border: 1px solid transparent; cursor: pointer; transition: all 0.2s; }
-        .track-filter-btn.active { background: #FFC107; color: #0D2213; border-color: #FFC107; }
+        /* ========== BACKGROUND PUTIH ========== */
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: #ffffff; 
+            color: #1a1a1a; 
+            min-height: 100vh; 
+            padding: 16px; 
+        }
+        .track-card { 
+            background: #f8f9fa; 
+            border: 1px solid #e5e7eb; 
+            border-radius: 20px; 
+            padding: 16px; 
+            margin-bottom: 16px; 
+        }
+        .track-filter-btn { 
+            padding: 6px 16px; 
+            border-radius: 20px; 
+            font-size: 12px; 
+            font-weight: bold; 
+            background: #f3f4f6; 
+            color: #6b7280; 
+            border: 1px solid transparent; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+        }
+        .track-filter-btn.active { 
+            background: #2E6F40; 
+            color: #ffffff; 
+            border-color: #2E6F40; 
+        }
         .track-filter-btn:hover { opacity: 0.8; }
-        .input-phone { background: #14331C; border: 2px solid #2E6F40; border-radius: 12px; padding: 12px 16px; color: white; width: 100%; outline: none; font-size: 16px; letter-spacing: 0.2em; text-align: center; }
-        .input-phone:focus { border-color: #FFC107; }
-        .btn-primary { background: #FFC107; color: #0D2213; font-weight: 900; padding: 12px 24px; border-radius: 12px; border: none; cursor: pointer; transition: 0.2s; width: 100%; }
-        .btn-primary:hover { background: #e5a800; }
-        .back-btn { background: #1B4326; color: #e5e7eb; padding: 8px 20px; border-radius: 12px; border: 1px solid #2E6F40; cursor: pointer; transition: 0.2s; }
-        .back-btn:hover { background: #2E6F40; }
+        .input-phone { 
+            background: #f3f4f6; 
+            border: 2px solid #e5e7eb; 
+            border-radius: 12px; 
+            padding: 12px 16px; 
+            color: #1a1a1a; 
+            width: 100%; 
+            outline: none; 
+            font-size: 16px; 
+            letter-spacing: 0.2em; 
+            text-align: center; 
+        }
+        .input-phone:focus { border-color: #2E6F40; }
+        .btn-primary { 
+            background: #2E6F40; 
+            color: #ffffff; 
+            font-weight: 900; 
+            padding: 12px 24px; 
+            border-radius: 12px; 
+            border: none; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            width: 100%; 
+        }
+        .btn-primary:hover { background: #1B4326; }
+        .back-btn { 
+            background: #f3f4f6; 
+            color: #1a1a1a; 
+            padding: 8px 20px; 
+            border-radius: 12px; 
+            border: 1px solid #e5e7eb; 
+            cursor: pointer; 
+            transition: 0.2s; 
+        }
+        .back-btn:hover { background: #e5e7eb; }
         .max-w-3xl { max-width: 48rem; }
         .mx-auto { margin-left: auto; margin-right: auto; }
-        .order-brand-badge { background: #2E6F40; padding: 2px 10px; border-radius: 12px; font-size: 9px; font-weight: bold; color: #fde047; }
+        .order-brand-badge { 
+            background: #2E6F40; 
+            padding: 2px 10px; 
+            border-radius: 12px; 
+            font-size: 9px; 
+            font-weight: bold; 
+            color: #ffffff; 
+        }
 
-        /* ========== PROGRESS BAR FIX ========== */
+        /* ========== PROGRESS BAR ========== */
         .progress-container {
             display: flex;
             justify-content: space-between;
@@ -54,15 +117,15 @@
             justify-content: center;
             font-size: 10px;
             font-weight: bold;
-            background: #1B4326;
+            background: #f3f4f6;
             color: #6b7280;
-            border: 2px solid #2E6F40;
+            border: 2px solid #d1d5db;
             transition: all 0.3s;
         }
         .progress-step.active .circle {
-            background: #FFC107;
-            color: #0D2213;
-            border-color: #FFC107;
+            background: #2E6F40;
+            color: #ffffff;
+            border-color: #2E6F40;
         }
         .progress-step .label {
             font-size: 8px;
@@ -74,16 +137,15 @@
             max-width: 60px;
         }
         .progress-step.active .label {
-            color: #FFC107;
+            color: #2E6F40;
         }
-        /* Garis progress di BELAKANG lingkaran */
         .progress-line {
             position: absolute;
             top: 14px;
             left: 0;
             right: 0;
             height: 2px;
-            background: #2E6F40;
+            background: #d1d5db;
             z-index: 1;
         }
         .progress-line-fill {
@@ -91,15 +153,22 @@
             top: 0;
             left: 0;
             height: 100%;
-            background: #FFC107;
+            background: #2E6F40;
             transition: width 0.5s ease;
             z-index: 2;
         }
-        /* Pastikan step tidak menimpa garis */
         .progress-step .circle {
             z-index: 3;
             position: relative;
         }
+
+        /* ========== STYLE CARD ========== */
+        .track-card .order-code { color: #2E6F40; }
+        .track-card .order-date { color: #6b7280; }
+        .track-card .order-brand { color: #ffffff; background: #2E6F40; padding: 2px 10px; border-radius: 12px; font-size: 9px; font-weight: bold; }
+        .track-card .total-price { color: #2E6F40; }
+        .track-card .items-text { color: #4b5563; }
+        .track-card .brand-label { color: #6b7280; }
     </style>
 </head>
 <body>
@@ -110,8 +179,8 @@
             <div class="flex items-center gap-3">
                 <img src="logo-ngopa-ngopi-ae.png" alt="Logo" class="h-10 w-auto" />
                 <div>
-                    <h1 class="text-xl font-black text-white">Ngopa Ngopi Ae</h1>
-                    <p class="text-xs text-gray-400">Lacak Status Pesanan</p>
+                    <h1 class="text-xl font-black text-gray-900">Ngopa Ngopi Ae</h1>
+                    <p class="text-xs text-gray-500">Lacak Status Pesanan</p>
                 </div>
             </div>
             <button onclick="window.location.href='/'" class="back-btn">
@@ -121,9 +190,9 @@
 
         <!-- Form Pencarian -->
         <div class="track-card">
-            <p class="text-sm text-gray-300 mb-3">Masukkan <strong class="text-amber-400">4 angka terakhir</strong> nomor WhatsApp yang Anda gunakan saat memesan.</p>
+            <p class="text-sm text-gray-600 mb-3">Masukkan <strong class="text-emerald-700">4 angka terakhir</strong> nomor WhatsApp yang Anda gunakan saat memesan.</p>
             <div class="flex items-center gap-2 mb-3">
-                <span class="text-sm font-bold text-gray-400 shrink-0">+62 8**-****-</span>
+                <span class="text-sm font-bold text-gray-500 shrink-0">+62 8**-****-</span>
                 <input type="text" id="trackLast4" maxlength="4" pattern="\d{4}" inputmode="numeric" placeholder="2978" class="input-phone" />
             </div>
             <button onclick="verifyAndTrack()" class="btn-primary">Konfirmasi & Lacak</button>
@@ -155,7 +224,7 @@
             }
 
             const resultArea = document.getElementById('trackResultArea');
-            resultArea.innerHTML = '<div class="text-center text-gray-400 p-4">Memuat data...</div>';
+            resultArea.innerHTML = '<div class="text-center text-gray-500 p-4">Memuat data...</div>';
 
             const { data: orders, error } = await supabaseClient
                 .from('orders')
@@ -164,13 +233,13 @@
 
             if (error) {
                 console.error("Gagal melacak pesanan:", error);
-                resultArea.innerHTML = '<div class="p-4 bg-red-500/20 rounded-xl border border-red-500/30 text-center text-red-400">Gagal memuat data.</div>';
+                resultArea.innerHTML = '<div class="p-4 bg-red-50 rounded-xl border border-red-200 text-center text-red-600">Gagal memuat data.</div>';
                 return;
             }
 
             if (!orders || orders.length === 0) {
                 resultArea.innerHTML = `
-                    <div class="p-6 bg-brand-800/50 rounded-xl border border-brand-700 text-center text-gray-400">
+                    <div class="p-6 bg-gray-50 rounded-xl border border-gray-200 text-center text-gray-500">
                         <i class="fa-solid fa-face-frown text-3xl mb-2"></i>
                         <p>Tidak ada pesanan ditemukan.</p>
                         <p class="text-xs mt-1">Pastikan 4 digit yang Anda masukkan benar.</p>
@@ -188,7 +257,6 @@
             const resultArea = document.getElementById('trackResultArea');
             let orders = trackOrdersCache;
 
-            // Filter berdasarkan brand
             if (trackFilter !== 'all') {
                 orders = orders.filter(order => {
                     if (!order.items || !Array.isArray(order.items)) return false;
@@ -196,17 +264,15 @@
                 });
             }
 
-            // Update tombol filter
             document.querySelectorAll('#trackFilterBrands .track-filter-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.brand === trackFilter);
             });
 
             if (orders.length === 0) {
-                resultArea.innerHTML = '<div class="p-4 bg-brand-800/50 rounded-xl border border-brand-700 text-center text-gray-400">Tidak ada pesanan dengan brand ini.</div>';
+                resultArea.innerHTML = '<div class="p-4 bg-gray-50 rounded-xl border border-gray-200 text-center text-gray-500">Tidak ada pesanan dengan brand ini.</div>';
                 return;
             }
 
-            // Urutkan dari yang terbaru
             orders.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
             resultArea.innerHTML = orders.map((order) => {
@@ -225,9 +291,9 @@
                         totalItems += 1;
                         if (item.brand) brands.push(item.brand);
                         itemsHtml += `
-                            <div class="flex justify-between text-gray-300 text-sm">
-                                <span>${item.name} ${item.size ? `(${item.size})` : ''} ${item.note ? `- <span class="text-yellow-400">${item.note}</span>` : ''}</span>
-                                <span class="font-bold text-white">Rp${Number(item.price).toLocaleString('id-ID')}</span>
+                            <div class="flex justify-between text-gray-600 text-sm">
+                                <span>${item.name} ${item.size ? `(${item.size})` : ''} ${item.note ? `- <span class="text-amber-600">${item.note}</span>` : ''}</span>
+                                <span class="font-bold text-gray-900">Rp${Number(item.price).toLocaleString('id-ID')}</span>
                             </div>
                         `;
                     });
@@ -236,26 +302,26 @@
 
                 return `
                     <div class="track-card">
-                        <div class="flex justify-between items-center border-b border-brand-700 pb-2 mb-2">
+                        <div class="flex justify-between items-center border-b border-gray-200 pb-2 mb-2">
                             <div>
-                                <span class="font-black text-amber-400 text-sm">${orderCode}</span>
+                                <span class="font-black text-emerald-700 text-sm">${orderCode}</span>
                                 ${uniqueBrands.length > 0 ? `<span class="order-brand-badge ml-2">${uniqueBrands.join(', ')}</span>` : ''}
                             </div>
-                            <span class="text-[10px] text-gray-400">${orderDate}</span>
+                            <span class="text-xs text-gray-400">${orderDate}</span>
                         </div>
                         <div class="space-y-1 text-sm mb-3">
-                            ${itemsHtml || '<span class="text-gray-500">Tidak ada item</span>'}
-                            <div class="flex justify-between text-[10px] text-gray-400 mt-1">
+                            ${itemsHtml || '<span class="text-gray-400">Tidak ada item</span>'}
+                            <div class="flex justify-between text-xs text-gray-400 mt-1">
                                 <span>${totalItems} item</span>
                                 <span>Brand: ${uniqueBrands.join(', ') || 'Tidak diketahui'}</span>
                             </div>
-                            <div class="flex justify-between font-black text-amber-400 text-sm border-t border-brand-700 pt-2 mt-2">
+                            <div class="flex justify-between font-black text-emerald-700 text-sm border-t border-gray-200 pt-2 mt-2">
                                 <span>Total</span>
                                 <span>Rp${Number(order.total_price).toLocaleString('id-ID')}</span>
                             </div>
                         </div>
 
-                        <!-- ========== PROGRESS BAR (FIX) ========== -->
+                        <!-- Progress Bar -->
                         <div class="progress-container">
                             <div class="progress-line">
                                 <div class="progress-line-fill" style="width: ${progressWidth}%"></div>
@@ -280,7 +346,6 @@
             renderTrackOrders();
         }
 
-        // Auto-search jika ada parameter ?phone=xxxx
         document.addEventListener('DOMContentLoaded', function() {
             const params = new URLSearchParams(window.location.search);
             const phone = params.get('phone');
