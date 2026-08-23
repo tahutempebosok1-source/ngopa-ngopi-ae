@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel - Ngopa Ngopi Ae</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const supabaseUrl = 'https://aenpbsmaazkebxfkbwid.supabase.co'
+        const supabaseKey = 'sb_publishable_Zcka6Mi0CzlFLrIYGlQdMg_GKLBiHlz'
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey)
+    </script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0D2213; color: #e5e7eb; min-height: 100vh; padding: 16px; }
+        .admin-card { background: #14331C; border: 1px solid #2E6F40; border-radius: 16px; padding: 16px; margin-bottom: 12px; }
+        .admin-lock { background: #14331C; border: 1px solid #2E6F40; border-radius: 20px; padding: 30px; text-align: center; max-width: 400px; margin: 80px auto 0; }
+        .admin-lock input { width: 100%; padding: 14px; background: #1B4326; border: 1px solid #2E6F40; border-radius: 12px; color: white; text-align: center; font-size: 16px; outline: none; }
+        .admin-lock input:focus { border-color: #FFC107; }
+        .admin-badge-diterima { background: #3B82F6; color: white; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; display: inline-block; }
+        .admin-badge-diproses { background: #F59E0B; color: white; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; display: inline-block; }
+        .admin-badge-siap { background: #10B981; color: white; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; display: inline-block; }
+        .admin-badge-selesai { background: #6B7280; color: white; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; display: inline-block; }
+        .admin-status-select { background: #1B4326; color: white; border: 1px solid #2E6F40; padding: 4px 8px; border-radius: 8px; font-size: 11px; cursor: pointer; }
+        .btn-primary { background: #FFC107; color: #0D2213; font-weight: 900; padding: 12px 24px; border-radius: 12px; border: none; cursor: pointer; transition: 0.2s; width: 100%; }
+        .btn-primary:hover { background: #e5a800; }
+        .back-btn { background: #1B4326; color: #e5e7eb; padding: 8px 20px; border-radius: 12px; border: 1px solid #2E6F40; cursor: pointer; transition: 0.2s; }
+        .back-btn:hover { background: #2E6F40; }
+        .max-w-3xl { max-width: 48rem; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+        .refresh-btn { background: #2E6F40; color: white; padding: 6px 16px; border: none; border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: bold; }
+        .refresh-btn:hover { background: #1B4326; }
+        .loading { text-align: center; color: #9ca3af; padding: 20px; }
+        .empty { text-align: center; color: #9ca3af; padding: 20px; }
+        .error-text { text-align: center; color: #ef4444; padding: 20px; }
+    </style>
+</head>
+<body>
+    <div class="max-w-3xl mx-auto">
+
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-3">
+                <img src="logo-ngopa-ngopi-ae.png" alt="Logo" class="h-10 w-auto" />
+                <div>
+                    <h1 class="text-xl font-black text-white">Admin Panel</h1>
+                    <p class="text-xs text-gray-400">Kelola pesanan customer</p>
+                </div>
+            </div>
+            <button onclick="window.location.href='/'">
+                <i class="fa-solid fa-arrow-left"></i> Kembali
+            </button>
+        </div>
+
+        <!-- Lock Screen -->
+        <div id="adminLock" class="admin-lock">
+            <i class="fa-solid fa-lock text-amber-400 text-5xl mb-3"></i>
+            <h2 style="color:white; font-size:24px; font-weight:900;">🔐 Admin Only</h2>
+            <p style="color:#9ca3af; font-size:14px; margin-bottom:16px;">Masukkan password untuk mengelola order</p>
+            <input type="password" id="adminPasswordInput" placeholder="Masukkan password..." onkeypress="if(event.key==='Enter') unlockAdmin()">
+            <button onclick="unlockAdmin()" class="btn-primary" style="margin-top:12px;">
+                <i class="fa-solid fa-key"></i> Buka Dashboard
+            </button>
+            <p style="color:#6b7280; font-size:10px; margin-top:8px;">Password default: <strong style="color:#FFC107;">rahasia123</strong></p>
+        </div>
+
+        <!-- Dashboard Admin -->
+        <div id="adminDashboard" style="display:none;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <h2 style="color:white; font-size:20px; font-weight:900;">📋 Daftar Pesanan</h2>
+                <button onclick="loadAdminOrders()" class="refresh-btn">
+                    <i class="fa-solid fa-rotate"></i> Refresh
+                </button>
+            </div>
+            <div id="adminOrderList"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // ==================== PASSWORD ====================
+        const ADMIN_PASSWORD = 'rahasia123';
+
+        // ==================== UNLOCK ====================
+        function unlockAdmin() {
+            const pass = document.getElementById('adminPasswordInput').value.trim();
+            if (pass === ADMIN_PASSWORD) {
+                document.getElementById('adminLock').style.display = 'none';
+                document.getElementById('adminDashboard').style.display = 'block';
+                loadAdminOrders();
+            } else {
+                alert('❌ Password salah!');
+                document.getElementById('adminPasswordInput').value = '';
+                document.getElementById('adminPasswordInput').focus();
+            }
+        }
+
+        // Enter key untuk unlock
+        document.getElementById('adminPasswordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') unlockAdmin();
+        });
+
+        // ==================== LOAD ORDERS ====================
+        async function loadAdminOrders() {
+            const container = document.getElementById('adminOrderList');
+            container.innerHTML = '<div class="loading">Memuat data...</div>';
+
+            try {
+                const { data: orders, error } = await supabaseClient
+                    .from('orders')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                if (!orders || orders.length === 0) {
+                    container.innerHTML = '<div class="empty">Belum ada pesanan.</div>';
+                    return;
+                }
+
+                container.innerHTML = orders.map(order => {
+                    const statusClass = (order.status || 'Pesanan Diterima').toLowerCase().replace(/\s/g, '');
+                    const date = new Date(order.created_at).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
+                    const orderCode = order.order_code || `NGOP-${new Date(order.created_at).getFullYear()}${String(new Date(order.created_at).getMonth()+1).padStart(2,'0')}-${String(order.id).padStart(4,'0')}`;
+                    
+                    let totalItems = 0;
+                    let itemsText = '';
+                    let brands = [];
+                    if (order.items && Array.isArray(order.items)) {
+                        totalItems = order.items.length;
+                        itemsText = order.items.map(item => {
+                            if (item.brand) brands.push(item.brand);
+                            return `<span style="color:#9ca3af; font-size:11px;">${item.name} ${item.size ? `(${item.size})` : ''}</span>`;
+                        }).join(', ');
+                    }
+                    const uniqueBrands = [...new Set(brands)];
+
+                    return `
+                        <div class="admin-card">
+                            <div style="display:flex; justify-content:space-between; align-items:start;">
+                                <div>
+                                    <span style="color:#FFC107; font-weight:900; font-size:14px;">${orderCode}</span>
+                                    <span style="color:#6b7280; font-size:10px; margin-left:8px;">${date}</span>
+                                    ${uniqueBrands.length > 0 ? `<span style="color:#fde047; font-size:9px; margin-left:8px;">${uniqueBrands.join(', ')}</span>` : ''}
+                                </div>
+                                <span class="admin-badge-${statusClass}">${order.status || 'Pesanan Diterima'}</span>
+                            </div>
+                            <div style="margin-top:4px;">
+                                <span style="color:white; font-weight:bold; font-size:14px;">${order.customer_name}</span>
+                                <span style="color:#6b7280; font-size:11px; margin-left:8px;">${order.customer_phone}</span>
+                            </div>
+                            <div style="color:#9ca3af; font-size:11px; margin-top:4px;">
+                                ${itemsText || order.notes || 'Tidak ada item'}
+                                <span style="margin-left:8px;">(${totalItems} item)</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; padding-top:12px; border-top:1px solid #1B4326;">
+                                <span style="color:#FFC107; font-weight:900;">Rp${Number(order.total_price).toLocaleString('id-ID')}</span>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <select class="admin-status-select" onchange="updateOrderStatus('${order.id}', this.value)">
+                                        <option value="Pesanan Diterima" ${order.status === 'Pesanan Diterima' ? 'selected' : ''}>Diterima</option>
+                                        <option value="Sedang Diproses" ${order.status === 'Sedang Diproses' ? 'selected' : ''}>Diproses</option>
+                                        <option value="Siap Diambil/Diantar" ${order.status === 'Siap Diambil/Diantar' ? 'selected' : ''}>Siap</option>
+                                        <option value="Selesai" ${order.status === 'Selesai' ? 'selected' : ''}>Selesai</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (err) {
+                console.error('Error:', err);
+                container.innerHTML = '<div class="error-text">❌ Gagal memuat data. Coba refresh.</div>';
+            }
+        }
+
+        // ==================== UPDATE STATUS (Direct Supabase) ====================
+        async function updateOrderStatus(orderId, newStatus) {
+            // Konfirmasi sebelum update
+            if (!confirm(`Ubah status order #${orderId} menjadi "${newStatus}"?`)) {
+                // Reset dropdown ke nilai sebelumnya
+                const select = document.querySelector(`.admin-status-select[onchange*="updateOrderStatus('${orderId}'"]`);
+                if (select) {
+                    // Reload data untuk reset dropdown
+                    loadAdminOrders();
+                }
+                return;
+            }
+
+            try {
+                // 🔥 UPDATE LANGSUNG KE SUPABASE (tanpa Edge Function)
+                const { error } = await supabaseClient
+                    .from('orders')
+                    .update({ status: newStatus })
+                    .eq('id', orderId);
+
+                if (error) {
+                    alert('❌ Gagal update: ' + error.message);
+                    console.error(error);
+                } else {
+                    alert('✅ Status berhasil diperbarui!');
+                    loadAdminOrders(); // Refresh daftar
+                }
+            } catch (err) {
+                alert('❌ Gagal terhubung ke database!');
+                console.error(err);
+            }
+        }
+    </script>
+</body>
+</html>
