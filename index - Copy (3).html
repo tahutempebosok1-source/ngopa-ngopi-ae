@@ -30,23 +30,6 @@
         }
     </script>
     <style>
-        /* Sidebar dark mode */
-        .sidebar-menu-item .left i {
-            color: #2E6F40;
-        }
-
-        .dark-theme .sidebar-menu-item .left i {
-            color: #fde047;
-        }
-
-        .dark-theme .sidebar-menu-item .left span {
-            color: #e5e7eb;
-        }
-
-        .dark-theme .sidebar-title {
-            color: #ffffff;
-        }
-
         /* ========== GAYA DASAR ========== */
         .sidebar-overlay {
             position: fixed;
@@ -624,81 +607,6 @@
             color: #ffffff !important;
             border-color: #2E6F40 !important;
         }
-
-        /* ========== PERBAIKAN WARNA FONT ========== */
-
-        /* Pastikan teks di card menu terbaca */
-        .menu-item-name {
-            color: #0D2213 !important;
-        }
-
-        .menu-item-price {
-            color: #2E6F40 !important;
-        }
-
-        .menu-item-category {
-            color: #6b7280 !important;
-        }
-
-        /* Perbaikan warna di modal */
-        .modal-content {
-            color: #e5e7eb !important;
-        }
-
-        .modal-content .text-gray-300 {
-            color: #d1d5db !important;
-        }
-
-        .modal-content .text-gray-400 {
-            color: #9ca3af !important;
-        }
-
-        /* Perbaikan warna di cart */
-        #cartItems .text-brand-950 {
-            color: #0D2213 !important;
-        }
-
-        #cartItems .text-gray-500 {
-            color: #6b7280 !important;
-        }
-
-        #cartItems .text-brand-900 {
-            color: #0D2213 !important;
-        }
-
-        /* Perbaikan warna di outlet modal */
-        #outletList .text-brand-900 {
-            color: #0D2213 !important;
-        }
-
-        #outletList .text-gray-500 {
-            color: #6b7280 !important;
-        }
-
-        #outletList .text-amber-600 {
-            color: #d97706 !important;
-        }
-
-        /* Dark mode perbaikan */
-        .dark-theme .menu-item-name {
-            color: #ffffff !important;
-        }
-
-        .dark-theme .menu-item-price {
-            color: #fde047 !important;
-        }
-
-        .dark-theme #cartItems .text-brand-950 {
-            color: #ffffff !important;
-        }
-
-        .dark-theme #cartItems .text-gray-500 {
-            color: #9ca3af !important;
-        }
-
-        .dark-theme #outletList .text-brand-900 {
-            color: #ffffff !important;
-        }
     </style>
 </head>
 
@@ -1126,14 +1034,11 @@
                     class="w-full py-2 bg-amber-400 text-brand-900 font-extrabold rounded-xl text-xs hover:bg-amber-300 transition">Konfirmasi
                     Pilihan Slot</button>
             </div>
-            <div class="mt-2">
-                <label class="block text-gray-300 font-bold mb-1 text-[10px]">Catatan tambahan untuk bundling
-                    ini:</label>
-                <input type="text" id="bundlingNoteInput"
-                    placeholder="Catatan untuk Slot 1 (contoh: less ice, tanpa gula)..."
+            <div class="mt-2"><label class="block text-gray-300 font-bold mb-1 text-[10px]">Catatan tambahan untuk
+                    bundling ini:</label>
+                <input type="text" id="bundlingNoteInput" placeholder="Contoh: Tanpa sedotan / pisah es..."
                     class="w-full p-2.5 rounded-xl bg-brand-800 border border-brand-700 text-white text-xs" />
             </div>
-            
             <div class="grid grid-cols-2 gap-3 pt-4 border-t border-brand-700 mt-4">
                 <button type="button" onclick="closeModal('bundlingModal')"
                     class="py-3 bg-brand-800 text-gray-300 font-extrabold rounded-xl text-xs">Batal</button>
@@ -1646,7 +1551,7 @@
         <div
             class="bg-brand-900 text-white w-full max-w-md rounded-3xl p-5 shadow-2xl border border-brand-700 max-h-[90vh] flex flex-col">
             <div class="flex justify-between items-center border-b border-brand-700 pb-3 mb-4">
-                <h3 class="font-black text-lg">⭐ Best Seller</h3>
+                <h3 class="font-black text-lg">⭐ Best Seller (Realtime)</h3>
                 <button onclick="closeModal('bestSellerModal')"
                     class="text-gray-400 hover:text-white text-xl">×</button>
             </div>
@@ -1752,27 +1657,6 @@
             "Fore Coffee": ["Foreveryone"]
         };
 
-        // ======================== DATA BUNDLING PRESET ========================
-        const BUNDLING_PRESETS = {
-            'Malam Minggu Berdua': {
-                slots: 2,
-                items: [
-                    { name: 'Butterscotch Aren Latte', size: 'Large' },
-                    { name: 'Creamy Caramel Latte', size: 'Large' }
-                ],
-                price: 35000
-            },
-            'Malam Minggu Bertiga': {
-                slots: 3,
-                items: [
-                    { name: 'Pistachio Aren Latte', size: 'Large' },
-                    { name: 'Creamy Caramel Latte', size: 'Large' },
-                    { name: 'Butterscotch Aren Latte', size: 'Large' }
-                ],
-                price: 58000
-            }
-        };
-
         // ======================== STATE ========================
         let selectedBrand = 'Kopi Kenangan';
         let activeWifiBrandTab = 'Kopi Kenangan';
@@ -1794,29 +1678,6 @@
 
         // ADMIN PANEL STATE
         const ADMIN_PASSWORD = 'rahasia123';
-
-        // ======================== FUNGSI CEK JENIS MENU ========================
-function isFoodCategory(category) {
-    const foodCategories = ['Snack', 'Nasi', 'Korean Food', 'Pasta', 'Ayam Goreng', 'Paket Hemat'];
-    return foodCategories.includes(category);
-}
-
-function isSnackCategory(category) {
-    const snackCategories = ['Snack', 'Nasi', 'Korean Food', 'Pasta', 'Ayam Goreng'];
-    return snackCategories.includes(category);
-}
-
-function isBundleCategory(category) {
-    return category === 'Paket Hemat';
-}
-
-function getItemDisplayName(item) {
-    // Untuk item bundling, tampilkan nama paketnya
-    if (item.isBundle || item.cat === 'Paket Hemat') {
-        return item.name;
-    }
-    return item.name;
-}
 
         // ======================== FUNGSI UTAMA ========================
 
@@ -2144,19 +2005,17 @@ function getItemDisplayName(item) {
                         ? `<span class="text-[9px] bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-bold px-2 py-0.5 rounded-full flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Buka</span>`
                         : `<span class="text-[9px] bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 font-bold px-2 py-0.5 rounded-full flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Tutup</span>`;
                     return `
-        <div onclick="chooseOutlet(${o.id})" class="p-3 border rounded-2xl hover:border-brand-500 cursor-pointer transition flex justify-between items-center bg-white dark:bg-brand-900 ${isSelected ? 'bg-amber-50/50 dark:bg-brand-700 border-amber-400' : 'border-gray-100 dark:border-brand-700'}">
-            <div class="flex-1 pr-2">
-                <div class="flex items-center justify-between gap-1.5">
-                    <h4 class="font-extrabold text-xs text-brand-900 dark:text-white">${o.name}</h4>
-                    ${badgeHtml}
-                </div>
-                <p class="text-[10px] text-amber-600 dark:text-amber-400 font-bold mt-0.5 flex items-center gap-1">
-                    <i class="fa-regular fa-clock text-[9px]"></i> ${o.hours || 'Jam operasional tidak tersedia'}
-                </p>
-                <p class="text-[11px] text-gray-500 dark:text-gray-300 mt-1 line-clamp-2">${o.address}</p>
-            </div>
-        </div>
-    `;
+                        <div onclick="chooseOutlet(${o.id})" class="p-3 border rounded-2xl hover:border-brand-500 cursor-pointer transition flex justify-between items-center bg-white dark:bg-brand-900 ${isSelected ? 'bg-amber-50/50 dark:bg-brand-700 border-amber-400' : 'border-gray-100 dark:border-brand-700'}">
+                            <div class="flex-1 pr-2">
+                                <div class="flex items-center justify-between gap-1.5">
+                                    <h4 class="font-extrabold text-xs text-brand-900 dark:text-white">${o.name}</h4>
+                                    ${badgeHtml}
+                                </div>
+                                <p class="text-[10px] text-amber-600 dark:text-amber-400 font-bold mt-0.5 flex items-center gap-1"><i class="fa-regular fa-clock text-[9px]"></i> ${o.hours || 'Jam operasional tidak tersedia'}</p>
+                                <p class="text-[11px] text-gray-500 dark:text-gray-300 mt-1 line-clamp-2">${o.address}</p>
+                            </div>
+                        </div>
+                    `;
                 }).join('');
             } catch (err) {
                 console.error('Error di renderOutlets:', err);
@@ -2428,11 +2287,7 @@ function getItemDisplayName(item) {
 
             const availableOptions = getAvailableOptions(item);
             const isSnack = (item.category === 'Snack' || item.category === 'Nasi' || item.category === 'Korean Food' || item.category === 'Pasta' || item.category === 'Ayam Goreng' || (item.category === 'Paket Hemat' && item.name.toLowerCase().includes('ayam')) || (item.brand === 'Fore Coffee' && (item.category === 'Fore Deli' || item.category === 'Foreveryone 1L')));
-// Sembunyikan opsi untuk makanan
-document.getElementById('sizeSection').style.display = (isSnack || !availableOptions.size) ? 'none' : 'block';
-document.getElementById('tempSection').style.display = (isSnack || !availableOptions.temp) ? 'none' : 'block';
-document.getElementById('iceSection').style.display = (isSnack || !availableOptions.ice) ? 'none' : 'block';
-document.getElementById('sugarSection').style.display = (isSnack || !availableOptions.sugar) ? 'none' : 'block';
+
             const warningBox = document.getElementById('SnackStockWarning');
             if (warningBox) { if (isSnack) warningBox.classList.remove('hidden'); else warningBox.classList.add('hidden'); }
 
@@ -2527,76 +2382,21 @@ document.getElementById('sugarSection').style.display = (isSnack || !availableOp
             setTimeout(() => flyer.remove(), 650);
         }
 
+        // ======================== BUNDLING ========================
+
         function openBundlingModal(item) {
-            // 🔥 CEK APAKAH INI PAKET PRESET
-            const isPreset = BUNDLING_PRESETS[item.name];
-
-            if (isPreset) {
-                // PAKET PRESET (AUTO-SELECT)
-                activeBundlingItem = {
-                    ...item,
-                    price: item.price || isPreset.price,
-                    slotCount: isPreset.slots
-                };
-
-                // Buat slot dengan item yang sudah dipilih otomatis
-                bundlingSlots = isPreset.items.map((presetItem, idx) => ({
-                    id: `preset-${idx}`,
-                    name: presetItem.name,
-                    size: presetItem.size || 'Regular',
-                    note: '',
-                    preset: true,
-                    slotIndex: idx
-                }));
-
-                activeSlotIndex = 0;
-
-                document.getElementById('bundlingTitle').innerText = item.name;
-                document.getElementById('bundlingSub').innerText = '✨ Menu sudah dipilih otomatis!';
-                document.getElementById('bundlingPrice').innerText = `Rp${activeBundlingItem.price.toLocaleString('id-ID')}`;
-
-                // Sembunyikan grid pilihan menu (karena sudah auto-select)
-                document.getElementById('bundlingItemGrid').innerHTML = `
-            <div class="col-span-4 text-center text-amber-400 text-xs py-4">
-                <i class="fa-solid fa-check-circle text-lg"></i> Menu sudah dipilih otomatis untuk paket ini
-            </div>
-        `;
-
-                // Sembunyikan area customize
-                document.getElementById('bundlingCustomizeArea').classList.add('hidden');
-
-                // Set placeholder note untuk slot pertama
-                const noteInput = document.getElementById('bundlingNoteInput');
-                if (noteInput) {
-                    noteInput.value = '';
-                    noteInput.placeholder = `Catatan untuk Slot 1 (${bundlingSlots[0].name})...`;
-                }
-
-                renderBundlingSlotsUI();
-                openModal('bundlingModal');
-                return;
-            }
-
-            // 🔥 PAKET BIASA (manual select) - kode lama
             activeBundlingItem = { ...item, price: item.price + (isOutsideJava(selectedOutlet) ? 2000 : 0) };
             let totalSlots = item.slotCount || 2;
             if (item.name && item.name.toLowerCase().includes("3 cup")) totalSlots = 3;
             bundlingSlots = Array(totalSlots).fill(null);
             activeSlotIndex = 0;
-
             document.getElementById('bundlingTitle').innerText = item.name;
             document.getElementById('bundlingSub').innerText = item.desc || 'Pilih item pilihanmu';
             document.getElementById('bundlingPrice').innerText = `Rp${activeBundlingItem.price.toLocaleString('id-ID')}`;
-
             const noteInput = document.getElementById('bundlingNoteInput');
-            if (noteInput) {
-                noteInput.value = '';
-                noteInput.placeholder = `Catatan untuk Slot 1 (contoh: less ice, tanpa gula)...`;
-            }
-
+            if (noteInput) { noteInput.value = ''; noteInput.placeholder = `Catatan untuk Slot 1 (contoh: less ice, tanpa gula)...`; }
             const customArea = document.getElementById('bundlingCustomizeArea');
             if (customArea) customArea.classList.add('hidden');
-
             renderBundlingSlotsUI();
             renderBundleMenuOptions();
             openModal('bundlingModal');
@@ -2608,76 +2408,37 @@ document.getElementById('sugarSection').style.display = (isSnack || !availableOp
             container.style.display = 'flex';
             container.style.flexWrap = 'wrap';
             container.style.gap = '10px';
-
             container.innerHTML = bundlingSlots.map((slot, idx) => {
                 const isActive = idx === activeSlotIndex;
-                const isPreset = slot && slot.preset === true;
-
                 let btnClass = "slot-btn p-2.5 rounded-2xl border text-left flex-1 min-w-[130px] transition-all duration-300 ";
-
-                if (isActive && !slot) {
-                    btnClass += "bg-brand-800/40 text-amber-400 border-brand-700/50 active-slot slot-btn-empty";
-                } else if (isActive && slot) {
-                    btnClass += "bg-amber-400 text-brand-900 border-amber-400 font-extrabold shadow-md active-slot";
-                } else if (slot && isPreset) {
-                    btnClass += "bg-emerald-800/60 text-white border-emerald-600";
-                } else if (slot) {
-                    btnClass += "bg-brand-800 text-white border-brand-700";
-                } else {
-                    btnClass += "bg-brand-900/60 text-gray-400 border-brand-700/30 slot-btn-empty";
-                }
-
-                // Tampilkan note jika ada
-                const noteDisplay = slot && slot.note ? `<span class="text-[9px] text-amber-400 block truncate">📝 ${slot.note}</span>` : '';
-                const sizeDisplay = slot && slot.size ? ` (${slot.size})` : '';
-
-                return `
-            <button type="button" onclick="setActiveSlot(${idx})" class="${btnClass}" style="flex: 1 1 130px; min-width: 120px;">
-                <p class="text-[9px] uppercase tracking-wider">Slot ${idx + 1}</p>
-                <p class="text-xs truncate font-bold">${slot ? slot.name + sizeDisplay : 'Pilih Item'}</p>
-                ${noteDisplay}
-                ${isPreset ? '<span class="text-[8px] bg-emerald-500/30 text-emerald-300 px-1.5 py-0.5 rounded-full ml-1">Otomatis</span>' : ''}
-            </button>
-        `;
+                if (isActive && !slot) btnClass += "bg-brand-800/40 text-amber-400 border-brand-700/50 active-slot slot-btn-empty";
+                else if (isActive && slot) btnClass += "bg-amber-400 text-brand-900 border-amber-400 font-extrabold shadow-md active-slot";
+                else if (slot) btnClass += "bg-brand-800 text-white border-brand-700";
+                else btnClass += "bg-brand-900/60 text-gray-400 border-brand-700/30 slot-btn-empty";
+                return `<button type="button" onclick="setActiveSlot(${idx})" class="${btnClass}" style="flex: 1 1 130px; min-width: 120px;"><p class="text-[9px] uppercase tracking-wider">Slot ${idx + 1}</p><p class="text-xs truncate font-bold">${slot ? slot.name : 'Pilih Item'}</p></button>`;
             }).join('');
-
             const btn = document.getElementById('btnConfirmBundling');
             if (btn) {
                 const isComplete = bundlingSlots.every(s => s !== null);
                 btn.innerText = isComplete ? 'Tambah ke Keranjang' : 'Tambah (Belum Lengkap)';
                 btn.disabled = !isComplete;
-                btn.className = isComplete
-                    ? "w-full bg-amber-400 hover:bg-amber-500 text-brand-950 font-extrabold py-3 rounded-2xl shadow-lg transition text-xs cursor-pointer"
-                    : "w-full bg-gray-600 text-gray-300 font-extrabold py-3 rounded-2xl cursor-not-allowed text-xs";
+                btn.className = isComplete ? "w-full bg-amber-400 hover:bg-amber-500 text-brand-950 font-extrabold py-3 rounded-2xl shadow-lg transition text-xs cursor-pointer" : "w-full bg-gray-600 text-gray-300 font-extrabold py-3 rounded-2xl cursor-not-allowed text-xs";
             }
         }
 
         async function setActiveSlot(index) {
-            // Simpan catatan slot sebelumnya
             const noteInput = document.getElementById('bundlingNoteInput');
             if (noteInput && bundlingSlots[activeSlotIndex]) {
                 bundlingSlots[activeSlotIndex].note = noteInput.value.trim();
             }
-
             activeSlotIndex = index;
-
-            // Tampilkan catatan slot yang aktif
             if (noteInput) {
-                const currentSlot = bundlingSlots[index];
-                noteInput.value = currentSlot ? currentSlot.note || '' : '';
-
-                const slotName = currentSlot ? currentSlot.name : `Slot ${index + 1}`;
-                const sizeText = currentSlot && currentSlot.size ? ` (${currentSlot.size})` : '';
-                noteInput.placeholder = `Catatan untuk ${slotName}${sizeText} (contoh: less sugar, panaskan)...`;
+                noteInput.value = (bundlingSlots[index] && bundlingSlots[index].note) ? bundlingSlots[index].note : '';
+                const slotName = bundlingSlots[index] ? bundlingSlots[index].name : `Slot ${index + 1}`;
+                noteInput.placeholder = `Catatan untuk ${slotName} (contoh: less sugar, panaskan)...`;
             }
-
             renderBundlingSlotsUI();
-
-            // Jika bukan preset, render menu options
-            const isPreset = bundlingSlots.every(s => s && s.preset === true);
-            if (!isPreset) {
-                await renderBundleMenuOptions();
-            }
+            await renderBundleMenuOptions();
         }
 
         async function renderBundleMenuOptions() {
@@ -2723,22 +2484,9 @@ document.getElementById('sugarSection').style.display = (isSnack || !availableOp
                 return;
             }
             container.innerHTML = availableProducts.map(prod => {
-    // 🔥 CEK APAKAH ITEM INI SUDAH DIPILIH UNTUK SLOT MANA PUN
-    const isSelected = bundlingSlots.some(slot => slot && slot.id === prod.id);
-    
-    // 🔥 CEK APAKAH ITEM INI SUDAH DIPILIH DI SLOT AKTIF (untuk tampilan tambahan)
-    const isSelectedInActiveSlot = bundlingSlots[activeSlotIndex] && bundlingSlots[activeSlotIndex].id === prod.id;
-    
-    return `
-        <div onclick="selectBundlingItemForSlot('${prod.id}')" 
-             class="bundle-item-card cursor-pointer p-2 border rounded-xl transition text-center flex flex-col items-center justify-between relative 
-                    ${isSelected ? 'selected border-amber-400 bg-amber-400/10' : 'border-brand-700 bg-brand-900 hover:border-amber-400'}">
-            <img src="${prod.image_url}" alt="${prod.name}" class="w-full h-20 object-contain rounded-lg mb-1">
-            <p class="text-xs text-white font-bold truncate w-full">${prod.name}</p>
-            ${isSelected ? '<span class="absolute top-0 right-0 bg-amber-400 text-brand-900 text-[10px] font-black px-1.5 py-0.5 rounded-tr-lg rounded-bl-lg">✓</span>' : ''}
-        </div>
-    `;
-}).join('');
+                const isSelected = bundlingSlots.some(slot => slot && slot.id === prod.id);
+                return `<div onclick="selectBundlingItemForSlot('${prod.id}')" class="bundle-item-card cursor-pointer p-2 border border-brand-700 rounded-xl bg-brand-900 hover:border-amber-400 transition text-center flex flex-col items-center justify-between relative ${isSelected ? 'selected' : ''}"><img src="${prod.image_url}" alt="${prod.name}" class="w-full h-20 object-contain rounded-lg mb-1"><p class="text-xs text-white font-bold truncate w-full">${prod.name}</p></div>`;
+            }).join('');
         }
 
         async function selectBundlingItemForSlot(id) {
@@ -2772,49 +2520,19 @@ document.getElementById('sugarSection').style.display = (isSnack || !availableOp
         }
 
         function confirmAddBundlingToCart() {
-            // Simpan catatan terakhir
+            const unfilled = bundlingSlots.findIndex(s => s === null);
+            if (unfilled > -1) { alert(`Harap pilih menu untuk Slot ${unfilled + 1} terlebih dahulu!`); setActiveSlot(unfilled); return; }
             const noteInput = document.getElementById('bundlingNoteInput');
             if (noteInput && bundlingSlots[activeSlotIndex]) {
                 bundlingSlots[activeSlotIndex].note = noteInput.value.trim();
             }
-
-            const unfilled = bundlingSlots.findIndex(s => s === null);
-            if (unfilled > -1) {
-                alert(`Harap pilih menu untuk Slot ${unfilled + 1} terlebih dahulu!`);
-                setActiveSlot(unfilled);
-                return;
-            }
-
-            // Buat detail per slot dengan catatan masing-masing
-            const slotDetailsStr = bundlingSlots.map((s, i) => {
-                if (!s) return '';
-                const sizeText = s.size ? ` (${s.size})` : '';
-                const noteText = s.note ? ` 📝${s.note}` : '';
-                return `Item ${i + 1}: ${s.name}${sizeText}${noteText}`;
-            }).filter(Boolean).join(' | ');
-
-            const bundleCartItem = {
-                ...activeBundlingItem,
-                brand: selectedBrand,
-                size: 'Paket Bundling',
-                sizeUpcharge: 0,
-                temp: 'Multi',
-                sugar: 'Multi',
-                ice: 'Multi',
-                note: slotDetailsStr,
-                slotDetails: bundlingSlots.map(s => ({
-                    name: s.name,
-                    size: s.size || '',
-                    note: s.note || ''
-                })),
-                cartItemId: Date.now()
-            };
-
-            flyToCart(activeBundlingItem.image_url || activeBundlingItem.img);
+            const slotDetailsStr = bundlingSlots.map((s, i) => s ? `Item ${i + 1}: ${s.name}${s.note ? ` (Catatan: ${s.note})` : ''}` : '').filter(Boolean).join(' | ');
+            const bundleCartItem = { ...activeBundlingItem, brand: selectedBrand, size: 'Paket Bundling', sizeUpcharge: 0, temp: 'Multi', sugar: 'Multi', ice: 'Multi', note: slotDetailsStr, cartItemId: Date.now() };
+            flyToCart(activeBundlingItem.image_url);
             cart.push(bundleCartItem);
             updateCartUI();
             closeModal('bundlingModal');
-            showToast("Paket bundling berhasil ditambahkan ke keranjang!");
+            showToast("Item sudah dimasukkan ke keranjang");
         }
 
         // ======================== CART ========================
@@ -2851,14 +2569,7 @@ document.getElementById('sugarSection').style.display = (isSnack || !availableOp
                         detailHtml = `<p class="text-[10px] text-gray-500 mt-0.5">Temp: ${tempText}${sugarText ? ` | Gula: ${sugarText}` : ''}${iceText ? ` | Es: ${iceText}` : ''}${sizeText}</p>`;
                     }
                     if (item.note) detailHtml += `<p class="text-[10px] text-gray-500">Note: ${item.note}</p>`;
-                    return `<div class="flex items-center justify-between bg-brand-50 p-2.5 rounded-2xl border border-brand-100 text-xs relative">
-    <div class="flex-1 pr-2">
-        <p class="font-extrabold text-brand-950 dark:text-white">${i + 1}. ${item.name} ${!isForeJunior && item.size && (item.cat === 'Kopi' || item.cat === 'Non-Kopi') ? `(${item.size})` : ''}</p>
-        ${detailHtml}
-        <p class="font-black text-brand-900 dark:text-amber-400 mt-1">Rp${(itemPrice * item.qty).toLocaleString('id-ID')}</p>
-    </div>
-    ...
-</div>`;
+                    return `<div class="flex items-center justify-between bg-brand-50 p-2.5 rounded-2xl border border-brand-100 text-xs relative"><div class="flex-1 pr-2"><p class="font-extrabold text-brand-950">${i + 1}. ${item.name} ${!isForeJunior && item.size && (item.cat === 'Kopi' || item.cat === 'Non-Kopi') ? `(${item.size})` : ''}</p>${detailHtml}<p class="font-black text-brand-900 mt-1">Rp${(itemPrice * item.qty).toLocaleString('id-ID')}</p></div><div class="flex flex-col items-end gap-1"><div class="flex items-center gap-1.5 bg-white rounded-full shadow-sm px-1 py-1 border border-gray-200"><button class="qty-btn qty-btn-minus" onclick="changeItemQty('${item.key}', -1)">-</button><span class="font-black text-brand-900 text-sm w-5 text-center">${item.qty}</span><button class="qty-btn qty-btn-plus" onclick="changeItemQty('${item.key}', 1)">+</button></div><button onclick="removeGroupedItem('${item.key}')" class="text-red-500 hover:text-red-700 text-[10px] font-bold mt-1">Hapus</button></div></div>`;
                 }).join('');
             }
             let subtotal = 0;
