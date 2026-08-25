@@ -30,6 +30,42 @@
         }
     </script>
     <style>
+        /* ========== DROPDOWN WAKTU PICKUP ========== */
+#pickupHour,
+#pickupMinute {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 10px;
+    padding-right: 32px;
+    padding-left: 12px;
+}
+
+#pickupHour:focus,
+#pickupMinute:focus {
+    border-color: #2E6F40;
+    box-shadow: 0 0 0 3px rgba(46, 111, 64, 0.1);
+    outline: none;
+}
+
+/* Dark mode untuk dropdown */
+.dark-theme #pickupHour,
+.dark-theme #pickupMinute {
+    background-color: #1B4326 !important;
+    color: #ffffff !important;
+    border-color: #2E6F40 !important;
+}
+
+.dark-theme #pickupHour option,
+.dark-theme #pickupMinute option {
+    background-color: #14331C;
+    color: #ffffff;
+}
+
         /* ========== ADMIN PANEL ========== */
         #adminPanel {
             display: none;
@@ -222,140 +258,141 @@
         }
 
         /* Sidebar overlay - default */
-.sidebar-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
-    z-index: 999;
-    display: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
 
-.sidebar-overlay.active {
-    display: block;
-    opacity: 1;
-}
+        .sidebar-overlay.active {
+            display: block;
+            opacity: 1;
+        }
 
-/* Dark mode overlay - lebih gelap */
-.dark-theme .sidebar-overlay {
-    background: rgba(0, 0, 0, 0.8);
-}
+        /* Dark mode overlay - lebih gelap */
+        .dark-theme .sidebar-overlay {
+            background: rgba(0, 0, 0, 0.8);
+        }
 
-       /* ========== SIDEBAR STYLE ========== */
+        /* ========== SIDEBAR STYLE ========== */
 
-/* Sidebar default (light mode) */
-.sidebar-content {
-    position: fixed;
-    top: 0;
-    right: -100%;
-    width: 85%;
-    max-width: 380px;
-    height: 100%;
-    background: #ffffff;
-    z-index: 1000;
-    transition: right 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
-    padding: 24px;
-    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
-    overflow-y: auto;
-}
+        /* Sidebar default (light mode) */
+        .sidebar-content {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 85%;
+            max-width: 380px;
+            height: 100%;
+            background: #ffffff;
+            z-index: 1000;
+            transition: right 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            padding: 24px;
+            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
 
-.sidebar-content.open {
-    right: 0;
-}
+        .sidebar-content.open {
+            right: 0;
+        }
 
-.sidebar-title {
-    font-size: 18px;
-    font-weight: 900;
-    margin-bottom: 20px;
-    color: #0D2213;
-}
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            color: #0D2213;
+        }
 
-.sidebar-menu-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 16px;
-    background: #f9fafb;
-    border-radius: 16px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    transition: 0.2s;
-}
+        .sidebar-menu-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            background: #f9fafb;
+            border-radius: 16px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
 
-.sidebar-menu-item:hover {
-    background: #f3f4f6;
-    transform: translateX(4px);
-}
+        .sidebar-menu-item:hover {
+            background: #f3f4f6;
+            transform: translateX(4px);
+        }
 
-.sidebar-menu-item .left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-weight: 700;
-    color: #0D2213;
-}
+        .sidebar-menu-item .left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            color: #0D2213;
+        }
 
-.sidebar-menu-item .left i {
-    font-size: 18px;
-    color: #2E6F40;
-    width: 24px;
-    text-align: center;
-    transition: color 0.3s ease;
-}
+        .sidebar-menu-item .left i {
+            font-size: 18px;
+            color: #2E6F40;
+            width: 24px;
+            text-align: center;
+            transition: color 0.3s ease;
+        }
 
-.sidebar-menu-item .arrow {
-    color: #9ca3af;
-    font-size: 12px;
-}
+        .sidebar-menu-item .arrow {
+            color: #9ca3af;
+            font-size: 12px;
+        }
 
-/* ========== SIDEBAR DARK MODE ========== */
-.dark-theme .sidebar-content {
-    background: #0D2213;
-}
+        /* ========== SIDEBAR DARK MODE ========== */
+        .dark-theme .sidebar-content {
+            background: #0D2213;
+        }
 
-.dark-theme .sidebar-close {
-    background: #1B4326;
-    color: white;
-}
+        .dark-theme .sidebar-close {
+            background: #1B4326;
+            color: white;
+        }
 
-.dark-theme .sidebar-close:hover {
-    background: #2E6F40;
-}
+        .dark-theme .sidebar-close:hover {
+            background: #2E6F40;
+        }
 
-.dark-theme .sidebar-title {
-    color: #ffffff;
-}
+        .dark-theme .sidebar-title {
+            color: #ffffff;
+        }
 
-.dark-theme .sidebar-menu-item {
-    background: #14331C;
-}
+        .dark-theme .sidebar-menu-item {
+            background: #14331C;
+        }
 
-.dark-theme .sidebar-menu-item:hover {
-    background: #1B4326;
-    transform: translateX(4px);
-}
+        .dark-theme .sidebar-menu-item:hover {
+            background: #1B4326;
+            transform: translateX(4px);
+        }
 
-/* 🔥 PERBAIKAN: Icon sidebar di dark mode menjadi KUNING */
-.dark-theme .sidebar-menu-item .left {
-    color: #e5e7eb;
-}
+        /* 🔥 PERBAIKAN: Icon sidebar di dark mode menjadi KUNING */
+        .dark-theme .sidebar-menu-item .left {
+            color: #e5e7eb;
+        }
 
-.dark-theme .sidebar-menu-item .left i {
-    color: #fde047 !important; /* Kuning terang */
-}
+        .dark-theme .sidebar-menu-item .left i {
+            color: #fde047 !important;
+            /* Kuning terang */
+        }
 
-.dark-theme .sidebar-menu-item .arrow {
-    color: #fde047 !important;
-}
+        .dark-theme .sidebar-menu-item .arrow {
+            color: #fde047 !important;
+        }
 
-.dark-theme .sidebar-menu-item .sub {
-    color: #9ca3af;
-}
+        .dark-theme .sidebar-menu-item .sub {
+            color: #9ca3af;
+        }
 
         #adminDashboardContainer {
             background-color: #0B190E !important;
@@ -1603,7 +1640,7 @@
                     placeholder="Catatan untuk Slot 1 (contoh: less ice, tanpa gula)..."
                     class="w-full p-2.5 rounded-xl bg-brand-800 border border-brand-700 text-white text-xs" />
             </div>
-            
+
             <div class="grid grid-cols-2 gap-3 pt-4 border-t border-brand-700 mt-4">
                 <button type="button" onclick="closeModal('bundlingModal')"
                     class="py-3 bg-brand-800 text-gray-300 font-extrabold rounded-xl text-xs">Batal</button>
@@ -1818,8 +1855,10 @@
     </div>
 
     <!-- Cart Modal -->
-    <div id="cartModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end md:items-center justify-center hidden modal-overlay bottom-sheet">
-    <div class="bg-white w-full max-w-lg rounded-t-3xl md:rounded-3xl max-h-[92vh] flex flex-col p-5 shadow-2xl modal-content">
+    <div id="cartModal"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end md:items-center justify-center hidden modal-overlay bottom-sheet">
+        <div
+            class="bg-white w-full max-w-lg rounded-t-3xl md:rounded-3xl max-h-[92vh] flex flex-col p-5 shadow-2xl modal-content">
             <div class="flex justify-between items-center pb-2 border-b border-gray-100 shrink-0">
                 <h3 class="font-extrabold text-base text-brand-900 flex items-center gap-2"><i
                         class="fa-solid fa-cart-shopping text-brand-500"></i>Keranjangmu</h3>
@@ -1850,9 +1889,23 @@
                         id="custPhone" placeholder="Contoh: 08123456789"
                         class="w-full p-2 border border-brand-200 rounded-xl bg-gray-50"></div>
                 <div class="grid grid-cols-2 gap-2">
-                    <div><label class="block font-bold text-gray-700 mb-0.5">WAKTU PICKUP :</label><input type="text"
-                            id="optPickupTime" placeholder="20.05"
-                            class="w-full p-2 border border-brand-200 rounded-xl bg-gray-50"></div>
+                    <!-- WAKTU PICKUP dengan dropdown -->
+                    <div>
+                        <label class="block font-bold text-gray-700 mb-0.5">WAKTU PICKUP :</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <select id="pickupHour"
+                                class="w-full p-2 border border-brand-200 rounded-xl bg-gray-50 font-bold text-center">
+                                <!-- Jam akan diisi oleh JavaScript (00-23) -->
+                            </select>
+                            <select id="pickupMinute"
+                                class="w-full p-2 border border-brand-200 rounded-xl bg-gray-50 font-bold text-center">
+                                <option value="00">00</option>
+                                <option value="15">15</option>
+                                <option value="30" selected>30</option>
+                                <option value="45">45</option>
+                            </select>
+                        </div>
+                    </div>
                     <div><label class="block font-bold text-gray-700 mb-0.5">ZONA WAKTU:</label><select id="optTimeZone"
                             class="w-full p-2 border border-brand-200 rounded-xl bg-gray-50 font-bold">
                             <option value="WIB">WIB</option>
@@ -2262,27 +2315,27 @@
         const ADMIN_PASSWORD = 'rahasia123';
 
         // ======================== FUNGSI CEK JENIS MENU ========================
-function isFoodCategory(category) {
-    const foodCategories = ['Snack', 'Nasi', 'Korean Food', 'Pasta', 'Ayam Goreng', 'Paket Hemat'];
-    return foodCategories.includes(category);
-}
+        function isFoodCategory(category) {
+            const foodCategories = ['Snack', 'Nasi', 'Korean Food', 'Pasta', 'Ayam Goreng', 'Paket Hemat'];
+            return foodCategories.includes(category);
+        }
 
-function isSnackCategory(category) {
-    const snackCategories = ['Snack', 'Nasi', 'Korean Food', 'Pasta', 'Ayam Goreng'];
-    return snackCategories.includes(category);
-}
+        function isSnackCategory(category) {
+            const snackCategories = ['Snack', 'Nasi', 'Korean Food', 'Pasta', 'Ayam Goreng'];
+            return snackCategories.includes(category);
+        }
 
-function isBundleCategory(category) {
-    return category === 'Paket Hemat';
-}
+        function isBundleCategory(category) {
+            return category === 'Paket Hemat';
+        }
 
-function getItemDisplayName(item) {
-    // Untuk item bundling, tampilkan nama paketnya
-    if (item.isBundle || item.category === 'Paket Hemat') {
-        return item.name;
-    }
-    return item.name;
-}
+        function getItemDisplayName(item) {
+            // Untuk item bundling, tampilkan nama paketnya
+            if (item.isBundle || item.category === 'Paket Hemat') {
+                return item.name;
+            }
+            return item.name;
+        }
 
         // ======================== FUNGSI UTAMA ========================
 
@@ -2894,11 +2947,11 @@ function getItemDisplayName(item) {
 
             const availableOptions = getAvailableOptions(item);
             const isSnack = (item.category === 'Snack' || item.category === 'Nasi' || item.category === 'Korean Food' || item.category === 'Pasta' || item.category === 'Ayam Goreng' || (item.category === 'Paket Hemat' && item.name.toLowerCase().includes('ayam')) || (item.brand === 'Fore Coffee' && (item.category === 'Fore Deli' || item.category === 'Foreveryone 1L')));
-// Sembunyikan opsi untuk makanan
-document.getElementById('sizeSection').style.display = (isSnack || !availableOptions.size) ? 'none' : 'block';
-document.getElementById('tempSection').style.display = (isSnack || !availableOptions.temp) ? 'none' : 'block';
-document.getElementById('iceSection').style.display = (isSnack || !availableOptions.ice) ? 'none' : 'block';
-document.getElementById('sugarSection').style.display = (isSnack || !availableOptions.sugar) ? 'none' : 'block';
+            // Sembunyikan opsi untuk makanan
+            document.getElementById('sizeSection').style.display = (isSnack || !availableOptions.size) ? 'none' : 'block';
+            document.getElementById('tempSection').style.display = (isSnack || !availableOptions.temp) ? 'none' : 'block';
+            document.getElementById('iceSection').style.display = (isSnack || !availableOptions.ice) ? 'none' : 'block';
+            document.getElementById('sugarSection').style.display = (isSnack || !availableOptions.sugar) ? 'none' : 'block';
             const warningBox = document.getElementById('SnackStockWarning');
             if (warningBox) { if (isSnack) warningBox.classList.remove('hidden'); else warningBox.classList.add('hidden'); }
 
@@ -3189,13 +3242,13 @@ document.getElementById('sugarSection').style.display = (isSnack || !availableOp
                 return;
             }
             container.innerHTML = availableProducts.map(prod => {
-    // 🔥 CEK APAKAH ITEM INI SUDAH DIPILIH UNTUK SLOT MANA PUN
-    const isSelected = bundlingSlots.some(slot => slot && slot.id === prod.id);
-    
-    // 🔥 CEK APAKAH ITEM INI SUDAH DIPILIH DI SLOT AKTIF (untuk tampilan tambahan)
-    const isSelectedInActiveSlot = bundlingSlots[activeSlotIndex] && bundlingSlots[activeSlotIndex].id === prod.id;
-    
-    return `
+                // 🔥 CEK APAKAH ITEM INI SUDAH DIPILIH UNTUK SLOT MANA PUN
+                const isSelected = bundlingSlots.some(slot => slot && slot.id === prod.id);
+
+                // 🔥 CEK APAKAH ITEM INI SUDAH DIPILIH DI SLOT AKTIF (untuk tampilan tambahan)
+                const isSelectedInActiveSlot = bundlingSlots[activeSlotIndex] && bundlingSlots[activeSlotIndex].id === prod.id;
+
+                return `
         <div onclick="selectBundlingItemForSlot('${prod.id}')" 
              class="bundle-item-card cursor-pointer p-2 border rounded-xl transition text-center flex flex-col items-center justify-between relative 
                     ${isSelected ? 'selected border-amber-400 bg-amber-400/10' : 'border-brand-700 bg-brand-900 hover:border-amber-400'}">
@@ -3204,7 +3257,7 @@ document.getElementById('sugarSection').style.display = (isSnack || !availableOp
             ${isSelected ? '<span class="absolute top-0 right-0 bg-amber-400 text-brand-900 text-[10px] font-black px-1.5 py-0.5 rounded-tr-lg rounded-bl-lg">✓</span>' : ''}
         </div>
     `;
-}).join('');
+            }).join('');
         }
 
         async function selectBundlingItemForSlot(id) {
@@ -3286,47 +3339,47 @@ document.getElementById('sugarSection').style.display = (isSnack || !availableOp
         // ======================== CART ========================
 
         function updateCartUI() {
-    const groupedCart = [];
-    cart.forEach(item => {
-        const key = item.name + '|' + (item.size || '') + '|' + (item.temp || '') + '|' + (item.sugar || '') + '|' + (item.ice || '') + '|' + (item.note ? 'hasnote' : 'nonote');
-        const existing = groupedCart.find(g => g.key === key);
-        if (existing) { existing.qty += 1; existing.cartItemIds.push(item.cartItemId); } else {
-            groupedCart.push({ ...item, key: key, qty: 1, cartItemIds: [item.cartItemId] });
-        }
-    });
-    
-    const totalCount = cart.length;
-    document.getElementById('cartCount').innerText = totalCount;
-    document.getElementById('cartCount').classList.toggle('hidden', totalCount === 0);
-    document.getElementById('mobileCartBadge').innerText = totalCount;
-    document.getElementById('mobileCartBadge').classList.toggle('hidden', totalCount === 0);
-    
-    const container = document.getElementById('cartItems');
-    if (groupedCart.length === 0) {
-        container.innerHTML = `<p class="text-center text-xs text-gray-400 py-6">Keranjangmu masih kosong!.</p>`;
-    } else {
-        container.innerHTML = groupedCart.map((item, i) => {
-            const itemPrice = item.price + (item.sizeUpcharge || 0);
-            
-            // 🔥 PERBAIKAN: GUNakan item.category (bukan item.cat)
-            const isSnack = ['Snack', 'Nasi', 'Korean Food', 'Pasta', 'Ayam Goreng'].includes(item.category) || 
-                            (item.category === 'Paket Hemat' && item.name.toLowerCase().includes('ayam')) || 
-                            (item.brand === 'Fore Coffee' && (item.category === 'Fore Deli' || item.category === 'Foreveryone 1L'));
-            const isBundle = (item.category === 'Paket Hemat' && !item.name.toLowerCase().includes('ayam'));
-            const isForeJunior = (item.brand === 'Fore Coffee' && item.category === 'Fore Junior');
-            
-            let detailHtml = '';
-            if (!isSnack && !isBundle) {
-                let sizeText = isForeJunior ? '' : ` | Ukuran: ${item.size}`;
-                let tempText = item.temp === 'Ice' ? 'Dingin' : (item.temp === 'Hot' ? 'Panas' : (item.temp || '-'));
-                let sugarText = item.sugar ? (item.sugar === 'Normal Sugar' ? 'Normal Gula' : (item.sugar === 'Less Sugar' ? 'Sedikit Gula' : (item.sugar === 'No Sugar' ? 'Tanpa Gula' : (item.sugar || '-')))) : '';
-                let iceText = item.ice ? (item.ice === 'Normal Ice' ? 'Normal Es' : (item.ice === 'Less Ice' ? 'Sedikit Es' : (item.ice === 'No Ice' ? 'Tanpa Es' : (item.ice || '-')))) : '';
-                detailHtml = `<p class="text-[10px] text-gray-500 mt-0.5">Temp: ${tempText}${sugarText ? ` | Gula: ${sugarText}` : ''}${iceText ? ` | Es: ${iceText}` : ''}${sizeText}</p>`;
-            }
-            if (item.note) detailHtml += `<p class="text-[10px] text-gray-500">📝 Catatan: ${item.note}</p>`;
-            
-            // 🔥 PERBAIKAN: Tampilkan tombol minus, plus, dan hapus
-            return `
+            const groupedCart = [];
+            cart.forEach(item => {
+                const key = item.name + '|' + (item.size || '') + '|' + (item.temp || '') + '|' + (item.sugar || '') + '|' + (item.ice || '') + '|' + (item.note ? 'hasnote' : 'nonote');
+                const existing = groupedCart.find(g => g.key === key);
+                if (existing) { existing.qty += 1; existing.cartItemIds.push(item.cartItemId); } else {
+                    groupedCart.push({ ...item, key: key, qty: 1, cartItemIds: [item.cartItemId] });
+                }
+            });
+
+            const totalCount = cart.length;
+            document.getElementById('cartCount').innerText = totalCount;
+            document.getElementById('cartCount').classList.toggle('hidden', totalCount === 0);
+            document.getElementById('mobileCartBadge').innerText = totalCount;
+            document.getElementById('mobileCartBadge').classList.toggle('hidden', totalCount === 0);
+
+            const container = document.getElementById('cartItems');
+            if (groupedCart.length === 0) {
+                container.innerHTML = `<p class="text-center text-xs text-gray-400 py-6">Keranjangmu masih kosong!.</p>`;
+            } else {
+                container.innerHTML = groupedCart.map((item, i) => {
+                    const itemPrice = item.price + (item.sizeUpcharge || 0);
+
+                    // 🔥 PERBAIKAN: GUNakan item.category (bukan item.cat)
+                    const isSnack = ['Snack', 'Nasi', 'Korean Food', 'Pasta', 'Ayam Goreng'].includes(item.category) ||
+                        (item.category === 'Paket Hemat' && item.name.toLowerCase().includes('ayam')) ||
+                        (item.brand === 'Fore Coffee' && (item.category === 'Fore Deli' || item.category === 'Foreveryone 1L'));
+                    const isBundle = (item.category === 'Paket Hemat' && !item.name.toLowerCase().includes('ayam'));
+                    const isForeJunior = (item.brand === 'Fore Coffee' && item.category === 'Fore Junior');
+
+                    let detailHtml = '';
+                    if (!isSnack && !isBundle) {
+                        let sizeText = isForeJunior ? '' : ` | Ukuran: ${item.size}`;
+                        let tempText = item.temp === 'Ice' ? 'Dingin' : (item.temp === 'Hot' ? 'Panas' : (item.temp || '-'));
+                        let sugarText = item.sugar ? (item.sugar === 'Normal Sugar' ? 'Normal Gula' : (item.sugar === 'Less Sugar' ? 'Sedikit Gula' : (item.sugar === 'No Sugar' ? 'Tanpa Gula' : (item.sugar || '-')))) : '';
+                        let iceText = item.ice ? (item.ice === 'Normal Ice' ? 'Normal Es' : (item.ice === 'Less Ice' ? 'Sedikit Es' : (item.ice === 'No Ice' ? 'Tanpa Es' : (item.ice || '-')))) : '';
+                        detailHtml = `<p class="text-[10px] text-gray-500 mt-0.5">Temp: ${tempText}${sugarText ? ` | Gula: ${sugarText}` : ''}${iceText ? ` | Es: ${iceText}` : ''}${sizeText}</p>`;
+                    }
+                    if (item.note) detailHtml += `<p class="text-[10px] text-gray-500">📝 Catatan: ${item.note}</p>`;
+
+                    // 🔥 PERBAIKAN: Tampilkan tombol minus, plus, dan hapus
+                    return `
                 <div class="flex items-center justify-between bg-brand-50 p-2.5 rounded-2xl border border-brand-100 text-xs relative">
                     <div class="flex-1 pr-2">
                         <p class="font-extrabold text-brand-950 dark:text-white">${i + 1}. ${item.name} ${!isForeJunior && item.size && (item.category === 'Kopi' || item.category === 'Non-Kopi') ? `(${item.size})` : ''}</p>
@@ -3343,62 +3396,62 @@ document.getElementById('sugarSection').style.display = (isSnack || !availableOp
                     </div>
                 </div>
             `;
-        }).join('');
-    }
-    
-    let subtotal = 0;
-    groupedCart.forEach(item => { subtotal += (item.price + (item.sizeUpcharge || 0)) * item.qty; });
-    let jasdorFee = 0;
-    groupedCart.forEach(item => { jasdorFee += (item.category === 'Paket Hemat' ? 750 * item.qty : 500 * item.qty); });
-    
-    const methodSelect = document.getElementById('orderMethod');
-    const method = methodSelect ? methodSelect.value : 'Pickup';
-    let deliveryAndBagTotal = 0;
-    const rowEl = document.getElementById('deliveryFeeRow');
-    const labelEl = document.getElementById('deliveryFeeLabel');
-    const valEl = document.getElementById('deliveryFeeVal');
-    
-    if (method === 'Ojol') {
-        deliveryAndBagTotal = 17000;
-        if (rowEl) rowEl.classList.remove('hidden');
-        if (labelEl) labelEl.innerText = "Biaya Delivery Ojol Maks 4 km + Bag:";
-        if (valEl) valEl.innerText = `Rp${deliveryAndBagTotal.toLocaleString('id-ID')}`;
-    } else if (method === 'NgopaNgopi') {
-        deliveryAndBagTotal = 8000;
-        if (rowEl) rowEl.classList.remove('hidden');
-        if (labelEl) labelEl.innerText = "Biaya Delivery Tim NgopaNgopi:";
-        if (valEl) valEl.innerText = `Rp${deliveryAndBagTotal.toLocaleString('id-ID')}`;
-    } else {
-        if (rowEl) rowEl.classList.add('hidden');
-    }
-    
-    const grandTotal = subtotal + jasdorFee + deliveryAndBagTotal;
-    // 🔥 UPDATE SEMUA ELEMEN TOTAL
-    document.getElementById('subtotalPrice').innerText = `Rp${subtotal.toLocaleString('id-ID')}`;
-    document.getElementById('jasdorFee').innerText = `Rp${jasdorFee.toLocaleString('id-ID')}`;
-    document.getElementById('grandTotal').innerText = `Rp${grandTotal.toLocaleString('id-ID')}`;
-    
-    // 🔥 PERBAIKAN: UPDATE FLOATING CART DENGAN TOTAL YANG BENAR
-    const floatCart = document.getElementById('floatingCart');
-    if (floatCart) {
-        const countEl = document.getElementById('floatingCartCount');
-        const totalEl = document.getElementById('floatingCartTotal');
-        
-        if (countEl) {
-            countEl.textContent = totalCount + ' Menu';
+                }).join('');
+            }
+
+            let subtotal = 0;
+            groupedCart.forEach(item => { subtotal += (item.price + (item.sizeUpcharge || 0)) * item.qty; });
+            let jasdorFee = 0;
+            groupedCart.forEach(item => { jasdorFee += (item.category === 'Paket Hemat' ? 750 * item.qty : 500 * item.qty); });
+
+            const methodSelect = document.getElementById('orderMethod');
+            const method = methodSelect ? methodSelect.value : 'Pickup';
+            let deliveryAndBagTotal = 0;
+            const rowEl = document.getElementById('deliveryFeeRow');
+            const labelEl = document.getElementById('deliveryFeeLabel');
+            const valEl = document.getElementById('deliveryFeeVal');
+
+            if (method === 'Ojol') {
+                deliveryAndBagTotal = 17000;
+                if (rowEl) rowEl.classList.remove('hidden');
+                if (labelEl) labelEl.innerText = "Biaya Delivery Ojol Maks 4 km + Bag:";
+                if (valEl) valEl.innerText = `Rp${deliveryAndBagTotal.toLocaleString('id-ID')}`;
+            } else if (method === 'NgopaNgopi') {
+                deliveryAndBagTotal = 8000;
+                if (rowEl) rowEl.classList.remove('hidden');
+                if (labelEl) labelEl.innerText = "Biaya Delivery Tim NgopaNgopi:";
+                if (valEl) valEl.innerText = `Rp${deliveryAndBagTotal.toLocaleString('id-ID')}`;
+            } else {
+                if (rowEl) rowEl.classList.add('hidden');
+            }
+
+            const grandTotal = subtotal + jasdorFee + deliveryAndBagTotal;
+            // 🔥 UPDATE SEMUA ELEMEN TOTAL
+            document.getElementById('subtotalPrice').innerText = `Rp${subtotal.toLocaleString('id-ID')}`;
+            document.getElementById('jasdorFee').innerText = `Rp${jasdorFee.toLocaleString('id-ID')}`;
+            document.getElementById('grandTotal').innerText = `Rp${grandTotal.toLocaleString('id-ID')}`;
+
+            // 🔥 PERBAIKAN: UPDATE FLOATING CART DENGAN TOTAL YANG BENAR
+            const floatCart = document.getElementById('floatingCart');
+            if (floatCart) {
+                const countEl = document.getElementById('floatingCartCount');
+                const totalEl = document.getElementById('floatingCartTotal');
+
+                if (countEl) {
+                    countEl.textContent = totalCount + ' Menu';
+                }
+                if (totalEl) {
+                    totalEl.textContent = `Rp${grandTotal.toLocaleString('id-ID')}`;
+                }
+
+                // Tampilkan/sembunyikan floating cart
+                if (totalCount > 0) {
+                    floatCart.classList.add('visible');
+                } else {
+                    floatCart.classList.remove('visible');
+                }
+            }
         }
-        if (totalEl) {
-            totalEl.textContent = `Rp${grandTotal.toLocaleString('id-ID')}`;
-        }
-        
-        // Tampilkan/sembunyikan floating cart
-        if (totalCount > 0) {
-            floatCart.classList.add('visible');
-        } else {
-            floatCart.classList.remove('visible');
-        }
-    }
-}
 
         function changeItemQty(groupKey, delta) {
             const groupedCart = [];
@@ -3459,473 +3512,475 @@ document.getElementById('sugarSection').style.display = (isSnack || !availableOp
         // ======================== ORDER VIA WA ========================
 
         function submitOrderViaWA() {
-    if (cart.length === 0) {
-        showValidationAlert("Keranjangmu masih kosong! Silakan pilih menu terlebih dahulu.");
-        return;
-    }
-
-    const name = document.getElementById('custName').value.trim();
-    const phone = document.getElementById('custPhone').value.trim();
-    const pickupTime = document.getElementById('optPickupTime').value.trim();
-    const timeZone = document.getElementById('optTimeZone').value;
-    const methodSelect = document.getElementById('orderMethod');
-    const method = methodSelect ? methodSelect.value : 'Pickup';
-
-    if (!name) {
-        showValidationAlert("Nama wajib diisi sebelum mengirim pesanan ke admin!");
-        document.getElementById('custName').focus();
-        return;
-    }
-
-    if (!phone) {
-        showValidationAlert("Nomor HP wajib diisi sebelum mengirim pesanan ke admin!");
-        document.getElementById('custPhone').focus();
-        return;
-    }
-
-    if (!pickupTime) {
-        showValidationAlert("Waktu pickup wajib diisi (Contoh: 12.05)!");
-        document.getElementById('optPickupTime').focus();
-        return;
-    }
-
-    let deliveryAndBagCost = 0;
-    let deliveryDetailStr = "%0A*METODE:* Pickup (Ambil sendiri di Outlet)";
-
-    if (method === 'Ojol') {
-        const address = document.getElementById('deliveryAddress').value.trim();
-
-        if (!address) {
-            showToast("Alamat lengkap pengiriman wajib diisi untuk metode Delivery!");
-            document.getElementById('deliveryAddress').focus();
-            return;
-        }
-
-        deliveryAndBagCost = 17000;
-        deliveryDetailStr =
-            "%0A*METODE:* Delivery (Diantar Ojol ke Alamat)" +
-            "%0A*ALAMAT KIRIM:* " +
-            encodeURIComponent(address);
-
-    } else if (method === 'NgopaNgopi') {
-        const address = document.getElementById('deliveryAddress').value.trim();
-
-        if (!address) {
-            showToast("Alamat lengkap pengiriman wajib diisi untuk metode Delivery!");
-            document.getElementById('deliveryAddress').focus();
-            return;
-        }
-
-        deliveryAndBagCost = 8000;
-        deliveryDetailStr =
-            "%0A*METODE:* Delivery (Diantar Tim NgopaNgopiAe)" +
-            "%0A*ALAMAT KIRIM:* " +
-            encodeURIComponent(address);
-    }
-
-    const outletName = selectedOutlet
-        ? selectedOutlet.name
-        : 'Outlet tidak dipilih';
-
-
-    // =====================================================
-    // PEMBENTUKAN RINCIAN MENU UNTUK WHATSAPP
-    // =====================================================
-
-    let menuStr = cart.map((c, i) => {
-
-        const itemPrice = c.price + (c.sizeUpcharge || 0);
-
-        // Gunakan category, BUKAN cat
-        const category = String(
-            c.category || c.cat || ''
-        ).trim();
-
-
-        // =================================================
-        // KATEGORI MAKANAN
-        // =================================================
-
-        const foodCategories = [
-            'Ayam Goreng',
-            'Pasta',
-            'Nasi',
-            'Snack',
-            'Korean Food',
-            'Fore Deli'
-        ];
-
-        const isFoodCategory = foodCategories.includes(category);
-
-
-        // Paket Ayam yang berada di kategori Paket Hemat
-        const isPaketAyam =
-            category === 'Paket Hemat' &&
-            c.name &&
-            c.name.toLowerCase().includes('paket ayam');
-
-
-        // Foreveryone 1L juga tidak membutuhkan
-        // ukuran / temperatur / gula / es
-        const isForeveryone1L =
-            c.brand === 'Fore Coffee' &&
-            category === 'Foreveryone 1L';
-
-
-        const isFood =
-            isFoodCategory ||
-            isPaketAyam ||
-            isForeveryone1L;
-
-
-        // =================================================
-        // BUNDLING BIASA
-        // =================================================
-
-        const isBundle =
-            category === 'Paket Hemat' &&
-            !(
-                c.name &&
-                c.name.toLowerCase().includes('paket ayam')
-            );
-
-
-        // =================================================
-        // FORE JUNIOR
-        // =================================================
-
-        const isForeJunior =
-            c.brand === 'Fore Coffee' &&
-            category === 'Fore Junior';
-
-
-        // =================================================
-        // MAKANAN
-        // HANYA MENU + CATATAN + SUBTOTAL
-        // =================================================
-
-        if (isFood) {
-
-            let extraDetails = '';
-
-            // Khusus paket ayam yang memiliki slotDetails
-            if (isPaketAyam && c.slotDetails) {
-
-                const slotDetails = c.slotDetails
-                    .map((s, idx) =>
-                        `Slot ${idx + 1}: ${s.name}` +
-                        `${s.size ? ` (${s.size})` : ''}` +
-                        `${s.note ? ` (Catatan: ${s.note})` : ''}`
-                    )
-                    .join(' | ');
-
-                extraDetails =
-                    `%0ADetail Paket: ${slotDetails}`;
+            if (cart.length === 0) {
+                showValidationAlert("Keranjangmu masih kosong! Silakan pilih menu terlebih dahulu.");
+                return;
             }
 
+            const name = document.getElementById('custName').value.trim();
+            const phone = document.getElementById('custPhone').value.trim();
+            const pickupHour = document.getElementById('pickupHour')?.value || '20';
+            const pickupMinute = document.getElementById('pickupMinute')?.value || '05';
+            const pickupTime = pickupHour + '.' + pickupMinute;
+            const timeZone = document.getElementById('optTimeZone').value;
+            const methodSelect = document.getElementById('orderMethod');
+            const method = methodSelect ? methodSelect.value : 'Pickup';
 
-            // Catatan tambahan
-            const noteText = c.note
-                ? `%0ACatatan Tambahan: ${encodeURIComponent(c.note)}`
-                : '';
-
-
-            return (
-                (i + 1) +
-                ". Menu: " +
-                c.name +
-                extraDetails +
-                noteText +
-                "%0ASubtotal: Rp" +
-                itemPrice.toLocaleString('id-ID')
-            );
-        }
-
-
-        // =================================================
-        // BUNDLING BIASA
-        // =================================================
-
-        if (isBundle) {
-
-            let extraDetails = '';
-
-            if (c.slotDetails) {
-
-                const slotDetails = c.slotDetails
-                    .map((s, idx) =>
-                        `Slot ${idx + 1}: ${s.name}` +
-                        `${s.size ? ` (${s.size})` : ''}` +
-                        `${s.note ? ` (Catatan: ${s.note})` : ''}`
-                    )
-                    .join(' | ');
-
-                extraDetails =
-                    `%0ADetail Paket: ${slotDetails}`;
+            if (!name) {
+                showValidationAlert("Nama wajib diisi sebelum mengirim pesanan ke admin!");
+                document.getElementById('custName').focus();
+                return;
             }
 
+            if (!phone) {
+                showValidationAlert("Nomor HP wajib diisi sebelum mengirim pesanan ke admin!");
+                document.getElementById('custPhone').focus();
+                return;
+            }
 
-            const noteText = c.note
-                ? `%0ACatatan Tambahan: ${encodeURIComponent(c.note)}`
-                : '';
+            if (!pickupTime) {
+                showValidationAlert("Waktu pickup wajib diisi (Contoh: 12.05)!");
+                document.getElementById('optPickupTime').focus();
+                return;
+            }
+
+            let deliveryAndBagCost = 0;
+            let deliveryDetailStr = "%0A*METODE:* Pickup (Ambil sendiri di Outlet)";
+
+            if (method === 'Ojol') {
+                const address = document.getElementById('deliveryAddress').value.trim();
+
+                if (!address) {
+                    showToast("Alamat lengkap pengiriman wajib diisi untuk metode Delivery!");
+                    document.getElementById('deliveryAddress').focus();
+                    return;
+                }
+
+                deliveryAndBagCost = 17000;
+                deliveryDetailStr =
+                    "%0A*METODE:* Delivery (Diantar Ojol ke Alamat)" +
+                    "%0A*ALAMAT KIRIM:* " +
+                    encodeURIComponent(address);
+
+            } else if (method === 'NgopaNgopi') {
+                const address = document.getElementById('deliveryAddress').value.trim();
+
+                if (!address) {
+                    showToast("Alamat lengkap pengiriman wajib diisi untuk metode Delivery!");
+                    document.getElementById('deliveryAddress').focus();
+                    return;
+                }
+
+                deliveryAndBagCost = 8000;
+                deliveryDetailStr =
+                    "%0A*METODE:* Delivery (Diantar Tim NgopaNgopiAe)" +
+                    "%0A*ALAMAT KIRIM:* " +
+                    encodeURIComponent(address);
+            }
+
+            const outletName = selectedOutlet
+                ? selectedOutlet.name
+                : 'Outlet tidak dipilih';
 
 
-            return (
-                (i + 1) +
-                ". Menu: " +
-                c.name +
-                extraDetails +
-                noteText +
-                "%0ASubtotal: Rp" +
-                itemPrice.toLocaleString('id-ID')
-            );
-        }
+            // =====================================================
+            // PEMBENTUKAN RINCIAN MENU UNTUK WHATSAPP
+            // =====================================================
+
+            let menuStr = cart.map((c, i) => {
+
+                const itemPrice = c.price + (c.sizeUpcharge || 0);
+
+                // Gunakan category, BUKAN cat
+                const category = String(
+                    c.category || c.cat || ''
+                ).trim();
 
 
-        // =================================================
-        // MINUMAN
-        // HANYA BAGIAN INI YANG MENAMPILKAN
-        // SIZE / TEMP / GULA / ES
-        // =================================================
+                // =================================================
+                // KATEGORI MAKANAN
+                // =================================================
 
-        let tempText =
-            c.temp === 'Ice'
-                ? 'Dingin'
-                : (
-                    c.temp === 'Hot'
-                        ? 'Panas'
-                        : (c.temp || '-')
+                const foodCategories = [
+                    'Ayam Goreng',
+                    'Pasta',
+                    'Nasi',
+                    'Snack',
+                    'Korean Food',
+                    'Fore Deli'
+                ];
+
+                const isFoodCategory = foodCategories.includes(category);
+
+
+                // Paket Ayam yang berada di kategori Paket Hemat
+                const isPaketAyam =
+                    category === 'Paket Hemat' &&
+                    c.name &&
+                    c.name.toLowerCase().includes('paket ayam');
+
+
+                // Foreveryone 1L juga tidak membutuhkan
+                // ukuran / temperatur / gula / es
+                const isForeveryone1L =
+                    c.brand === 'Fore Coffee' &&
+                    category === 'Foreveryone 1L';
+
+
+                const isFood =
+                    isFoodCategory ||
+                    isPaketAyam ||
+                    isForeveryone1L;
+
+
+                // =================================================
+                // BUNDLING BIASA
+                // =================================================
+
+                const isBundle =
+                    category === 'Paket Hemat' &&
+                    !(
+                        c.name &&
+                        c.name.toLowerCase().includes('paket ayam')
+                    );
+
+
+                // =================================================
+                // FORE JUNIOR
+                // =================================================
+
+                const isForeJunior =
+                    c.brand === 'Fore Coffee' &&
+                    category === 'Fore Junior';
+
+
+                // =================================================
+                // MAKANAN
+                // HANYA MENU + CATATAN + SUBTOTAL
+                // =================================================
+
+                if (isFood) {
+
+                    let extraDetails = '';
+
+                    // Khusus paket ayam yang memiliki slotDetails
+                    if (isPaketAyam && c.slotDetails) {
+
+                        const slotDetails = c.slotDetails
+                            .map((s, idx) =>
+                                `Slot ${idx + 1}: ${s.name}` +
+                                `${s.size ? ` (${s.size})` : ''}` +
+                                `${s.note ? ` (Catatan: ${s.note})` : ''}`
+                            )
+                            .join(' | ');
+
+                        extraDetails =
+                            `%0ADetail Paket: ${slotDetails}`;
+                    }
+
+
+                    // Catatan tambahan
+                    const noteText = c.note
+                        ? `%0ACatatan Tambahan: ${encodeURIComponent(c.note)}`
+                        : '';
+
+
+                    return (
+                        (i + 1) +
+                        ". Menu: " +
+                        c.name +
+                        extraDetails +
+                        noteText +
+                        "%0ASubtotal: Rp" +
+                        itemPrice.toLocaleString('id-ID')
+                    );
+                }
+
+
+                // =================================================
+                // BUNDLING BIASA
+                // =================================================
+
+                if (isBundle) {
+
+                    let extraDetails = '';
+
+                    if (c.slotDetails) {
+
+                        const slotDetails = c.slotDetails
+                            .map((s, idx) =>
+                                `Slot ${idx + 1}: ${s.name}` +
+                                `${s.size ? ` (${s.size})` : ''}` +
+                                `${s.note ? ` (Catatan: ${s.note})` : ''}`
+                            )
+                            .join(' | ');
+
+                        extraDetails =
+                            `%0ADetail Paket: ${slotDetails}`;
+                    }
+
+
+                    const noteText = c.note
+                        ? `%0ACatatan Tambahan: ${encodeURIComponent(c.note)}`
+                        : '';
+
+
+                    return (
+                        (i + 1) +
+                        ". Menu: " +
+                        c.name +
+                        extraDetails +
+                        noteText +
+                        "%0ASubtotal: Rp" +
+                        itemPrice.toLocaleString('id-ID')
+                    );
+                }
+
+
+                // =================================================
+                // MINUMAN
+                // HANYA BAGIAN INI YANG MENAMPILKAN
+                // SIZE / TEMP / GULA / ES
+                // =================================================
+
+                let tempText =
+                    c.temp === 'Ice'
+                        ? 'Dingin'
+                        : (
+                            c.temp === 'Hot'
+                                ? 'Panas'
+                                : (c.temp || '-')
+                        );
+
+
+                let sugarText =
+                    c.sugar
+                        ? (
+                            c.sugar === 'Normal Sugar'
+                                ? 'Normal Gula'
+                                : c.sugar === 'Less Sugar'
+                                    ? 'Sedikit Gula'
+                                    : c.sugar === 'No Sugar'
+                                        ? 'Tanpa Gula'
+                                        : c.sugar
+                        )
+                        : '-';
+
+
+                let iceText =
+                    c.ice
+                        ? (
+                            c.ice === 'Normal Ice'
+                                ? 'Normal Es'
+                                : c.ice === 'Less Ice'
+                                    ? 'Sedikit Es'
+                                    : c.ice === 'No Ice'
+                                        ? 'Tanpa Es'
+                                        : c.ice
+                        )
+                        : '-';
+
+
+                let sizeText =
+                    isForeJunior
+                        ? ''
+                        : `Ukuran: ${c.size || '-'}%0A`;
+
+
+                return (
+                    (i + 1) +
+                    ". Menu: " +
+                    c.name +
+                    "%0A" +
+                    sizeText +
+                    "Temperatur: " +
+                    tempText +
+                    "%0A" +
+                    "Takaran Gula: " +
+                    sugarText +
+                    "%0A" +
+                    "Takaran Es: " +
+                    iceText +
+                    "%0A" +
+                    "Catatan: " +
+                    encodeURIComponent(c.note || '-') +
+                    "%0A" +
+                    "Subtotal: Rp" +
+                    itemPrice.toLocaleString('id-ID')
                 );
 
-
-        let sugarText =
-            c.sugar
-                ? (
-                    c.sugar === 'Normal Sugar'
-                        ? 'Normal Gula'
-                        : c.sugar === 'Less Sugar'
-                            ? 'Sedikit Gula'
-                            : c.sugar === 'No Sugar'
-                                ? 'Tanpa Gula'
-                                : c.sugar
-                )
-                : '-';
+            }).join('%0A%0A');
 
 
-        let iceText =
-            c.ice
-                ? (
-                    c.ice === 'Normal Ice'
-                        ? 'Normal Es'
-                        : c.ice === 'Less Ice'
-                            ? 'Sedikit Es'
-                            : c.ice === 'No Ice'
-                                ? 'Tanpa Es'
-                                : c.ice
-                )
-                : '-';
+            // =====================================================
+            // TOTAL
+            // =====================================================
 
-
-        let sizeText =
-            isForeJunior
-                ? ''
-                : `Ukuran: ${c.size || '-'}%0A`;
-
-
-        return (
-            (i + 1) +
-            ". Menu: " +
-            c.name +
-            "%0A" +
-            sizeText +
-            "Temperatur: " +
-            tempText +
-            "%0A" +
-            "Takaran Gula: " +
-            sugarText +
-            "%0A" +
-            "Takaran Es: " +
-            iceText +
-            "%0A" +
-            "Catatan: " +
-            encodeURIComponent(c.note || '-') +
-            "%0A" +
-            "Subtotal: Rp" +
-            itemPrice.toLocaleString('id-ID')
-        );
-
-    }).join('%0A%0A');
-
-
-    // =====================================================
-    // TOTAL
-    // =====================================================
-
-    const subtotalVal = cart.reduce(
-        (acc, item) =>
-            acc +
-            item.price +
-            (item.sizeUpcharge || 0),
-        0
-    );
-
-
-    let jasdorFeeTotal = 0;
-
-    cart.forEach(item => {
-        const category = String(
-            item.category || item.cat || ''
-        ).trim();
-
-        jasdorFeeTotal += (
-            category === 'Paket Hemat'
-                ? 750
-                : 500
-        );
-    });
-
-
-    const grandTotalVal =
-        subtotalVal +
-        jasdorFeeTotal +
-        deliveryAndBagCost;
-
-
-    // =====================================================
-    // FORMAT PESAN WHATSAPP
-    // =====================================================
-
-    let text =
-        "*Hai min aku mau pesan ya*%0A%0A";
-
-    text +=
-        "*BRAND:* " +
-        selectedBrand +
-        "%0A";
-
-    text +=
-        "*NAMA:* " +
-        name +
-        "%0A";
-
-    text +=
-        "*NOMOR HP:* " +
-        phone +
-        "%0A";
-
-    text +=
-        "*OUTLET:* " +
-        outletName +
-        deliveryDetailStr +
-        "%0A";
-
-    text +=
-        "*WAKTU PICKUP:* " +
-        pickupTime +
-        " " +
-        timeZone +
-        "%0A%0A";
-
-    text +=
-        "*RINCIAN PESANAN:*%0A" +
-        menuStr +
-        "%0A%0A";
-
-    text +=
-        "*SUBTOTAL MENU:* Rp" +
-        subtotalVal.toLocaleString('id-ID') +
-        "%0A";
-
-    text +=
-        "*FEE JASDOR:* Rp" +
-        jasdorFeeTotal.toLocaleString('id-ID') +
-        "%0A";
-
-    if (method === 'Ojol') {
-
-        text +=
-            "*BIAYA DELIVERY OJOL + BAG:* Rp" +
-            deliveryAndBagCost.toLocaleString('id-ID') +
-            "%0A";
-
-    } else if (method === 'NgopaNgopi') {
-
-        text +=
-            "*BIAYA DELIVERY TIM NGOPANGOPI:* Rp" +
-            deliveryAndBagCost.toLocaleString('id-ID') +
-            "%0A";
-    }
-
-    text +=
-        "*TOTAL PEMBAYARAN:* Rp" +
-        grandTotalVal.toLocaleString('id-ID') +
-        "%0A%0A";
-
-    text +=
-        "Tolong kirimin QRIS / Rekening Pembayaran dong min. Terima kasih!";
-
-
-    // =====================================================
-    // SIMPAN ORDER KE SUPABASE
-    // =====================================================
-
-    const orderData = {
-        customer_name: name,
-        customer_phone: phone,
-        total_price: grandTotalVal,
-
-        items: cart.map((item, idx) => ({
-            index: idx + 1,
-            name: item.name,
-            brand: item.brand || selectedBrand,
-            category: item.category || item.cat || '',
-            size: item.size || '',
-            temp: item.temp || '',
-            sugar: item.sugar || '',
-            ice: item.ice || '',
-            note: item.note || '',
-            price: item.price + (item.sizeUpcharge || 0)
-        })),
-
-        notes:
-            `Metode: ${method} | Outlet: ${outletName}`
-    };
-
-
-    supabaseClient
-        .from('orders')
-        .insert([orderData])
-        .then(() => {
-            console.log("Pesanan berhasil disimpan ke Supabase!");
-        })
-        .catch(err => {
-            console.error(
-                "Gagal menyimpan pesanan ke Supabase:",
-                err
+            const subtotalVal = cart.reduce(
+                (acc, item) =>
+                    acc +
+                    item.price +
+                    (item.sizeUpcharge || 0),
+                0
             );
 
-            showValidationAlert(
-                "Gagal menyimpan pesanan. Periksa kembali koneksi database."
-            );
 
-            return;
-        });
+            let jasdorFeeTotal = 0;
+
+            cart.forEach(item => {
+                const category = String(
+                    item.category || item.cat || ''
+                ).trim();
+
+                jasdorFeeTotal += (
+                    category === 'Paket Hemat'
+                        ? 750
+                        : 500
+                );
+            });
 
 
-    // =====================================================
-    // BUKA WHATSAPP
-    // =====================================================
+            const grandTotalVal =
+                subtotalVal +
+                jasdorFeeTotal +
+                deliveryAndBagCost;
 
-    const waNumber = "62881036705137";
 
-    pendingWAUrl =
-        "https://wa.me/" +
-        waNumber +
-        "?text=" +
-        text;
+            // =====================================================
+            // FORMAT PESAN WHATSAPP
+            // =====================================================
 
-    openModal('finalWarningModal');
-}
+            let text =
+                "*Hai min aku mau pesan ya*%0A%0A";
+
+            text +=
+                "*BRAND:* " +
+                selectedBrand +
+                "%0A";
+
+            text +=
+                "*NAMA:* " +
+                name +
+                "%0A";
+
+            text +=
+                "*NOMOR HP:* " +
+                phone +
+                "%0A";
+
+            text +=
+                "*OUTLET:* " +
+                outletName +
+                deliveryDetailStr +
+                "%0A";
+
+            text +=
+                "*WAKTU PICKUP:* " +
+                pickupTime +
+                " " +
+                timeZone +
+                "%0A%0A";
+
+            text +=
+                "*RINCIAN PESANAN:*%0A" +
+                menuStr +
+                "%0A%0A";
+
+            text +=
+                "*SUBTOTAL MENU:* Rp" +
+                subtotalVal.toLocaleString('id-ID') +
+                "%0A";
+
+            text +=
+                "*FEE JASDOR:* Rp" +
+                jasdorFeeTotal.toLocaleString('id-ID') +
+                "%0A";
+
+            if (method === 'Ojol') {
+
+                text +=
+                    "*BIAYA DELIVERY OJOL + BAG:* Rp" +
+                    deliveryAndBagCost.toLocaleString('id-ID') +
+                    "%0A";
+
+            } else if (method === 'NgopaNgopi') {
+
+                text +=
+                    "*BIAYA DELIVERY TIM NGOPANGOPI:* Rp" +
+                    deliveryAndBagCost.toLocaleString('id-ID') +
+                    "%0A";
+            }
+
+            text +=
+                "*TOTAL PEMBAYARAN:* Rp" +
+                grandTotalVal.toLocaleString('id-ID') +
+                "%0A%0A";
+
+            text +=
+                "Tolong kirimin QRIS / Rekening Pembayaran dong min. Terima kasih!";
+
+
+            // =====================================================
+            // SIMPAN ORDER KE SUPABASE
+            // =====================================================
+
+            const orderData = {
+                customer_name: name,
+                customer_phone: phone,
+                total_price: grandTotalVal,
+
+                items: cart.map((item, idx) => ({
+                    index: idx + 1,
+                    name: item.name,
+                    brand: item.brand || selectedBrand,
+                    category: item.category || item.cat || '',
+                    size: item.size || '',
+                    temp: item.temp || '',
+                    sugar: item.sugar || '',
+                    ice: item.ice || '',
+                    note: item.note || '',
+                    price: item.price + (item.sizeUpcharge || 0)
+                })),
+
+                notes:
+                    `Metode: ${method} | Outlet: ${outletName}`
+            };
+
+
+            supabaseClient
+                .from('orders')
+                .insert([orderData])
+                .then(() => {
+                    console.log("Pesanan berhasil disimpan ke Supabase!");
+                })
+                .catch(err => {
+                    console.error(
+                        "Gagal menyimpan pesanan ke Supabase:",
+                        err
+                    );
+
+                    showValidationAlert(
+                        "Gagal menyimpan pesanan. Periksa kembali koneksi database."
+                    );
+
+                    return;
+                });
+
+
+            // =====================================================
+            // BUKA WHATSAPP
+            // =====================================================
+
+            const waNumber = "62881036705137";
+
+            pendingWAUrl =
+                "https://wa.me/" +
+                waNumber +
+                "?text=" +
+                text;
+
+            openModal('finalWarningModal');
+        }
 
         function executeSendWA() {
             closeModal('finalWarningModal');
@@ -4168,6 +4223,7 @@ document.getElementById('sugarSection').style.display = (isSnack || !availableOp
             checkAndShowWelcomeNotice();
             checkAdminAccess();
             initCustomSelect();
+            populatePickupTime();
             const floatCart = document.getElementById('floatingCart');
             const floatTop = document.getElementById('floatingTopBtn');
             window.addEventListener('scroll', function () {
@@ -4175,6 +4231,55 @@ document.getElementById('sugarSection').style.display = (isSnack || !availableOp
             });
             updateCartUI();
         });
+
+        // ======================== FUNGSI WAKTU PICKUP ========================
+
+        function populatePickupTime() {
+            const hourSelect = document.getElementById('pickupHour');
+            if (!hourSelect) return;
+
+            // Kosongkan dropdown
+            hourSelect.innerHTML = '';
+
+            // Generate jam dari 00 sampai 23 (HANYA ANGKA JAM, tanpa ":00")
+            for (let i = 0; i < 24; i++) {
+                const hour = String(i).padStart(2, '0');
+                const option = document.createElement('option');
+                option.value = hour;
+                option.textContent = hour; // HANYA angka jam, bukan "00:00"
+                hourSelect.appendChild(option);
+            }
+
+            // Set default ke jam saat ini + 1 jam
+            const now = new Date();
+            let currentHour = now.getHours();
+            let currentMinute = now.getMinutes();
+
+            // Tambah 1 jam
+            currentHour = (currentHour + 1) % 24;
+
+            // Jika menit > 45, tambah 1 jam lagi
+            if (currentMinute > 45) {
+                currentHour = (currentHour + 1) % 24;
+            }
+
+            // Set default hour
+            hourSelect.value = String(currentHour).padStart(2, '0');
+
+            // Set default minute ke 00, 15, 30, atau 45 (pembulatan)
+            const minuteSelect = document.getElementById('pickupMinute');
+            if (minuteSelect) {
+                if (currentMinute <= 15) {
+                    minuteSelect.value = '00';
+                } else if (currentMinute <= 30) {
+                    minuteSelect.value = '30';
+                } else if (currentMinute <= 45) {
+                    minuteSelect.value = '45';
+                } else {
+                    minuteSelect.value = '00';
+                }
+            }
+        }
         // ======================== KATEGORI POPUP ========================
 
         function openCategoryModal() {
