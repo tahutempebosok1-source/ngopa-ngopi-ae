@@ -221,134 +221,141 @@
             background: #FFC107;
         }
 
-        /* --- Semua gaya dari file asli --- */
-        .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-            z-index: 999;
-            display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
+        /* Sidebar overlay - default */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
 
-        .sidebar-overlay.active {
-            display: block;
-            opacity: 1;
-        }
+.sidebar-overlay.active {
+    display: block;
+    opacity: 1;
+}
 
-        .sidebar-content {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 85%;
-            max-width: 380px;
-            height: 100%;
-            background: #ffffff;
-            z-index: 1000;
-            transition: right 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
-            padding: 24px;
-            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
-            overflow-y: auto;
-        }
+/* Dark mode overlay - lebih gelap */
+.dark-theme .sidebar-overlay {
+    background: rgba(0, 0, 0, 0.8);
+}
 
-        .sidebar-content.open {
-            right: 0;
-        }
+       /* ========== SIDEBAR STYLE ========== */
 
-        .sidebar-close {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: #f3f4f6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 0.2s;
-            border: none;
-        }
+/* Sidebar default (light mode) */
+.sidebar-content {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 85%;
+    max-width: 380px;
+    height: 100%;
+    background: #ffffff;
+    z-index: 1000;
+    transition: right 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+    padding: 24px;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+}
 
-        .sidebar-close:hover {
-            background: #e5e7eb;
-        }
+.sidebar-content.open {
+    right: 0;
+}
 
-        .sidebar-title {
-            font-size: 18px;
-            font-weight: 900;
-            margin-bottom: 20px;
-        }
+.sidebar-title {
+    font-size: 18px;
+    font-weight: 900;
+    margin-bottom: 20px;
+    color: #0D2213;
+}
 
-        .sidebar-menu-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 16px;
-            background: #f9fafb;
-            border-radius: 16px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+.sidebar-menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: #f9fafb;
+    border-radius: 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
 
-        .sidebar-menu-item:hover {
-            background: #f3f4f6;
-            transform: translateX(4px);
-        }
+.sidebar-menu-item:hover {
+    background: #f3f4f6;
+    transform: translateX(4px);
+}
 
-        .sidebar-menu-item .left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 700;
-        }
+.sidebar-menu-item .left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    color: #0D2213;
+}
 
-        .sidebar-menu-item .left i {
-            font-size: 18px;
-            color: #2E6F40;
-            width: 24px;
-            text-align: center;
-        }
+.sidebar-menu-item .left i {
+    font-size: 18px;
+    color: #2E6F40;
+    width: 24px;
+    text-align: center;
+    transition: color 0.3s ease;
+}
 
-        .sidebar-menu-item .sub {
-            font-size: 11px;
-            color: #6b7280;
-            font-weight: 400;
-            display: block;
-        }
+.sidebar-menu-item .arrow {
+    color: #9ca3af;
+    font-size: 12px;
+}
 
-        .sidebar-menu-item .arrow {
-            color: #9ca3af;
-            font-size: 12px;
-        }
+/* ========== SIDEBAR DARK MODE ========== */
+.dark-theme .sidebar-content {
+    background: #0D2213;
+}
 
-        .dark-theme .sidebar-content {
-            background: #0D2213;
-        }
+.dark-theme .sidebar-close {
+    background: #1B4326;
+    color: white;
+}
 
-        .dark-theme .sidebar-close {
-            background: #1B4326;
-            color: white;
-        }
+.dark-theme .sidebar-close:hover {
+    background: #2E6F40;
+}
 
-        .dark-theme .sidebar-menu-item {
-            background: #14331C;
-        }
+.dark-theme .sidebar-title {
+    color: #ffffff;
+}
 
-        .dark-theme .sidebar-menu-item:hover {
-            background: #1B4326;
-        }
+.dark-theme .sidebar-menu-item {
+    background: #14331C;
+}
 
-        .dark-theme .sidebar-menu-item .sub {
-            color: #9ca3af;
-        }
+.dark-theme .sidebar-menu-item:hover {
+    background: #1B4326;
+    transform: translateX(4px);
+}
+
+/* 🔥 PERBAIKAN: Icon sidebar di dark mode menjadi KUNING */
+.dark-theme .sidebar-menu-item .left {
+    color: #e5e7eb;
+}
+
+.dark-theme .sidebar-menu-item .left i {
+    color: #fde047 !important; /* Kuning terang */
+}
+
+.dark-theme .sidebar-menu-item .arrow {
+    color: #fde047 !important;
+}
+
+.dark-theme .sidebar-menu-item .sub {
+    color: #9ca3af;
+}
 
         #adminDashboardContainer {
             background-color: #0B190E !important;
@@ -1044,7 +1051,7 @@
 
         .floating-cart {
             position: fixed;
-            bottom: 24px;
+            bottom: 100px;
             right: 24px;
             z-index: 40;
             background: #1A1A1A;
@@ -1071,7 +1078,7 @@
 
         .floating-top-btn {
             position: fixed;
-            bottom: 80px;
+            bottom: 100px;
             left: 24px;
             z-index: 40;
             background: #1A1A1A;
