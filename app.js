@@ -944,19 +944,17 @@
         }
 
         function openBundlingModal(item) {
-            // 🔥 CEK APAKAH INI PAKET PRESET
             const isPreset = getPresetForItem(item);
 
             if (isPreset) {
-                // PAKET PRESET (AUTO-SELECT)
                 const bundleDescText = isPreset.desc || item.description || item.desc || '';
                 activeBundlingItem = {
                     ...item,
                     price: item.price || isPreset.price,
-                    slotCount: isPreset.slots
+                    slotCount: isPreset.slots || 4 // Memastikan jumlah slot terbaca 4
                 };
 
-                // Buat slot dengan item yang sudah dipilih otomatis
+                // Memetakan 4 slot otomatis dari preset
                 bundlingSlots = isPreset.items.map((presetItem, idx) => {
                     const isFoodItem = /roti|toast|croissant|donut|snack|food|ayam|nasi|pasta|deli/i.test(presetItem.name);
                     return {
@@ -972,27 +970,19 @@
                 activeSlotIndex = 0;
 
                 document.getElementById('bundlingTitle').innerText = item.name;
-                document.getElementById('bundlingSub').innerText = isPreset.desc || item.description || item.desc || '✨ Menu sudah dipilih otomatis!';
+                document.getElementById('bundlingSub').innerText = bundleDescText || '✨ Menu sudah dipilih otomatis!';
                 document.getElementById('bundlingPrice').innerText = `Rp${activeBundlingItem.price.toLocaleString('id-ID')}`;
 
-                // Sembunyikan grid pilihan menu (karena sudah auto-select)
+                // Sembunyikan grid pilihan manual karena sudah otomatis 4 slot
                 document.getElementById('bundlingItemGrid').innerHTML = `
-            <div class="col-span-4 text-center text-amber-400 text-xs py-4">
-                <i class="fa-solid fa-check-circle text-lg"></i> Menu sudah dipilih otomatis untuk paket ini
-            </div>
-        `;
+                    <div class="col-span-4 text-center text-amber-400 text-xs py-4">
+                        <i class="fa-solid fa-check-circle text-lg"></i> 4 Menu sudah dipilih otomatis untuk paket ini (Bisa diklik untuk melihat detail)
+                    </div>
+                `;
 
-                // Sembunyikan area customize
                 document.getElementById('bundlingCustomizeArea').classList.add('hidden');
-
-                // Set placeholder note untuk slot pertama
-                const noteInput = document.getElementById('bundlingNoteInput');
-                if (noteInput) {
-                    noteInput.value = '';
-                    noteInput.placeholder = `Catatan untuk Slot 1 (${bundlingSlots[0].name})...`;
-                }
-
                 renderBundlingSlotsUI();
+                
                 const shareBox = document.getElementById('bundlingSharePromoBox');
                 if (shareBox) {
                     if (isBundlingDrinkAndFood(item)) shareBox.classList.remove('hidden');
