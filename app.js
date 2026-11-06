@@ -1033,54 +1033,55 @@
         }
 
         function renderBundlingSlotsUI() {
-            const container = document.getElementById('bundlingSlotsContainer');
-            if (!container) return;
-            container.style.display = 'flex';
-            container.style.flexWrap = 'wrap';
-            container.style.gap = '10px';
+    const container = document.getElementById('bundlingSlotsContainer');
+    if (!container) return;
+    container.style.display = 'flex';
+    container.style.flexWrap = 'wrap';
+    container.style.gap = '10px';
 
-            container.innerHTML = bundlingSlots.map((slot, idx) => {
-                const isActive = idx === activeSlotIndex;
-                const isPreset = slot && slot.preset === true;
+    container.innerHTML = bundlingSlots.map((slot, idx) => {
+        const isActive = idx === activeSlotIndex;
+        const isPreset = slot && slot.preset === true;
 
-                let btnClass = "slot-btn p-2.5 rounded-2xl border text-left flex-1 min-w-[130px] transition-all duration-300 ";
+        let btnClass = "slot-btn rounded-2xl border text-left flex-1 transition-all duration-300 ";
 
-                if (isActive && !slot) {
-                    btnClass += "bg-brand-800/40 text-amber-400 border-brand-700/50 active-slot slot-btn-empty";
-                } else if (isActive && slot) {
-                    btnClass += "bg-amber-400 text-brand-900 border-amber-400 font-extrabold shadow-md active-slot";
-                } else if (slot && isPreset) {
-                    btnClass += "bg-emerald-800/60 text-white border-emerald-600";
-                } else if (slot) {
-                    btnClass += "bg-brand-800 text-white border-brand-700";
-                } else {
-                    btnClass += "bg-brand-900/60 text-gray-400 border-brand-700/30 slot-btn-empty";
-                }
+        if (isActive && !slot) {
+            btnClass += "bg-brand-800/40 text-amber-400 border-brand-700/50 active-slot slot-btn-empty";
+        } else if (isActive && slot) {
+            btnClass += "bg-amber-400 text-brand-900 border-amber-400 font-extrabold shadow-md active-slot";
+        } else if (slot && isPreset) {
+            btnClass += "bg-emerald-800/80 text-white border-emerald-600 shadow";
+        } else if (slot) {
+            btnClass += "bg-brand-800 text-white border-brand-700";
+        } else {
+            btnClass += "bg-brand-900/60 text-gray-400 border-brand-700/30 slot-btn-empty";
+        }
 
-                // Tampilkan note jika ada
-                const noteDisplay = slot && slot.note ? `<span class="text-[9px] text-amber-400 block truncate">📝 ${slot.note}</span>` : '';
-                const sizeDisplay = slot && slot.size ? ` (${slot.size})` : '';
+        const noteDisplay = slot && slot.note ? `<span class="text-[9px] text-amber-300 block truncate font-medium">📝 ${slot.note}</span>` : '';
+        const sizeDisplay = slot && slot.size ? ` (${slot.size})` : '';
 
-                return `
-            <button type="button" onclick="setActiveSlot(${idx})" class="${btnClass}" style="flex: 1 1 130px; min-width: 120px;">
-                <p class="text-[9px] uppercase tracking-wider">Slot ${idx + 1}</p>
-                <p class="text-xs truncate font-bold">${slot ? slot.name + sizeDisplay : 'Pilih Item'}</p>
+        return `
+            <button type="button" onclick="setActiveSlot(${idx})" class="${btnClass}">
+                <div class="flex items-center justify-between">
+                    <p class="text-[9px] uppercase tracking-wider font-bold opacity-80">Slot ${idx + 1}</p>
+                    ${isPreset ? '<span class="text-[8px] bg-white/20 text-white px-1.5 py-0.2 rounded-full font-bold">Auto</span>' : ''}
+                </div>
+                <p class="text-xs truncate font-black mt-0.5">${slot ? slot.name + sizeDisplay : 'Pilih Item'}</p>
                 ${noteDisplay}
-                ${isPreset ? '<span class="text-[8px] bg-emerald-500/30 text-emerald-300 px-1.5 py-0.5 rounded-full ml-1">Otomatis</span>' : ''}
             </button>
         `;
-            }).join('');
+    }).join('');
 
-            const btn = document.getElementById('btnConfirmBundling');
-            if (btn) {
-                const isComplete = bundlingSlots.every(s => s !== null);
-                btn.innerText = isComplete ? 'Tambah ke Keranjang' : 'Tambah (Belum Lengkap)';
-                btn.disabled = !isComplete;
-                btn.className = isComplete
-                    ? "w-full bg-amber-400 hover:bg-amber-500 text-brand-950 font-extrabold py-3 rounded-2xl shadow-lg transition text-xs cursor-pointer"
-                    : "w-full bg-gray-600 text-gray-300 font-extrabold py-3 rounded-2xl cursor-not-allowed text-xs";
-            }
-        }
+    const btn = document.getElementById('btnConfirmBundling');
+    if (btn) {
+        const isComplete = bundlingSlots.every(s => s !== null);
+        btn.innerText = isComplete ? 'Tambah ke Keranjang' : 'Tambah (Belum Lengkap)';
+        btn.disabled = !isComplete;
+        btn.className = isComplete
+            ? "w-full bg-amber-400 hover:bg-amber-500 text-brand-950 font-extrabold py-3 rounded-2xl shadow-lg transition text-xs cursor-pointer"
+            : "w-full bg-gray-600 text-gray-300 font-extrabold py-3 rounded-2xl cursor-not-allowed text-xs";
+    }
+}
 
         async function setActiveSlot(index) {
             // Simpan catatan slot sebelumnya
