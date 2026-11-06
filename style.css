@@ -763,13 +763,16 @@
         #bundlingSlotsContainer {
             display: flex;
             flex-wrap: wrap !important;
-            gap: 10px;
+            gap: 8px;
+            margin-bottom: 8px;
         }
 
         .slot-btn {
-            flex: 1 1 130px !important;
-            min-width: 120px;
+            flex: 1 1 calc(50% - 6px) !important; /* Membuat 2 slot per baris di HP agar sangat lapang */
+            min-width: 140px;
+            min-height: 52px; /* Tinggi minimum agar tidak gepeng */
             max-width: 100%;
+            padding: 10px 12px !important;
         }
 
         .bundle-item-card {
