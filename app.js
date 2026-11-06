@@ -68,23 +68,26 @@
           
 
         function getPresetForItem(item) {
-            if (!item) return null;
-            if (BUNDLING_PRESETS[item.name]) return BUNDLING_PRESETS[item.name];
+    if (!item) return null;
+    if (BUNDLING_PRESETS[item.name]) return BUNDLING_PRESETS[item.name];
 
-            const dbDesc = (item.description || item.desc || '').toLowerCase();
+    const itemName = (item.name || '').toLowerCase();
+    const dbDesc = (item.description || item.desc || '').toLowerCase();
 
-            // Cocokkan langsung berdasarkan deskripsi paket di database Supabase
-            if (dbDesc.includes('og thai tea') && dbDesc.includes('roti susu manis')) return BUNDLING_PRESETS['Bundling Drink & Food 5'];
-            if (dbDesc.includes('americano') && dbDesc.includes('raspberry') && !dbDesc.includes('2x')) return BUNDLING_PRESETS['Bundling Drink & Food 1'];
-            if (dbDesc.includes('2x raspberry') || dbDesc.includes('2xraspberry')) return BUNDLING_PRESETS['Bundling Drink & Food 2'];
-            if (dbDesc.includes('kopi kenangan mantan') && dbDesc.includes('roti susu manis')) return BUNDLING_PRESETS['Bundling Drink & Food 3'];
-            if (dbDesc.includes('cafe malt latte') && dbDesc.includes('srikaya')) return BUNDLING_PRESETS['Bundling Drink & Food 4'];
-            if (dbDesc.includes('choux puff')) return BUNDLING_PRESETS['Bundling Drink & Food 6'];
-            if (dbDesc.includes('wahyu sapi toast')) return BUNDLING_PRESETS['Bundling Drink & Food 7'];
-            if (dbDesc.includes('salt bread choco butter')) return BUNDLING_PRESETS['Bundling Drink & Food 8'];
-
-            return null;
-        }
+    // Jika nama menu mengandung 'bundling drink & food', petankan secara aman ke preset ke-5 atau berdasarkan nomor urutnya di database
+    if (itemName.includes('bundling drink & food')) {
+        if (dbDesc.includes('og thai tea')) return BUNDLING_PRESETS['Bundling Drink & Food 5'];
+        if (dbDesc.includes('2x raspberry') || dbDesc.includes('2raspberry')) return BUNDLING_PRESETS['Bundling Drink & Food 2'];
+        if (dbDesc.includes('kopi kenangan mantan') && dbDesc.includes('roti susu manis')) return BUNDLING_PRESETS['Bundling Drink & Food 3'];
+        if (dbDesc.includes('cafe malt') || dbDesc.includes('srikaya')) return BUNDLING_PRESETS['Bundling Drink & Food 4'];
+        if (dbDesc.includes('choux')) return BUNDLING_PRESETS['Bundling Drink & Food 6'];
+        if (dbDesc.includes('wahyu sapi')) return BUNDLING_PRESETS['Bundling Drink & Food 7'];
+        if (dbDesc.includes('salt bread')) return BUNDLING_PRESETS['Bundling Drink & Food 8'];
+        // Fallback default untuk Bundling Drink & Food jika deskripsi lain
+        return BUNDLING_PRESETS['Bundling Drink & Food 1'];
+    }
+    return null;
+}
 
         // ======================== STATE ========================
         let selectedBrand = 'Kopi Kenangan';
@@ -948,11 +951,11 @@
 
             if (isPreset) {
                 const bundleDescText = isPreset.desc || item.description || item.desc || '';
-                activeBundlingItem = {
-                    ...item,
-                    price: item.price || isPreset.price,
-                    slotCount: isPreset.slots || 4 // Memastikan jumlah slot terbaca 4
-                };
+                activeBundlingItem = { ...item, price: item.price + (isOutsideJava(selectedOutlet) ? 2000 : 0) };
+let totalSlots = item.slotCount || 2;
+if (item.name && item.name.toLowerCase().includes("bundling drink & food")) totalSlots = 4;
+if (item.name && item.name.toLowerCase().includes("3 cup")) totalSlots = 3;
+bundlingSlots = Array(totalSlots).fill(null);
 
                 // Memetakan 4 slot otomatis dari preset
                 bundlingSlots = isPreset.items.map((presetItem, idx) => {
