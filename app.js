@@ -19,8 +19,9 @@
             'Tomoro Coffee': ['Semua', 'Tomoro Signature', 'Classic Coffee', 'Fruity Series', 'Cloud Series', 'Non Coffee', 'Matcha Series']
         };
 
-        const brandWifiData = {
-            "Kopi Kenangan": ["NgopiSantuy#01", "KopiPenyemangat@02", "SemangatBaru03", "HariCeria=04", "KopiTemanSetia!05", "AndalanMantan#06", "KopiTemanPagi@07", "KopiPenutupSore08", "SegarnyaKopi=09", "NgopiBarengYuk!10", "KenanganIndah#11", "KopiJodohSejati@12", "HangatnyaKopi13", "PagiSemangat=14", "NgopiDuluGaes!15", "KopiPenyelamat#16", "RasaKangen@17", "SecangkirRindu18", "KopiTanpaBatas=19", "NgopiSambilKerja!20", "KenanganManis#21", "KopiTemanCurhat@22", "BahagiaItuSederhana23", "NgopiPenuhCinta=24", "KopiRasaCinta!25", "SemangatPejuang#26", "KopiBikinSemangat@27", "PagiPenuhSyukur28", "KenanganTakTerlupa=29", "KopiSelaluSetia!30", "KopiFavoritmu#31"],
+        // Variabel penampung password WiFi dari Supabase (dengan fallback default jika offline)
+        let brandWifiData = {
+            "Kopi Kenangan": ["NgopiSantuy#01"],
             "Tomoro Coffee": ["TerimaKasih"],
             "Fore Coffee": ["Foreveryone"]
         };
@@ -455,18 +456,48 @@
             }
         }
 
-        // ======================== WIFI ========================
+        // ======================== WIFI (SUPABASE INTEGRATED) ========================
+        async function fetchWifiPasswordsFromDB() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('wifi_passwords')
+                    .select('brand, passwords');
 
-        function renderWifiDisplay() {
+                if (!error && Array.isArray(data) && data.length > 0) {
+                    data.forEach(item => {
+                        if (item.brand && Array.isArray(item.passwords)) {
+                            brandWifiData[item.brand] = item.passwords;
+                        }
+                    });
+                }
+            } catch (err) {
+                console.warn('Gagal memuat password wifi dari Supabase:', err);
+            }
+        }
+
+        async function renderWifiDisplay() {
+            // Ambil data terbaru dari Supabase jika belum pernah dimuat
+            if (!brandWifiData["Kopi Kenangan"] || brandWifiData["Kopi Kenangan"].length <= 1) {
+                await fetchWifiPasswordsFromDB();
+            }
+
             const now = new Date();
             const dayIdx = (now.getDate() - 1);
             const dateStr = now.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
-            document.getElementById('todayWifiDateStr').innerText = dateStr;
-            document.getElementById('activeWifiBrandBadge').innerText = activeWifiBrandTab;
-            document.getElementById('wifiTargetBrandLabel').innerText = activeWifiBrandTab.toUpperCase();
+            
+            const dateEl = document.getElementById('todayWifiDateStr');
+            const badgeEl = document.getElementById('activeWifiBrandBadge');
+            const targetLbl = document.getElementById('wifiTargetBrandLabel');
+            const passValEl = document.getElementById('currentWifiDisplayVal');
+
+            if (dateEl) dateEl.innerText = dateStr;
+            if (badgeEl) badgeEl.innerText = activeWifiBrandTab;
+            if (targetLbl) targetLbl.innerText = activeWifiBrandTab.toUpperCase();
+
             const passwords = brandWifiData[activeWifiBrandTab] || brandWifiData["Kopi Kenangan"] || [];
             const pass = passwords.length > 0 ? passwords[dayIdx % passwords.length] : "-";
-            document.getElementById('currentWifiDisplayVal').innerText = pass;
+            if (passValEl) passValEl.innerText = pass;
+
             ['Kopi-Kenangan', 'Tomoro-Coffee', 'Fore-Coffee'].forEach(id => {
                 const cleanName = id.replace(/-/g, ' ');
                 const tabBtn = document.getElementById(`wifiTab-${id}`);
