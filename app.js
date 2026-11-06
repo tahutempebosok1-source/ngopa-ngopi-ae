@@ -1143,51 +1143,47 @@
             let availableProducts = [];
             const cleanName = (str) => (str || "").toLowerCase().replace(/\s*\(.*?\)\s*/g, '').replace(/\s+/g, ' ').trim();
             const isExactMatch = (prod, targetList) => targetList.some(target => cleanName(prod.name) === cleanName(target));
-            if (pkgName.includes("couple regular A")) {
+
+            if (pkgName.includes("couple regular a")) {
                 availableProducts = productList.filter(p => isExactMatch(p, ["kopi kenangan mantan"]));
-            } else if (pkgName.includes("couple creamy caramel latte")) {
-                availableProducts = productList.filter(p => isExactMatch(p, ["creamy caramel latte"]));
-            } else if (pkgName.includes("couple regular B")) {
+            } else if (pkgName.includes("couple regular b")) {
                 availableProducts = productList.filter(p => isExactMatch(p, ["butterscotch aren latte"]));
+            } else if (pkgName.includes("satnight berdua")) {
+                availableProducts = productList.filter(p => isExactMatch(p, ["butterscotch aren latte", "creamy aren latte"]));
+            } else if (pkgName.includes("satnight bertiga")) {
+                availableProducts = productList.filter(p => isExactMatch(p, ["pistachio aren latte", "creamy aren latte", "butterscotch aren latte"]));
+            } else if (pkgName.includes("bundling drink & food")) {
+                // Untuk semua varian Bundling Drink & Food, slot 0 & 1 adalah Minuman, slot 2 & 3 adalah Roti/Snack
+                if (activeSlotIndex === 0 || activeSlotIndex === 1) {
+                    const allowedDrinks = ["americano", "raspberry hibiscus", "kopi kenangan mantan", "cafe malt latte", "og thai tea"];
+                    availableProducts = productList.filter(p => isExactMatch(p, allowedDrinks));
+                } else {
+                    const allowedSnacks = ["roti coklat klasik", "roti susu manis", "roti srikaya", "chocolate choux puff", "wahyu sapi toast", "salt bread choco butter"];
+                    availableProducts = productList.filter(p => isExactMatch(p, allowedSnacks));
+                }
             } else if (pkgName.includes("couple mix regular")) {
                 const allowedMixItems = ["kopi kenangan mantan", "spanish latte", "butterscotch aren latte", "toffee nut latte", "avocado milk", "babyccino", "raspberry hibiscus", "pistachio aren latte", "og thai tea", "lemon black tea", "americano", "banana americano"];
                 availableProducts = productList.filter(p => isExactMatch(p, allowedMixItems));
-            } else if (pkgName.includes("paket hemat 1")) {
-                if (activeSlotIndex === 0) availableProducts = productList.filter(p => isExactMatch(p, ["americano"]));
-                else availableProducts = productList.filter(p => isExactMatch(p, ["chocolate croissant", "chocolate donut"]));
-            } else if (pkgName.includes("paket hemat 2")) {
-                if (activeSlotIndex === 0) availableProducts = productList.filter(p => isExactMatch(p, ["kopi kenangan mantan"]));
-                else availableProducts = productList.filter(p => isExactMatch(p, ["roti coklat klasik", "roti susu manis"]));
-            } else if (pkgName.includes("paket hemat 3")) {
-                if (activeSlotIndex === 0) availableProducts = productList.filter(p => isExactMatch(p, ["avocado milk", "dutch chocolate"]));
-                else availableProducts = productList.filter(p => isExactMatch(p, ["roti coklat klasik", "butter croissant", "sugar donut"]));
-            } else if (pkgName.includes("bundling 3 cup") || pkgName.includes("bundling 2 cup")) {
-                const allowed10Items = ["kopi kenangan mantan", "spanish latte", "butterscotch aren latte", "toffee nut latte", "raspberry hibiscus", "pistachio aren latte", "og thai tea", "lemon black tea", "americano", "banana americano"];
-                availableProducts = productList.filter(p => isExactMatch(p, allowed10Items))
-               
             } else {
                 availableProducts = productList;
             }
+
             if (availableProducts.length === 0) {
-                container.innerHTML = `<p class="text-xs text-gray-400 text-center col-span-3 py-6">Tidak ada menu yang tersedia untuk slot ini.</p>`;
-                return;
+                // Fallback jika pencarian spesifik kosong, tampilkan semua produk dari brand terkait
+                availableProducts = productList;
             }
+
             container.innerHTML = availableProducts.map(prod => {
-                // 🔥 CEK APAKAH ITEM INI SUDAH DIPILIH UNTUK SLOT MANA PUN
                 const isSelected = bundlingSlots.some(slot => slot && slot.id === prod.id);
-
-                // 🔥 CEK APAKAH ITEM INI SUDAH DIPILIH DI SLOT AKTIF (untuk tampilan tambahan)
-                const isSelectedInActiveSlot = bundlingSlots[activeSlotIndex] && bundlingSlots[activeSlotIndex].id === prod.id;
-
                 return `
-        <div onclick="selectBundlingItemForSlot('${prod.id}')" 
-             class="bundle-item-card cursor-pointer p-2 border rounded-xl transition text-center flex flex-col items-center justify-between relative 
-                    ${isSelected ? 'selected border-amber-400 bg-amber-400/10' : 'border-brand-700 bg-brand-900 hover:border-amber-400'}">
-            <img src="${prod.image_url}" alt="${prod.name}" class="w-full h-20 object-contain rounded-lg mb-1">
-            <p class="text-xs text-white font-bold truncate w-full">${prod.name}</p>
-            ${isSelected ? '<span class="absolute top-0 right-0 bg-amber-400 text-brand-900 text-[10px] font-black px-1.5 py-0.5 rounded-tr-lg rounded-bl-lg">✓</span>' : ''}
-        </div>
-    `;
+                    <div onclick="selectBundlingItemForSlot('${prod.id}')" 
+                         class="bundle-item-card cursor-pointer p-2 border rounded-xl transition text-center flex flex-col items-center justify-between relative 
+                                ${isSelected ? 'selected border-amber-400 bg-amber-400/10' : 'border-brand-700 bg-brand-900 hover:border-amber-400'}">
+                        <img src="${prod.image_url}" alt="${prod.name}" class="w-full h-20 object-contain rounded-lg mb-1">
+                        <p class="text-xs text-white font-bold truncate w-full">${prod.name}</p>
+                        ${isSelected ? '<span class="absolute top-0 right-0 bg-amber-400 text-brand-900 text-[10px] font-black px-1.5 py-0.5 rounded-tr-lg rounded-bl-lg">✓</span>' : ''}
+                    </div>
+                `;
             }).join('');
         }
 
