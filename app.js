@@ -65,135 +65,7 @@
             "Fore Coffee": ["Foreveryone"]
         };
 
-              // ======================== DATA BUNDLING PRESET ========================
-        const BUNDLING_PRESETS = {
-            'Couple Regular A': {
-                slots: 2,
-                desc: '2x Kopi Kenangan Mantan (Regular)',
-                items: [
-                    { name: 'Kopi Kenangan Mantan', size: 'Regular' },
-                    { name: 'Kopi Kenangan Mantan', size: 'Regular' }
-                ],
-                price: 27000
-            },
-            'Couple Regular B': {
-                slots: 2,
-                desc: '2x Butterscotch Aren Latte (Regular)',
-                items: [
-                    { name: 'Butterscotch Aren Latte', size: 'Regular' },
-                    { name: 'Butterscotch Aren Latte', size: 'Regular' }
-                ],
-                price: 29000
-            },
-            'Satnight Berdua': {
-                slots: 2,
-                desc: 'Butterscotch Aren Latte (L | Creamy Aren Latte (L)',
-                items: [
-                    { name: 'Butterscotch Aren Latte', size: 'Large' },
-                    { name: 'Creamy Aren Latte', size: 'Large' }
-                ],
-                price: 35000
-            },
-            'Satnight Bertiga': {
-                slots: 3,
-                desc: 'Pistachio Aren Latte (L) | Creamy Aren Latte (L) | Butterscotch Aren Latte (L)',
-                items: [
-                    { name: 'Pistachio Aren Latte', size: 'Large' },
-                    { name: 'Creamy Aren Latte', size: 'Large' },
-                    { name: 'Butterscotch Aren Latte', size: 'Large' }
-                ],
-                price: 58000
-            },
-            
-            'Bundling Drink & Food 1': {
-                slots: 4,
-                desc: 'Americano (R) | Raspberry Hibiscus (R) | 2 Roti Coklat Klasik',
-                items: [
-                    { name: 'Americano', size: 'Regular' },
-                    { name: 'Raspberry Hibiscus', size: 'Regular' },
-                    { name: 'Roti Coklat Klasik', size: '' },
-                    { name: 'Roti Coklat Klasik', size: '' }
-                ],
-                price: 43000
-            },
-            'Bundling Drink & Food 2': {
-                slots: 4,
-                desc: '2x Raspberry Hibiscus (R) | 2X Roti Coklat Klasik',
-                items: [
-                    { name: 'Raspberry Hibiscus', size: 'Regular' },
-                    { name: 'Raspberry Hibiscus', size: 'Regular' },
-                    { name: 'Roti Coklat Klasik', size: '' },
-                    { name: 'Roti Coklat Klasik', size: '' }
-                ],
-                price: 32000
-            },
-            'Bundling Drink & Food 3': {
-                slots: 4,
-                desc: '2x Kopi Kenangan Mantan (R) | 2x Roti Susu Manis',
-                items: [
-                    { name: 'Kopi Kenangan Mantan', size: 'Regular' },
-                    { name: 'Kopi Kenangan Mantan', size: 'Regular' },
-                    { name: 'Roti Susu Manis', size: '' },
-                    { name: 'Roti Susu Manis', size: '' }
-                ],
-                price: 40000
-            },
-            'Bundling Drink & Food 4': {
-                slots: 4,
-                desc: '2x Cafe Malt Latte (R) | 2x Roti Srikaya',
-                items: [
-                    { name: 'Cafe Malt Latte', size: 'Regular' },
-                    { name: 'Cafe Malt Latte', size: 'Regular' },
-                    { name: 'Roti Srikaya', size: '' },
-                    { name: 'Roti Srikaya', size: '' }
-                ],
-                price: 49000
-            },
-            'Bundling Drink & Food 5': {
-                slots: 4,
-                desc: '2x OG Thai Tea (R) | 2x Roti Susu Manis',
-                items: [
-                    { name: 'OG Thai Tea', size: 'Regular' },
-                    { name: 'OG Thai Tea', size: 'Regular' },
-                    { name: 'Roti Susu Manis', size: '' },
-                    { name: 'Roti Susu Manis', size: '' }
-                ],
-                price: 32000
-            },
-            'Bundling Drink & Food 6': {
-                slots: 4,
-                desc: '2x Kopi Kenangan Mantan | 2x Chocolate Choux Puff',
-                items: [
-                    { name: 'Kopi Kenangan Mantan', size: 'Regular' },
-                    { name: 'Kopi Kenangan Mantan', size: 'Regular' },
-                    { name: 'Chocolate Choux Puff', size: '' },
-                    { name: 'Chocolate Choux Puff', size: '' }
-                ],
-                price: 38000
-            },
-            'Bundling Drink & Food 7': {
-                slots: 4,
-                desc: '2x Kopi Kenangan Mantan (R) | 2x Wahyu Sapi Toast',
-                items: [
-                    { name: 'Kopi Kenangan Mantan', size: 'Regular' },
-                    { name: 'Kopi Kenangan Mantan', size: 'Regular' },
-                    { name: 'Wahyu Sapi Toast', size: '' },
-                    { name: 'Wahyu Sapi Toast', size: '' }
-                ],
-                price: 50000
-            },
-            'Bundling Drink & Food 8': {
-                slots: 4,
-                desc: '2x Kopi Kenangan Mantan (R) | 2x Salt Bread Choco Butter',
-                items: [
-                    { name: 'Kopi Kenangan Mantan', size: 'Regular' },
-                    { name: 'Kopi Kenangan Mantan', size: 'Regular' },
-                    { name: 'Salt Bread Choco Butter', size: '' },
-                    { name: 'Salt Bread Choco Butter', size: '' }
-                ],
-                price: 42000
-            }
-        };
+          
 
         function getPresetForItem(item) {
             if (!item) return null;
@@ -2950,9 +2822,8 @@
         // ======================== DOMContentLoaded ========================
 
         document.addEventListener('DOMContentLoaded', async function () {
-    await fetchDynamicConfigsFromDB(); // Muat data dinamis dari Supabase dulu
-    renderCategories();
-    await renderMenu();
+            renderCategories();
+            await renderMenu();
             await renderOutlets();
             renderWifiDisplay();
             showDailyAnnouncementPopup();
