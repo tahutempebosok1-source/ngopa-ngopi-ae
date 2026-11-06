@@ -69,39 +69,20 @@
 
         function getPresetForItem(item) {
             if (!item) return null;
-            
-            // 1. Cek pencocokan persis berdasarkan nama menu atau deskripsi teks di database
             if (BUNDLING_PRESETS[item.name]) return BUNDLING_PRESETS[item.name];
 
-            const itemName = (item.name || '').toLowerCase();
-            const dbDesc = (item.description || item.desc || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+            const dbDesc = (item.description || item.desc || '').toLowerCase();
 
-            // 2. Cocokkan secara spesifik berdasarkan nama paket (Bundling 3 Cup Regular / Bundling 2 Cup Large / dll)
-            if (itemName.includes('3 cup regular') || dbDesc.includes('3cupregular')) {
-                return BUNDLING_PRESETS['Bundling 3 Cup Regular']; // Pastikan nama key preset ini sudah ada di BUNDLING_PRESETS
-            }
-            if (itemName.includes('2 cup large') || dbDesc.includes('2cuplarge')) {
-                return BUNDLING_PRESETS['Bundling 2 Cup Large'];
-            }
+            // Cocokkan langsung berdasarkan deskripsi paket di database Supabase
+            if (dbDesc.includes('og thai tea') && dbDesc.includes('roti susu manis')) return BUNDLING_PRESETS['Bundling Drink & Food 5'];
+            if (dbDesc.includes('americano') && dbDesc.includes('raspberry') && !dbDesc.includes('2x')) return BUNDLING_PRESETS['Bundling Drink & Food 1'];
+            if (dbDesc.includes('2x raspberry') || dbDesc.includes('2xraspberry')) return BUNDLING_PRESETS['Bundling Drink & Food 2'];
+            if (dbDesc.includes('kopi kenangan mantan') && dbDesc.includes('roti susu manis')) return BUNDLING_PRESETS['Bundling Drink & Food 3'];
+            if (dbDesc.includes('cafe malt latte') && dbDesc.includes('srikaya')) return BUNDLING_PRESETS['Bundling Drink & Food 4'];
+            if (dbDesc.includes('choux puff')) return BUNDLING_PRESETS['Bundling Drink & Food 6'];
+            if (dbDesc.includes('wahyu sapi toast')) return BUNDLING_PRESETS['Bundling Drink & Food 7'];
+            if (dbDesc.includes('salt bread choco butter')) return BUNDLING_PRESETS['Bundling Drink & Food 8'];
 
-            // 3. Pencocokan spesifik untuk varian Bundling Drink & Food berdasarkan deskripsi aslinya di Supabase
-            if (dbDesc) {
-                for (const key in BUNDLING_PRESETS) {
-                    const preset = BUNDLING_PRESETS[key];
-                    const pDesc = (preset.desc || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-                    if (pDesc && dbDesc === pDesc) {
-                        return preset;
-                    }
-                }
-                if (dbDesc.includes('americano') && dbDesc.includes('raspberry') && !dbDesc.includes('2xraspberry')) return BUNDLING_PRESETS['Bundling Drink & Food 1'];
-                if (dbDesc.includes('2xraspberry') || dbDesc.includes('2raspberry')) return BUNDLING_PRESETS['Bundling Drink & Food 2'];
-                if (dbDesc.includes('kopikenanganmantan') && dbDesc.includes('rotisusumanis')) return BUNDLING_PRESETS['Bundling Drink & Food 3'];
-                if (dbDesc.includes('cafemalt') && dbDesc.includes('srikaya')) return BUNDLING_PRESETS['Bundling Drink & Food 4'];
-                if (dbDesc.includes('thaitea') && dbDesc.includes('rotisusumanis')) return BUNDLING_PRESETS['Bundling Drink & Food 5'];
-                if (dbDesc.includes('chouxpuff')) return BUNDLintry = BUNDLING_PRESETS['Bundling Drink & Food 6']; // Disesuaikan
-                if (dbDesc.includes('wahyusapi')) return BUNDLING_PRESETS['Bundling Drink & Food 7'];
-                if (dbDesc.includes('saltbread')) return BUNDLING_PRESETS['Bundling Drink & Food 8'];
-            }
             return null;
         }
 
