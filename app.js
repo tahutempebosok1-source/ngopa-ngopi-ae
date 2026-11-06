@@ -1,17 +1,56 @@
-// ======================== CONFIG ========================
-        const LOYALTY_LEVELS = [
+// ======================== STATE & DINAMIS CONFIG DARI SUPABASE ========================
+        let BUNDLING_PRESETS = {};
+        let LOYALTY_LEVELS = [
             { minOrders: 0, level: 'Anak Baru Ngopi', icon: '🌱', desc: 'Baru coba', voucher: null, discount: 0 },
             { minOrders: 10, level: 'Ngopers Amatir', icon: '🐣', desc: 'Mulai sering', voucher: 'Diskon Rp200/transaksi', discount: 200 },
             { minOrders: 20, level: 'Ngopers Addict', icon: '🔥', desc: 'Udah langganan', voucher: 'Diskon Rp400/transaksi', discount: 400 },
-            { minOrders: 50, level: 'Ngopers Veteran', icon: '👑', desc: 'Mulai ketagihan', voucher: 'Diskon Rp600/transaksi', discount: 600 },
-                  ];
+            { minOrders: 50, level: 'Ngopers Veteran', icon: '👑', desc: 'Mulai ketagihan', voucher: 'Diskon Rp600/transaksi', discount: 600 }
+        ];
 
-        const ACCOUNT_SPEND_LEVELS = [
+        let ACCOUNT_SPEND_LEVELS = [
             { minSpend: 0, maxSpend: 149999, nextThreshold: 150000, level: 'Anak Baru Ngopi', icon: '🌱', cashbackRate: 0 },
             { minSpend: 150000, maxSpend: 299999, nextThreshold: 300000, level: 'Ngopers Amatir', icon: '🐣', cashbackRate: 0.03 },
             { minSpend: 300000, maxSpend: 499999, nextThreshold: 500000, level: 'Ngopers Addict', icon: '🔥', cashbackRate: 0.06 },
             { minSpend: 500000, maxSpend: 1000000, nextThreshold: 1000000, level: 'Ngopers Veteran', icon: '👑', cashbackRate: 0.09 }
         ];
+
+        // Fungsi untuk mengambil data konfigurasi dari Supabase saat aplikasi dibuka
+        async function fetchDynamicConfigsFromDB() {
+            try {
+                // 1. Ambil Bundling Presets
+                const { data: bundleData } = await supabaseClient.from('bundling_presets').select('*');
+                if (bundleData && bundleData.length > 0) {
+                    const tempPresets = {};
+                    bundleData.forEach(row => {
+                        tempPresets[row.key_name] = {
+                            slots: row.slots,
+                            desc: row.description,
+                            items: row.items,
+                            price: Number(row.price)
+                        };
+                    });
+                    BUNDLING_PRESETS = tempPresets;
+                }
+
+                // 2. Ambil Loyalty Config
+                const { data: configData } = await supabaseClient.from('loyalty_config').select('*');
+                if (configData && configData.length > 0) {
+                    const orderLevels = configData.filter(r => r.tier_type === 'order_level').sort((a,b) => a.min_requirement - b.min_requirement);
+                    if (orderLevels.length > 0) {
+                        LOYALTY_LEVELS = orderLevels.map(r => ({
+                            minOrders: r.min_requirement,
+                            level: r.level_name,
+                            icon: r.icon,
+                            desc: r.description,
+                            voucher: r.voucher_text,
+                            discount: r.discount_amount
+                        }));
+                    }
+                }
+            } catch (e) {
+                console.warn('Gagal memuat konfigurasi dinamis dari Supabase, menggunakan data default lokal.', e);
+            }
+        }
 
         const brandCategories = {
             'Kopi Kenangan': ['Semua', 'Paket Hemat', 'Kopi', 'Non-Kopi', 'Snack', 'Korean Food', 'Nasi', 'Pasta', 'Ayam Goreng'],
@@ -2911,8 +2950,9 @@
         // ======================== DOMContentLoaded ========================
 
         document.addEventListener('DOMContentLoaded', async function () {
-            renderCategories();
-            await renderMenu();
+    await fetchDynamicConfigsFromDB(); // Muat data dinamis dari Supabase dulu
+    renderCategories();
+    await renderMenu();
             await renderOutlets();
             renderWifiDisplay();
             showDailyAnnouncementPopup();
@@ -3700,7 +3740,7 @@ async function doDailyCheckinFromAnnouncement() {
 
             const phone = loggedInCustomer?.phone || document.getElementById('custPhone')?.value?.trim() || '';
             if (!phone || phone.replace(/[^0-9]/g, '').length < 9) {
-                showValidationAlert('Silakan login akun atau isi Nomor HP terlebih dahulu agar klaim 1x/Akun dapat diverifikasi di database!');
+                showValidationAlert('Silahkan login akun atau isi Nomor HP terlebih dahulu agar klaim dapat diverifikasi!');
                 return;
             }
 
