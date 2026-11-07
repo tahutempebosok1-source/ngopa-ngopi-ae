@@ -896,61 +896,49 @@
     </div>
 
     <!-- About Modal -->
-    <div id="aboutNgopaModal"
-        class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div id="aboutModalContent"
-            class="bg-brand-900 text-white w-full max-w-md rounded-3xl p-6 shadow-2xl border border-brand-700 transform transition-all duration-300 scale-95 opacity-0">
+    <div id="aboutNgopaModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div id="aboutModalContent" class="panel-modal-box w-full max-w-md rounded-3xl p-6 shadow-2xl transform transition-all duration-300 scale-95 opacity-0">
             <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-full bg-amber-400/20 flex items-center justify-center"><i
-                            class="fa-solid fa-mug-hot text-amber-400 text-xl"></i></div>
+                    <div class="w-12 h-12 rounded-full bg-amber-400/20 flex items-center justify-center">
+                        <i class="fa-solid fa-mug-hot text-amber-500 text-xl"></i>
+                    </div>
                     <div>
-                        <h3 class="font-black text-lg text-white">Ngopa Ngopi Ae</h3>
-                        <p class="text-xs text-gray-400">Jasa Order Kopi & Delivery</p>
+                        <h3 class="font-black text-lg">Ngopa Ngopi Ae</h3>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">Jasa Order Kopi & Delivery</p>
                     </div>
                 </div>
-                <button onclick="closeModal('aboutNgopaModal')"
-                    class="text-gray-400 hover:text-white text-2xl font-bold">×</button>
+                <button onclick="closeModal('aboutNgopaModal')" class="text-gray-400 hover:text-gray-900 dark:hover:text-white text-2xl font-bold">×</button>
             </div>
-            <div class="border-t border-brand-700 mb-4"></div>
+            <div class="border-t border-brand-200 dark:border-brand-700 mb-4"></div>
             <div class="space-y-4">
-                <p class="text-sm text-gray-300 leading-relaxed text-justify"><span
-                        class="font-bold text-amber-400">Ngopa Ngopi Ae</span> adalah jasa pemesanan kopi yang
-                    memudahkan kamu untuk mendapatkan kopi favorit dari berbagai brand ternama dengan <span
-                        class="font-bold text-amber-400">harga spesial</span>!</p>
-                <div class="bg-brand-800/50 rounded-2xl p-4 border border-brand-700/50">
-                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Tersedia Brand Pilihan:</p>
+                <p class="text-sm leading-relaxed text-justify"><span class="font-bold text-brand-700 dark:text-amber-400">Ngopa Ngopi Ae</span> adalah jasa pemesanan kopi yang memudahkan kamu untuk mendapatkan kopi favorit dari berbagai brand ternama dengan <span class="font-bold text-brand-700 dark:text-amber-400">harga spesial</span>!</p>
+                <div class="panel-card-item rounded-2xl p-4">
+                    <p class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Tersedia Brand Pilihan:</p>
                     <div class="grid grid-cols-3 gap-3">
-                        <div
-                            class="bg-black rounded-xl p-3 text-center flex flex-col items-center gap-1 border border-gray-800">
-                            <img src="logo-kopi-kenangan.png" alt="Kopi Kenangan"
-                                class="w-8 h-8 object-contain rounded bg-white p-1">
+                        <div class="bg-black rounded-xl p-3 text-center flex flex-col items-center gap-1 border border-gray-800 shadow-sm">
+                            <img src="logo-kopi-kenangan.png" alt="Kopi Kenangan" class="w-8 h-8 object-contain rounded bg-white p-1">
                             <span class="text-[10px] font-bold text-white">Kopi Kenangan</span>
                             <span class="text-[9px] text-amber-400 font-black">Harga Spesial!</span>
                         </div>
-                        <div
-                            class="bg-white rounded-xl p-3 text-center flex flex-col items-center gap-1 border border-gray-200">
+                        <div class="bg-white rounded-xl p-3 text-center flex flex-col items-center gap-1 border border-gray-200 shadow-sm">
                             <img src="logo-tomoro-coffee.png" alt="Tomoro Coffee" class="w-8 h-8 object-contain">
                             <span class="text-[10px] font-bold text-gray-900">Tomoro Coffee</span>
-                            <span class="text-[9px] text-amber-400 font-black">Harga Spesial!</span>
+                            <span class="text-[9px] text-amber-500 font-black">Harga Spesial!</span>
                         </div>
-                        <div
-                            class="bg-[#1B3A2D] rounded-xl p-3 text-center flex flex-col items-center gap-1 border border-[#2E5A47]">
+                        <div class="bg-[#1B3A2D] rounded-xl p-3 text-center flex flex-col items-center gap-1 border border-[#2E5A47] shadow-sm">
                             <img src="logo-fore-coffee.png" alt="Fore Coffee" class="w-8 h-8 object-contain">
                             <span class="text-[10px] font-bold text-white">Fore Coffee</span>
                             <span class="text-[9px] text-amber-400 font-black">Harga Spesial!</span>
                         </div>
                     </div>
                 </div>
-                <div
-                    class="flex items-center gap-2 text-[11px] text-gray-400 bg-brand-800/30 rounded-xl p-3 border border-brand-700/30">
-                    <i class="fa-solid fa-bolt text-amber-400"></i>
+                <div class="flex items-center gap-2 text-[11px] text-gray-600 dark:text-gray-300 bg-brand-50 dark:bg-brand-800/50 rounded-xl p-3 border border-brand-200 dark:border-brand-700/50">
+                    <i class="fa-solid fa-bolt text-amber-500"></i>
                     <span>Proses cepat, tinggal pilih menu, pesan via WhatsApp, dan minuman siap dinikmati!</span>
                 </div>
             </div>
-            <button onclick="closeModal('aboutNgopaModal')"
-                class="w-full mt-5 py-3 bg-amber-400 hover:bg-amber-300 text-brand-900 font-extrabold rounded-2xl transition text-sm shadow-lg">Mengerti,
-                Saya Mau Order!</button>
+            <button onclick="closeModal('aboutNgopaModal')" class="w-full mt-5 py-3 bg-amber-400 hover:bg-amber-300 text-brand-900 font-extrabold rounded-2xl transition text-sm shadow-lg">Mengerti, Saya Mau Order!</button>
         </div>
     </div>
 
@@ -1131,23 +1119,55 @@
         </div>
     </div>
 
-    <!-- FAQ Modal -->
+    <!-- FAQ Modal (Diperluas) -->
     <div id="faqModal"
         class="modal-content fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div
             class="panel-modal-box w-full max-w-md rounded-3xl p-5 shadow-2xl max-h-[90vh] flex flex-col">
             <div class="flex justify-between items-center border-b border-brand-200 dark:border-brand-700 pb-3 mb-4">
-                <h3 class="font-black text-lg text-brand-900 dark:text-white">❓ FAQ (Pertanyaan Umum)</h3>
+                <h3 class="font-black text-lg text-brand-900 dark:text-white">❓ FAQ & Informasi Lengkap</h3>
                 <button onclick="closeModal('faqModal')" class="text-gray-500 hover:text-brand-900 dark:text-gray-400 dark:hover:text-white text-xl font-bold">×</button>
             </div>
-            <div class="space-y-3.5 overflow-y-auto pr-2 flex-1 text-sm">
+            <div class="space-y-3.5 overflow-y-auto pr-2 flex-1 text-sm text-left">
+                <!-- Info 1 -->
                 <div class="panel-card-item p-4 rounded-2xl shadow-sm">
                     <div class="font-extrabold text-brand-700 dark:text-amber-400 mb-1">Apa itu Ngopa Ngopi Ae?</div>
-                    <div class="text-gray-700 dark:text-gray-200 text-xs leading-relaxed font-medium">Ngopa Ngopi Ae adalah jasa order kopi yang membantu kamu memesan menu Kopi Kenangan, Tomoro, dan Fore dengan harga lebih hemat.</div>
+                    <div class="text-gray-700 dark:text-gray-200 text-xs leading-relaxed font-medium">Ngopa Ngopi Ae adalah layanan jasa pemesanan kopi (Kopi Kenangan, Tomoro, Fore) dan makanan ringan dengan harga lebih hemat. Kami membantu Anda memesan tanpa perlu antre lama.</div>
                 </div>
+                <!-- Info 2 -->
                 <div class="panel-card-item p-4 rounded-2xl shadow-sm">
                     <div class="font-extrabold text-brand-700 dark:text-amber-400 mb-1">Berapa biaya jasa pemesanan (Fee Jasdor)?</div>
-                    <div class="text-gray-700 dark:text-gray-200 text-xs leading-relaxed font-medium">Fee Jasdor dimulai dari Rp500/item untuk menu satuan, dan Rp750/paket untuk menu hemat.</div>
+                    <div class="text-gray-700 dark:text-gray-200 text-xs leading-relaxed font-medium">Fee Jasdor dimulai dari Rp500/item untuk menu satuan, dan Rp750/paket untuk menu hemat/bundling.</div>
+                </div>
+                <!-- Info 3 -->
+                <div class="panel-card-item p-4 rounded-2xl shadow-sm">
+                    <div class="font-extrabold text-brand-700 dark:text-amber-400 mb-1">Bagaimana cara melakukan pemesanan?</div>
+                    <div class="text-gray-700 dark:text-gray-200 text-xs leading-relaxed font-medium">1. Pilih brand & outlet terdekat. <br>2. Pilih menu dan masukkan ke keranjang. <br>3. Isi data diri dan waktu pickup/delivery. <br>4. Klik "Kirim Format Order ke Admin" via WhatsApp.</div>
+                </div>
+                <!-- Info 4 -->
+                <div class="panel-card-item p-4 rounded-2xl shadow-sm">
+                    <div class="font-extrabold text-brand-700 dark:text-amber-400 mb-1">Metode pembayaran apa saja yang tersedia?</div>
+                    <div class="text-gray-700 dark:text-gray-200 text-xs leading-relaxed font-medium">Kami menerima pembayaran melalui Scan QRIS (All Payment) yang akan dikirimkan oleh admin melalui WhatsApp setelah pesanan Anda dikonfirmasi.</div>
+                </div>
+                <!-- Info 5 -->
+                <div class="panel-card-item p-4 rounded-2xl shadow-sm">
+                    <div class="font-extrabold text-brand-700 dark:text-amber-400 mb-1">Apakah bisa pesan antar (Delivery)?</div>
+                    <div class="text-gray-700 dark:text-gray-200 text-xs leading-relaxed font-medium">Bisa! Kami menyediakan opsi pengiriman menggunakan kurir instan (Grab/Gojek) atau menggunakan Tim Internal Ngopa Ngopi Ae (area tertentu).</div>
+                </div>
+                <!-- Info 6 -->
+                <div class="panel-card-item p-4 rounded-2xl shadow-sm">
+                    <div class="font-extrabold text-brand-700 dark:text-amber-400 mb-1">Apa itu Ngopa Loyalty Card & Poin?</div>
+                    <div class="text-gray-700 dark:text-gray-200 text-xs leading-relaxed font-medium">Anda bisa mendapatkan poin dari setiap transaksi (Cashback Level), Check-in harian, atau promo. Poin ini bisa ditukar potongan harga. Poin berlaku maksimal 2 bulan sejak diperoleh.</div>
+                </div>
+                <!-- Info 7 -->
+                <div class="panel-card-item p-4 rounded-2xl shadow-sm">
+                    <div class="font-extrabold text-brand-700 dark:text-amber-400 mb-1">Bagaimana cara klaim promo Share Diskon Rp2.000?</div>
+                    <div class="text-gray-700 dark:text-gray-200 text-xs leading-relaxed font-medium">Klik tombol Share pada menu Paket Bundling, bagikan link ke teman, lalu unggah bukti screenshot share di keranjang. Diskon berlaku 1x per akun.</div>
+                </div>
+                <!-- Info 8 -->
+                <div class="panel-card-item p-4 rounded-2xl shadow-sm">
+                    <div class="font-extrabold text-brand-700 dark:text-amber-400 mb-1">Bagaimana cara melacak pesanan saya?</div>
+                    <div class="text-gray-700 dark:text-gray-200 text-xs leading-relaxed font-medium">Anda bisa mengklik menu "Lacak Pesanan" di bilah samping (sidebar) atau ikon resi di menu bawah, lalu masukkan Nomor HP atau Kode Order Anda.</div>
                 </div>
             </div>
         </div>
