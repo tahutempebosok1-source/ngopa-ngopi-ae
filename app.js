@@ -65,6 +65,40 @@
             "Fore Coffee": ["Foreveryone"]
         };
 
+        // 🔥 FUNGSI BARU: Parser otomatis membaca deskripsi untuk mengisi slot bundling
+        function parseBundleDescription(desc) {
+            if (!desc) return null;
+            // Pecah berdasarkan tanda |
+            const parts = desc.split('|').map(p => p.trim());
+            let items = [];
+            
+            parts.forEach(part => {
+                // Deteksi kuantitas seperti "2x", "2X", "2 ", dll.
+                const match = part.match(/^(\d+)\s*[xX]?\s*(.+)$/);
+                let qty = 1;
+                let itemName = part;
+                
+                if (match) {
+                    qty = parseInt(match[1], 10);
+                    itemName = match[2].trim();
+                }
+                
+                // Deteksi Ukuran (R) / (L) / (Regular) / (Large)
+                let size = '';
+                if (itemName.match(/\(R\)/i)) { size = 'Regular'; itemName = itemName.replace(/\(R\)/i, '').trim(); }
+                else if (itemName.match(/\(L\)/i)) { size = 'Large'; itemName = itemName.replace(/\(L\)/i, '').trim(); }
+                else if (itemName.match(/\(Regular\)/i)) { size = 'Regular'; itemName = itemName.replace(/\(Regular\)/i, '').trim(); }
+                else if (itemName.match(/\(Large\)/i)) { size = 'Large'; itemName = itemName.replace(/\(Large\)/i, '').trim(); }
+                
+                // Masukkan item sebanyak kuantitasnya (misal 2x berarti push 2 kali)
+                for (let i = 0; i < qty; i++) {
+                    items.push({ name: itemName, size: size });
+                }
+            });
+            
+            return items;
+        }
+
         function getPresetForItem(item) {
             if (!item) return null;
             
@@ -97,11 +131,22 @@
                 };
             }
 
-            // 4. HARDCODED FALLBACK: Bundling Drink & Food 1 - 8 (Otomatis 4 Slot)
+            // 4. OTOMATISASI BUNDLING DRINK & FOOD BERDASARKAN DESKRIPSI
             if (itemName.includes('bundling drink & food')) {
+                // Coba parse langsung dari deskripsi database
+                const parsedItems = parseBundleDescription(item.description || item.desc);
+                
+                // Jika berhasil di-parse dan menghasilkan minimal 2 item, gunakan hasil parse
+                if (parsedItems && parsedItems.length >= 2) {
+                    return {
+                        desc: item.description || '✨ Menu sudah dipilih otomatis!',
+                        items: parsedItems
+                    };
+                }
+                
+                // Fallback manual (jika deskripsi kosong atau gagal di-parse)
                 const matchNum = itemName.match(/(\d+)/);
                 const num = matchNum ? parseInt(matchNum[1]) : 1;
-                
                 const fallbacks = {
                     1: [{ name: 'Americano', size: 'Regular' }, { name: 'Raspberry Hibiscus', size: 'Regular' }, { name: 'Roti Coklat Klasik' }, { name: 'Roti Coklat Klasik' }],
                     2: [{ name: 'Raspberry Hibiscus', size: 'Regular' }, { name: 'Raspberry Hibiscus', size: 'Regular' }, { name: 'Roti Coklat Klasik' }, { name: 'Roti Coklat Klasik' }],
@@ -112,10 +157,9 @@
                     7: [{ name: 'Kopi Kenangan Mantan', size: 'Regular' }, { name: 'Kopi Kenangan Mantan', size: 'Regular' }, { name: 'Wahyu Sapi Toast' }, { name: 'Wahyu Sapi Toast' }],
                     8: [{ name: 'Kopi Kenangan Mantan', size: 'Regular' }, { name: 'Kopi Kenangan Mantan', size: 'Regular' }, { name: 'Salt Bread Choco Butter' }, { name: 'Salt Bread Choco Butter' }]
                 };
-                const items = fallbacks[num] || fallbacks[1];
                 return {
                     desc: item.description || '✨ Menu sudah dipilih otomatis!',
-                    items: items
+                    items: fallbacks[num] || fallbacks[1]
                 };
             }
             
@@ -987,7 +1031,8 @@
                 activeBundlingItem = { ...item, price: item.price + (isOutsideJava(selectedOutlet) ? 2000 : 0) };
                 
                 bundlingSlots = isPreset.items.map((presetItem, idx) => {
-                    const isFoodItem = /roti|toast|croissant|donut|snack|food|ayam|nasi|pasta|deli/i.test(presetItem.name);
+                    // Deteksi apakah ini makanan berdasarkan namanya
+                    const isFoodItem = /roti|toast|croissant|donut|snack|food|ayam|nasi|pasta|deli|choux|puff/i.test(presetItem.name);
                     return {
                         id: `preset-${idx}`,
                         name: presetItem.name,
