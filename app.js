@@ -68,26 +68,36 @@
           
 
         function getPresetForItem(item) {
-    if (!item) return null;
-    if (BUNDLING_PRESETS[item.name]) return BUNDLING_PRESETS[item.name];
+            if (!item) return null;
+            if (BUNDLING_PRESETS[item.name]) return BUNDLING_PRESETS[item.name];
 
-    const itemName = (item.name || '').toLowerCase();
-    const dbDesc = (item.description || item.desc || '').toLowerCase();
+            const itemName = (item.name || '').toLowerCase();
+            const dbDesc = (item.description || item.desc || '').toLowerCase();
 
-    // Jika nama menu mengandung 'bundling drink & food', petankan secara aman ke preset ke-5 atau berdasarkan nomor urutnya di database
-    if (itemName.includes('bundling drink & food')) {
-        if (dbDesc.includes('og thai tea')) return BUNDLING_PRESETS['Bundling Drink & Food 5'];
-        if (dbDesc.includes('2x raspberry') || dbDesc.includes('2raspberry')) return BUNDLING_PRESETS['Bundling Drink & Food 2'];
-        if (dbDesc.includes('kopi kenangan mantan') && dbDesc.includes('roti susu manis')) return BUNDLING_PRESETS['Bundling Drink & Food 3'];
-        if (dbDesc.includes('cafe malt') || dbDesc.includes('srikaya')) return BUNDLING_PRESETS['Bundling Drink & Food 4'];
-        if (dbDesc.includes('choux')) return BUNDLING_PRESETS['Bundling Drink & Food 6'];
-        if (dbDesc.includes('wahyu sapi')) return BUNDLING_PRESETS['Bundling Drink & Food 7'];
-        if (dbDesc.includes('salt bread')) return BUNDLING_PRESETS['Bundling Drink & Food 8'];
-        // Fallback default untuk Bundling Drink & Food jika deskripsi lain
-        return BUNDLING_PRESETS['Bundling Drink & Food 1'];
-    }
-    return null;
-}
+            // Jika nama menu mengandung 'bundling drink & food'
+            if (itemName.includes('bundling drink & food')) {
+                // Cek berdasarkan nama nomor (1-8)
+                for (let i = 1; i <= 8; i++) {
+                    if (itemName.includes(`drink & food ${i}`)) {
+                        return BUNDLING_PRESETS[`Bundling Drink & Food ${i}`];
+                    }
+                }
+                
+                // Fallback berdasarkan deskripsi
+                if (dbDesc.includes('americano') && dbDesc.includes('raspberry') && dbDesc.includes('roti coklat')) return BUNDLING_PRESETS['Bundling Drink & Food 1'];
+                if ((dbDesc.includes('2x raspberry') || dbDesc.includes('2 raspberry')) && dbDesc.includes('roti coklat')) return BUNDLING_PRESETS['Bundling Drink & Food 2'];
+                if (dbDesc.includes('kopi kenangan mantan') && dbDesc.includes('roti susu manis')) return BUNDLING_PRESETS['Bundling Drink & Food 3'];
+                if (dbDesc.includes('cafe malt') && dbDesc.includes('srikaya')) return BUNDLING_PRESETS['Bundling Drink & Food 4'];
+                if (dbDesc.includes('og thai tea') && dbDesc.includes('roti susu manis')) return BUNDLING_PRESETS['Bundling Drink & Food 5'];
+                if (dbDesc.includes('kopi kenangan mantan') && dbDesc.includes('choux')) return BUNDLING_PRESETS['Bundling Drink & Food 6'];
+                if (dbDesc.includes('kopi kenangan mantan') && dbDesc.includes('wahyu sapi')) return BUNDLING_PRESETS['Bundling Drink & Food 7'];
+                if (dbDesc.includes('kopi kenangan mantan') && dbDesc.includes('salt bread')) return BUNDLING_PRESETS['Bundling Drink & Food 8'];
+                
+                // Fallback default
+                return BUNDLING_PRESETS['Bundling Drink & Food 1'];
+            }
+            return null;
+        }
 
         // ======================== STATE ========================
         let selectedBrand = 'Kopi Kenangan';
@@ -1119,14 +1129,43 @@ bundlingSlots = Array(totalSlots).fill(null);
             const cleanName = (str) => (str || "").toLowerCase().replace(/\s*\(.*?\)\s*/g, '').replace(/\s+/g, ' ').trim();
             const isExactMatch = (prod, targetList) => targetList.some(target => cleanName(prod.name) === cleanName(target));
 
-            if (pkgName.includes("couple regular a")) {
-                availableProducts = productList.filter(p => isExactMatch(p, ["kopi kenangan mantan"]));
-            } else if (pkgName.includes("couple regular b")) {
-                availableProducts = productList.filter(p => isExactMatch(p, ["butterscotch aren latte"]));
-            } else if (pkgName.includes("satnight berdua")) {
-                availableProducts = productList.filter(p => isExactMatch(p, ["butterscotch aren latte", "creamy aren latte"]));
-            } else if (pkgName.includes("satnight bertiga")) {
-                availableProducts = productList.filter(p => isExactMatch(p, ["pistachio aren latte", "creamy aren latte", "butterscotch aren latte"]));
+            if (pkgName.includes("bundling 3 cup regular") || pkgName.includes("bundling 2 cup large")) {
+                const allowedDrinks = ["kopi kenangan mantan", "spanish latte", "butterscotch aren latte", "toffee nut latte", "raspberry hibiscus", "pistachio aren latte", "og thai tea", "lemon black tea", "americano", "banana americano"];
+                availableProducts = productList.filter(p => isExactMatch(p, allowedDrinks));
+            } else if (pkgName.includes("bundling drink & food 1")) {
+                if (activeSlotIndex === 0) availableProducts = productList.filter(p => isExactMatch(p, ["americano"]));
+                else if (activeSlotIndex === 1) availableProducts = productList.filter(p => isExactMatch(p, ["raspberry hibiscus"]));
+                else availableProducts = productList.filter(p => isExactMatch(p, ["roti coklat klasik"]));
+            } else if (pkgName.includes("bundling drink & food 2")) {
+                if (activeSlotIndex === 0 || activeSlotIndex === 1) availableProducts = productList.filter(p => isExactMatch(p, ["raspberry hibiscus"]));
+                else availableProducts = productList.filter(p => isExactMatch(p, ["roti coklat klasik"]));
+            } else if (pkgName.includes("bundling drink & food 3")) {
+                if (activeSlotIndex === 0 || activeSlotIndex === 1) availableProducts = productList.filter(p => isExactMatch(p, ["kopi kenangan mantan"]));
+                else availableProducts = productList.filter(p => isExactMatch(p, ["roti susu manis"]));
+            } else if (pkgName.includes("bundling drink & food 4")) {
+                if (activeSlotIndex === 0 || activeSlotIndex === 1) availableProducts = productList.filter(p => isExactMatch(p, ["cafe malt latte"]));
+                else availableProducts = productList.filter(p => isExactMatch(p, ["roti srikaya"]));
+            } else if (pkgName.includes("bundling drink & food 5")) {
+                if (activeSlotIndex === 0 || activeSlotIndex === 1) availableProducts = productList.filter(p => isExactMatch(p, ["og thai tea"]));
+                else availableProducts = productList.filter(p => isExactMatch(p, ["roti susu manis"]));
+            } else if (pkgName.includes("bundling drink & food 6")) {
+                if (activeSlotIndex === 0 || activeSlotIndex === 1) availableProducts = productList.filter(p => isExactMatch(p, ["kopi kenangan mantan"]));
+                else availableProducts = productList.filter(p => isExactMatch(p, ["chocolate choux puff"]));
+            } else if (pkgName.includes("bundling drink & food 7")) {
+                if (activeSlotIndex === 0 || activeSlotIndex === 1) availableProducts = productList.filter(p => isExactMatch(p, ["kopi kenangan mantan"]));
+                else availableProducts = productList.filter(p => isExactMatch(p, ["wahyu sapi toast"]));
+            } else if (pkgName.includes("bundling drink & food 8")) {
+                if (activeSlotIndex === 0 || activeSlotIndex === 1) availableProducts = productList.filter(p => isExactMatch(p, ["kopi kenangan mantan"]));
+                else availableProducts = productList.filter(p => isExactMatch(p, ["salt bread choco butter"]));
+            } else if (pkgName.includes("paket hemat 1")) {
+                if (activeSlotIndex === 0) availableProducts = productList.filter(p => isExactMatch(p, ["americano"]));
+                else availableProducts = productList.filter(p => isExactMatch(p, ["chocolate croissant", "chocolate donut"]));
+            } else if (pkgName.includes("paket hemat 2")) {
+                if (activeSlotIndex === 0) availableProducts = productList.filter(p => isExactMatch(p, ["kopi kenangan mantan"]));
+                else availableProducts = productList.filter(p => isExactMatch(p, ["roti coklat klasik", "roti susu manis"]));
+            } else if (pkgName.includes("paket hemat 3")) {
+                if (activeSlotIndex === 0) availableProducts = productList.filter(p => isExactMatch(p, ["dutch chocolate", "avocado milk"]));
+                else availableProducts = productList.filter(p => isExactMatch(p, ["roti coklat klasik", "butter croissant", "sugar donut"]));
             } else if (pkgName.includes("bundling drink & food")) {
                 // Untuk semua varian Bundling Drink & Food, slot 0 & 1 adalah Minuman, slot 2 & 3 adalah Roti/Snack
                 if (activeSlotIndex === 0 || activeSlotIndex === 1) {
