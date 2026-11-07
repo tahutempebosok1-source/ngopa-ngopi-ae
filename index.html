@@ -89,7 +89,6 @@
     <div id="sidebarContent" class="sidebar-content">
         <button class="sidebar-close" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
         <div class="sidebar-title">☕ Menu</div>
-        <!-- 🔥 TAMBAHAN: Menu Akun & Check-in -->
         <div class="sidebar-menu-item" onclick="toggleSidebar(); openAccountModal('login')">
             <div class="left"><i class="fa-solid fa-user-circle"></i> Akun & Check-in Harian</div>
             <i class="fa-solid fa-chevron-right arrow"></i>
@@ -110,7 +109,6 @@
             <div class="left"><i class="fa-solid fa-truck-fast"></i> Lacak Pesanan</div>
             <i class="fa-solid fa-chevron-right arrow"></i>
         </div>
-        <!-- TOMBOL ADMIN PANEL -->
         <div class="sidebar-menu-item" onclick="toggleSidebar(); window.location.href='admin/';">
             <div class="left"><i class="fa-solid fa-user-shield"></i> Admin Panel</div>
             <i class="fa-solid fa-chevron-right arrow"></i>
@@ -444,7 +442,6 @@
             <div class="my-3 flex flex-wrap gap-2 pb-1" id="bundlingSlotsContainer"></div>
             <div class="my-2">
     <p class="text-xs font-bold text-gray-300 mb-2">Pilihan Menu (Pilih untuk Slot Aktif):</p>
-    <!-- Ubah max-h-48 atau max-h-80 menjadi max-h-[360px] agar tinggi kotak leluasa untuk discroll -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 max-h-20px overflow-y-auto pr-1" id="bundlingItemGrid"></div>
 </div>
             <div id="bundlingCustomizeArea"

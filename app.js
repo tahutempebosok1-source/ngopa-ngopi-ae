@@ -260,7 +260,7 @@
             const modal = document.getElementById(id);
             if (!modal) return;
             modal.classList.remove('hidden');
-            const content = modal.querySelector('#trackModalContent') || modal.querySelector('.bg-brand-900');
+            const content = modal.querySelector('#trackModalContent') || modal.querySelector('.bg-brand-900') || modal.querySelector('.panel-modal-box');
             if (content) {
                 content.style.transition = 'all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1)';
                 void content.offsetWidth;
@@ -284,7 +284,7 @@
         function closeModal(id) {
             const modal = document.getElementById(id);
             if (!modal) return;
-            const content = modal.querySelector('#trackModalContent') || modal.querySelector('.bg-brand-900');
+            const content = modal.querySelector('#trackModalContent') || modal.querySelector('.bg-brand-900') || modal.querySelector('.panel-modal-box');
             if (content) {
                 content.style.transform = 'scale(0.95)';
                 content.style.opacity = '0';
@@ -361,6 +361,15 @@
 
                 if (error) throw error;
 
+                // Fetch share proofs to match with orders
+                let shareProofs = [];
+                try {
+                    const { data: spData } = await supabaseClient.from('paket_hemat_shares').select('*').not('proof_image_url', 'is', null);
+                    if (spData) shareProofs = spData;
+                } catch (e) {
+                    console.warn("Gagal load share proofs", e);
+                }
+
                 if (!orders || orders.length === 0) {
                     container.innerHTML = '<p style="text-align:center; color:#9ca3af; padding:20px;">Belum ada pesanan.</p>';
                     return;
@@ -383,6 +392,29 @@
                     }
                     const uniqueBrands = [...new Set(brands)];
 
+                    // Match share proof
+                    const cleanPhone = String(order.customer_phone).replace(/[^0-9]/g, '');
+                    const relatedShares = shareProofs.filter(sp => String(sp.customer_phone).replace(/[^0-9]/g, '') === cleanPhone);
+                    
+                    let proofHtml = '';
+                    if (relatedShares.length > 0) {
+                        // Find one with proof_image_url
+                        const validShare = relatedShares.find(s => s.proof_image_url);
+                        if (validShare) {
+                            // We need to find the index in cachedAdminShareProofs if we want to use openShareProofLightbox
+                            // Easier: just create a direct preview function
+                            proofHtml = `
+                                <div style="margin-top: 12px; padding: 10px; background: rgba(255, 193, 7, 0.1); border: 1px solid #FFC107; border-radius: 12px; display: flex; align-items: center; gap: 10px;">
+                                    <div style="flex: 1;">
+                                        <div style="font-size: 11px; font-weight: 900; color: #FFC107;">📸 BUKTI FOTO SHARE TERLAMPIR</div>
+                                        <div style="font-size: 10px; color: #9ca3af;">Customer telah mengunggah bukti share promo.</div>
+                                    </div>
+                                    <img src="${validShare.proof_image_url}" onclick="showDirectImagePreview('${validShare.proof_image_url}', '${validShare.customer_name}', '${validShare.customer_phone}')" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 2px solid #FFC107; cursor: pointer;" title="Klik untuk memperbesar" />
+                                </div>
+                            `;
+                        }
+                    }
+
                     return `
                         <div class="admin-card">
                             <div style="display:flex; justify-content:space-between; align-items:start;">
@@ -401,6 +433,7 @@
                                 ${itemsText || order.notes || 'Tidak ada item'}
                                 <span style="margin-left:8px;">(${totalItems} item)</span>
                             </div>
+                            ${proofHtml}
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; padding-top:12px; border-top:1px solid #1B4326;">
                                 <span style="color:#FFC107; font-weight:900;">Rp${Number(order.total_price).toLocaleString('id-ID')}</span>
                                 <div style="display:flex; align-items:center; gap:8px;">
@@ -3772,8 +3805,8 @@ async function doDailyCheckinFromAnnouncement() {
                     const hasProof = Boolean(row.proof_image_url);
                     const proofCellHtml = hasProof
                         ? `<div style="display:flex; align-items:center; gap:8px;">
-                               <img src="${row.proof_image_url}" alt="Bukti" onclick="openShareProofLightbox(${idx})" style="width:42px; height:42px; object-fit:cover; border-radius:8px; border:1.5px solid #FFC107; cursor:pointer;" title="Klik untuk perbesar bukti foto" />
-                               <button type="button" onclick="openShareProofLightbox(${idx})" style="background:#FFC107; color:#0D2213; border:none; padding:4px 8px; border-radius:8px; font-size:10px; font-weight:900; cursor:pointer;">
+                               <img src="${row.proof_image_url}" alt="Bukti" onclick="showDirectImagePreview('${row.proof_image_url}', '${custName}', '${custPhone}')" style="width:60px; height:60px; object-fit:cover; border-radius:8px; border:2px solid #FFC107; cursor:pointer; background:#fff;" title="Klik untuk perbesar bukti foto" />
+                               <button type="button" onclick="showDirectImagePreview('${row.proof_image_url}', '${custName}', '${custPhone}')" style="background:#FFC107; color:#0D2213; border:none; padding:6px 10px; border-radius:8px; font-size:11px; font-weight:900; cursor:pointer;">
                                    <i class="fa-solid fa-magnifying-glass-plus"></i> Cek Foto
                                </button>
                            </div>`
@@ -3820,28 +3853,29 @@ async function doDailyCheckinFromAnnouncement() {
             if (tbodyUrl) tbodyUrl.innerHTML = htmlResult;
         }
 
+        function showDirectImagePreview(url, name, phone) {
+            const titleEl = document.getElementById('lightboxShareTitle');
+            const metaEl = document.getElementById('lightboxShareMeta');
+            const imgEl = document.getElementById('lightboxShareImg');
+            const dlBtn = document.getElementById('lightboxDownloadBtn');
+
+            if (titleEl) titleEl.innerText = `${name || 'Customer'} (${phone || '-'})`;
+            if (metaEl) metaEl.innerText = `Bukti Share Promo`;
+            if (imgEl) imgEl.src = url;
+            if (dlBtn) {
+                dlBtn.href = url;
+                dlBtn.download = `bukti-share-${(phone || 'cust').replace(/[^0-9]/g, '')}.jpg`;
+            }
+            openModal('shareProofLightboxModal');
+        }
+
         function openShareProofLightbox(index) {
             const item = cachedAdminShareProofs[index];
             if (!item || !item.proof_image_url) {
                 showToast('Tidak ada file gambar bukti share pada baris ini.');
                 return;
             }
-            const titleEl = document.getElementById('lightboxShareTitle');
-            const metaEl = document.getElementById('lightboxShareMeta');
-            const imgEl = document.getElementById('lightboxShareImg');
-            const dlBtn = document.getElementById('lightboxDownloadBtn');
-
-            if (titleEl) titleEl.innerText = `${item.customer_name || 'Customer'} (${item.customer_phone || '-'})`;
-            if (metaEl) {
-                const dStr = item.created_at ? new Date(item.created_at).toLocaleString('id-ID') : '';
-                metaEl.innerText = `Menu: ${item.menu_name || 'Bundling Drink & Food'} • ${item.is_new_account ? 'Akun Baru' : 'Member'} • ${dStr}`;
-            }
-            if (imgEl) imgEl.src = item.proof_image_url;
-            if (dlBtn) {
-                dlBtn.href = item.proof_image_url;
-                dlBtn.download = item.proof_file_name || `bukti-share-${(item.customer_phone || 'cust').replace(/[^0-9]/g, '')}.jpg`;
-            }
-            openModal('shareProofLightboxModal');
+            showDirectImagePreview(item.proof_image_url, item.customer_name, item.customer_phone);
         }
 
         async function updateShareProofStatusAdmin(rowId, customerPhone, newStatus) {
