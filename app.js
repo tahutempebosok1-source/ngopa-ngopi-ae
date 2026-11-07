@@ -131,7 +131,29 @@
                 };
             }
 
-            // 4. OTOMATISASI BUNDLING DRINK & FOOD BERDASARKAN DESKRIPSI
+            // 4. HARDCODED FALLBACK: Couple Regular A (2 Slot Otomatis)
+            if (itemName.includes('couple regular a')) {
+                return {
+                    desc: item.description || '✨ Menu sudah dipilih otomatis!',
+                    items: [
+                        { name: 'Kopi Kenangan Mantan', size: 'Regular' },
+                        { name: 'Kopi Kenangan Mantan', size: 'Regular' }
+                    ]
+                };
+            }
+
+            // 5. HARDCODED FALLBACK: Couple Regular B (2 Slot Otomatis)
+            if (itemName.includes('couple regular b')) {
+                return {
+                    desc: item.description || '✨ Menu sudah dipilih otomatis!',
+                    items: [
+                        { name: 'Butterscotch Aren Latte', size: 'Regular' },
+                        { name: 'Butterscotch Aren Latte', size: 'Regular' }
+                    ]
+                };
+            }
+
+            // 6. OTOMATISASI BUNDLING DRINK & FOOD BERDASARKAN DESKRIPSI
             if (itemName.includes('bundling drink & food')) {
                 // Coba parse langsung dari deskripsi database
                 const parsedItems = parseBundleDescription(item.description || item.desc);
@@ -1218,6 +1240,15 @@
                     const allowedSnacks = ["roti coklat klasik", "roti susu manis", "roti srikaya", "chocolate choux puff", "wahyu sapi toast", "salt bread choco butter"];
                     availableProducts = productList.filter(p => isExactMatch(p, allowedSnacks));
                 }
+            } else if (pkgName.includes("paket hemat 1")) {
+                if (activeSlotIndex === 0) availableProducts = productList.filter(p => isExactMatch(p, ["americano"]));
+                else availableProducts = productList.filter(p => isExactMatch(p, ["chocolate croissant", "chocolate donut"]));
+            } else if (pkgName.includes("paket hemat 2")) {
+                if (activeSlotIndex === 0) availableProducts = productList.filter(p => isExactMatch(p, ["kopi kenangan mantan"]));
+                else availableProducts = productList.filter(p => isExactMatch(p, ["roti coklat klasik", "roti susu manis"]));
+            } else if (pkgName.includes("paket hemat 3")) {
+                if (activeSlotIndex === 0) availableProducts = productList.filter(p => isExactMatch(p, ["dutch chocolate", "avocado milk"]));
+                else availableProducts = productList.filter(p => isExactMatch(p, ["roti coklat klasik", "butter croissant", "sugar donut"]));
             } else if (pkgName.includes("couple mix regular")) {
                 const allowedMixItems = ["kopi kenangan mantan", "spanish latte", "butterscotch aren latte", "toffee nut latte", "avocado milk", "babyccino", "raspberry hibiscus", "pistachio aren latte", "og thai tea", "lemon black tea", "americano", "banana americano"];
                 availableProducts = productList.filter(p => isExactMatch(p, allowedMixItems));
