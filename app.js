@@ -65,37 +65,60 @@
             "Fore Coffee": ["Foreveryone"]
         };
 
-          
-
         function getPresetForItem(item) {
             if (!item) return null;
+            
+            // 1. Cek dari database Supabase terlebih dahulu
             if (BUNDLING_PRESETS[item.name]) return BUNDLING_PRESETS[item.name];
 
             const itemName = (item.name || '').toLowerCase();
             const dbDesc = (item.description || item.desc || '').toLowerCase();
 
-            // Jika nama menu mengandung 'bundling drink & food'
-            if (itemName.includes('bundling drink & food')) {
-                // Cek berdasarkan nama nomor (1-8)
-                for (let i = 1; i <= 8; i++) {
-                    if (itemName.includes(`drink & food ${i}`)) {
-                        return BUNDLING_PRESETS[`Bundling Drink & Food ${i}`];
-                    }
-                }
-                
-                // Fallback berdasarkan deskripsi
-                if (dbDesc.includes('americano') && dbDesc.includes('raspberry') && dbDesc.includes('roti coklat')) return BUNDLING_PRESETS['Bundling Drink & Food 1'];
-                if ((dbDesc.includes('2x raspberry') || dbDesc.includes('2 raspberry')) && dbDesc.includes('roti coklat')) return BUNDLING_PRESETS['Bundling Drink & Food 2'];
-                if (dbDesc.includes('kopi kenangan mantan') && dbDesc.includes('roti susu manis')) return BUNDLING_PRESETS['Bundling Drink & Food 3'];
-                if (dbDesc.includes('cafe malt') && dbDesc.includes('srikaya')) return BUNDLING_PRESETS['Bundling Drink & Food 4'];
-                if (dbDesc.includes('og thai tea') && dbDesc.includes('roti susu manis')) return BUNDLING_PRESETS['Bundling Drink & Food 5'];
-                if (dbDesc.includes('kopi kenangan mantan') && dbDesc.includes('choux')) return BUNDLING_PRESETS['Bundling Drink & Food 6'];
-                if (dbDesc.includes('kopi kenangan mantan') && dbDesc.includes('wahyu sapi')) return BUNDLING_PRESETS['Bundling Drink & Food 7'];
-                if (dbDesc.includes('kopi kenangan mantan') && dbDesc.includes('salt bread')) return BUNDLING_PRESETS['Bundling Drink & Food 8'];
-                
-                // Fallback default
-                return BUNDLING_PRESETS['Bundling Drink & Food 1'];
+            // 2. HARDCODED FALLBACK: Satnight Berdua (2 Slot Otomatis)
+            if (itemName.includes('satnight berdua') || itemName.includes('sat night berdua')) {
+                return {
+                    desc: item.description || '✨ Menu sudah dipilih otomatis!',
+                    items: [
+                        { name: 'Butterscotch Aren Latte', size: 'Large' },
+                        { name: 'Creamy Aren Latte', size: 'Large' }
+                    ]
+                };
             }
+
+            // 3. HARDCODED FALLBACK: Satnight Bertiga (3 Slot Otomatis)
+            if (itemName.includes('satnight bertiga') || itemName.includes('sat night bertiga')) {
+                return {
+                    desc: item.description || '✨ Menu sudah dipilih otomatis!',
+                    items: [
+                        { name: 'Pistachio Aren Latte', size: 'Large' },
+                        { name: 'Creamy Aren Latte', size: 'Large' },
+                        { name: 'Butterscotch Aren Latte', size: 'Large' }
+                    ]
+                };
+            }
+
+            // 4. HARDCODED FALLBACK: Bundling Drink & Food 1 - 8 (Otomatis 4 Slot)
+            if (itemName.includes('bundling drink & food')) {
+                const matchNum = itemName.match(/(\d+)/);
+                const num = matchNum ? parseInt(matchNum[1]) : 1;
+                
+                const fallbacks = {
+                    1: [{ name: 'Americano', size: 'Regular' }, { name: 'Raspberry Hibiscus', size: 'Regular' }, { name: 'Roti Coklat Klasik' }, { name: 'Roti Coklat Klasik' }],
+                    2: [{ name: 'Raspberry Hibiscus', size: 'Regular' }, { name: 'Raspberry Hibiscus', size: 'Regular' }, { name: 'Roti Coklat Klasik' }, { name: 'Roti Coklat Klasik' }],
+                    3: [{ name: 'Kopi Kenangan Mantan', size: 'Regular' }, { name: 'Kopi Kenangan Mantan', size: 'Regular' }, { name: 'Roti Susu Manis' }, { name: 'Roti Susu Manis' }],
+                    4: [{ name: 'Cafe Malt Latte', size: 'Regular' }, { name: 'Cafe Malt Latte', size: 'Regular' }, { name: 'Roti Srikaya' }, { name: 'Roti Srikaya' }],
+                    5: [{ name: 'OG Thai Tea', size: 'Regular' }, { name: 'OG Thai Tea', size: 'Regular' }, { name: 'Roti Susu Manis' }, { name: 'Roti Susu Manis' }],
+                    6: [{ name: 'Kopi Kenangan Mantan', size: 'Regular' }, { name: 'Kopi Kenangan Mantan', size: 'Regular' }, { name: 'Chocolate Choux Puff' }, { name: 'Chocolate Choux Puff' }],
+                    7: [{ name: 'Kopi Kenangan Mantan', size: 'Regular' }, { name: 'Kopi Kenangan Mantan', size: 'Regular' }, { name: 'Wahyu Sapi Toast' }, { name: 'Wahyu Sapi Toast' }],
+                    8: [{ name: 'Kopi Kenangan Mantan', size: 'Regular' }, { name: 'Kopi Kenangan Mantan', size: 'Regular' }, { name: 'Salt Bread Choco Butter' }, { name: 'Salt Bread Choco Butter' }]
+                };
+                const items = fallbacks[num] || fallbacks[1];
+                return {
+                    desc: item.description || '✨ Menu sudah dipilih otomatis!',
+                    items: items
+                };
+            }
+            
             return null;
         }
 
@@ -959,15 +982,10 @@
         function openBundlingModal(item) {
             const isPreset = getPresetForItem(item);
 
-            if (isPreset) {
+            if (isPreset && isPreset.items) {
                 const bundleDescText = isPreset.desc || item.description || item.desc || '';
                 activeBundlingItem = { ...item, price: item.price + (isOutsideJava(selectedOutlet) ? 2000 : 0) };
-let totalSlots = item.slotCount || 2;
-if (item.name && item.name.toLowerCase().includes("bundling drink & food")) totalSlots = 4;
-if (item.name && item.name.toLowerCase().includes("3 cup")) totalSlots = 3;
-bundlingSlots = Array(totalSlots).fill(null);
-
-                // Memetakan 4 slot otomatis dari preset
+                
                 bundlingSlots = isPreset.items.map((presetItem, idx) => {
                     const isFoodItem = /roti|toast|croissant|donut|snack|food|ayam|nasi|pasta|deli/i.test(presetItem.name);
                     return {
@@ -986,10 +1004,9 @@ bundlingSlots = Array(totalSlots).fill(null);
                 document.getElementById('bundlingSub').innerText = bundleDescText || '✨ Menu sudah dipilih otomatis!';
                 document.getElementById('bundlingPrice').innerText = `Rp${activeBundlingItem.price.toLocaleString('id-ID')}`;
 
-                // Sembunyikan grid pilihan manual karena sudah otomatis 4 slot
                 document.getElementById('bundlingItemGrid').innerHTML = `
                     <div class="col-span-4 text-center text-amber-400 text-xs py-4">
-                        <i class="fa-solid fa-check-circle text-lg"></i> 4 Menu sudah dipilih otomatis untuk paket ini (Bisa diklik untuk melihat detail)
+                        <i class="fa-solid fa-check-circle text-lg"></i> Menu sudah dipilih otomatis untuk paket ini (Bisa diklik untuk melihat detail)
                     </div>
                 `;
 
@@ -1008,7 +1025,18 @@ bundlingSlots = Array(totalSlots).fill(null);
             // 🔥 PAKET BIASA (manual select) - kode lama
             activeBundlingItem = { ...item, price: item.price + (isOutsideJava(selectedOutlet) ? 2000 : 0) };
             let totalSlots = item.slotCount || 2;
-            if (item.name && item.name.toLowerCase().includes("3 cup")) totalSlots = 3;
+            const pkgName = (item.name || '').toLowerCase();
+            const pkgDesc = (item.description || item.desc || '').toLowerCase();
+
+            if (pkgName.includes("3 cup") || pkgName.includes("satnight bertiga")) {
+                totalSlots = 3;
+            } else if (pkgName.includes("bundling drink & food")) {
+                // Jika ada 3 item di deskripsi (dipisah |), maka 3 slot. Jika 4 item, 4 slot.
+                const parts = pkgDesc.split('|');
+                if (parts.length === 3) totalSlots = 3;
+                else totalSlots = 4; // Default aman untuk bundling drink & food
+            }
+            
             bundlingSlots = Array(totalSlots).fill(null);
             activeSlotIndex = 0;
 
@@ -1036,55 +1064,55 @@ bundlingSlots = Array(totalSlots).fill(null);
         }
 
         function renderBundlingSlotsUI() {
-    const container = document.getElementById('bundlingSlotsContainer');
-    if (!container) return;
-    container.style.display = 'flex';
-    container.style.flexWrap = 'wrap';
-    container.style.gap = '10px';
+            const container = document.getElementById('bundlingSlotsContainer');
+            if (!container) return;
+            container.style.display = 'flex';
+            container.style.flexWrap = 'wrap';
+            container.style.gap = '10px';
 
-    container.innerHTML = bundlingSlots.map((slot, idx) => {
-        const isActive = idx === activeSlotIndex;
-        const isPreset = slot && slot.preset === true;
+            container.innerHTML = bundlingSlots.map((slot, idx) => {
+                const isActive = idx === activeSlotIndex;
+                const isPreset = slot && slot.preset === true;
 
-        let btnClass = "slot-btn rounded-2xl border text-left flex-1 transition-all duration-300 ";
+                let btnClass = "slot-btn rounded-2xl border text-left flex-1 transition-all duration-300 ";
 
-        if (isActive && !slot) {
-            btnClass += "bg-brand-800/40 text-amber-400 border-brand-700/50 active-slot slot-btn-empty";
-        } else if (isActive && slot) {
-            btnClass += "bg-amber-400 text-brand-900 border-amber-400 font-extrabold shadow-md active-slot";
-        } else if (slot && isPreset) {
-            btnClass += "bg-emerald-800/80 text-white border-emerald-600 shadow";
-        } else if (slot) {
-            btnClass += "bg-brand-800 text-white border-brand-700";
-        } else {
-            btnClass += "bg-brand-900/60 text-gray-400 border-brand-700/30 slot-btn-empty";
+                if (isActive && !slot) {
+                    btnClass += "bg-brand-800/40 text-amber-400 border-brand-700/50 active-slot slot-btn-empty";
+                } else if (isActive && slot) {
+                    btnClass += "bg-amber-400 text-brand-900 border-amber-400 font-extrabold shadow-md active-slot";
+                } else if (slot && isPreset) {
+                    btnClass += "bg-emerald-800/80 text-white border-emerald-600 shadow";
+                } else if (slot) {
+                    btnClass += "bg-brand-800 text-white border-brand-700";
+                } else {
+                    btnClass += "bg-brand-900/60 text-gray-400 border-brand-700/30 slot-btn-empty";
+                }
+
+                const noteDisplay = slot && slot.note ? `<span class="text-[9px] text-amber-300 block truncate font-medium">📝 ${slot.note}</span>` : '';
+                const sizeDisplay = slot && slot.size ? ` (${slot.size})` : '';
+
+                return `
+                    <button type="button" onclick="setActiveSlot(${idx})" class="${btnClass}">
+                        <div class="flex items-center justify-between">
+                            <p class="text-[9px] uppercase tracking-wider font-bold opacity-80">Slot ${idx + 1}</p>
+                            ${isPreset ? '<span class="text-[8px] bg-white/20 text-white px-1.5 py-0.2 rounded-full font-bold">Auto</span>' : ''}
+                        </div>
+                        <p class="text-xs truncate font-black mt-0.5">${slot ? slot.name + sizeDisplay : 'Pilih Item'}</p>
+                        ${noteDisplay}
+                    </button>
+                `;
+            }).join('');
+
+            const btn = document.getElementById('btnConfirmBundling');
+            if (btn) {
+                const isComplete = bundlingSlots.every(s => s !== null);
+                btn.innerText = isComplete ? 'Tambah ke Keranjang' : 'Tambah (Belum Lengkap)';
+                btn.disabled = !isComplete;
+                btn.className = isComplete
+                    ? "w-full bg-amber-400 hover:bg-amber-500 text-brand-950 font-extrabold py-3 rounded-2xl shadow-lg transition text-xs cursor-pointer"
+                    : "w-full bg-gray-600 text-gray-300 font-extrabold py-3 rounded-2xl cursor-not-allowed text-xs";
+            }
         }
-
-        const noteDisplay = slot && slot.note ? `<span class="text-[9px] text-amber-300 block truncate font-medium">📝 ${slot.note}</span>` : '';
-        const sizeDisplay = slot && slot.size ? ` (${slot.size})` : '';
-
-        return `
-            <button type="button" onclick="setActiveSlot(${idx})" class="${btnClass}">
-                <div class="flex items-center justify-between">
-                    <p class="text-[9px] uppercase tracking-wider font-bold opacity-80">Slot ${idx + 1}</p>
-                    ${isPreset ? '<span class="text-[8px] bg-white/20 text-white px-1.5 py-0.2 rounded-full font-bold">Auto</span>' : ''}
-                </div>
-                <p class="text-xs truncate font-black mt-0.5">${slot ? slot.name + sizeDisplay : 'Pilih Item'}</p>
-                ${noteDisplay}
-            </button>
-        `;
-    }).join('');
-
-    const btn = document.getElementById('btnConfirmBundling');
-    if (btn) {
-        const isComplete = bundlingSlots.every(s => s !== null);
-        btn.innerText = isComplete ? 'Tambah ke Keranjang' : 'Tambah (Belum Lengkap)';
-        btn.disabled = !isComplete;
-        btn.className = isComplete
-            ? "w-full bg-amber-400 hover:bg-amber-500 text-brand-950 font-extrabold py-3 rounded-2xl shadow-lg transition text-xs cursor-pointer"
-            : "w-full bg-gray-600 text-gray-300 font-extrabold py-3 rounded-2xl cursor-not-allowed text-xs";
-    }
-}
 
         async function setActiveSlot(index) {
             // Simpan catatan slot sebelumnya
@@ -1129,46 +1157,16 @@ bundlingSlots = Array(totalSlots).fill(null);
             const cleanName = (str) => (str || "").toLowerCase().replace(/\s*\(.*?\)\s*/g, '').replace(/\s+/g, ' ').trim();
             const isExactMatch = (prod, targetList) => targetList.some(target => cleanName(prod.name) === cleanName(target));
 
-            if (pkgName.includes("bundling 3 cup regular") || pkgName.includes("bundling 2 cup large")) {
+            if (pkgName.includes("satnight berdua") || pkgName.includes("sat night berdua")) {
+                availableProducts = productList.filter(p => isExactMatch(p, ["butterscotch aren latte", "creamy aren latte"]));
+            } else if (pkgName.includes("satnight bertiga") || pkgName.includes("sat night bertiga")) {
+                availableProducts = productList.filter(p => isExactMatch(p, ["pistachio aren latte", "creamy aren latte", "butterscotch aren latte"]));
+            } else if (pkgName.includes("bundling 3 cup regular") || pkgName.includes("bundling 2 cup large")) {
                 const allowedDrinks = ["kopi kenangan mantan", "spanish latte", "butterscotch aren latte", "toffee nut latte", "raspberry hibiscus", "pistachio aren latte", "og thai tea", "lemon black tea", "americano", "banana americano"];
                 availableProducts = productList.filter(p => isExactMatch(p, allowedDrinks));
-            } else if (pkgName.includes("bundling drink & food 1")) {
-                if (activeSlotIndex === 0) availableProducts = productList.filter(p => isExactMatch(p, ["americano"]));
-                else if (activeSlotIndex === 1) availableProducts = productList.filter(p => isExactMatch(p, ["raspberry hibiscus"]));
-                else availableProducts = productList.filter(p => isExactMatch(p, ["roti coklat klasik"]));
-            } else if (pkgName.includes("bundling drink & food 2")) {
-                if (activeSlotIndex === 0 || activeSlotIndex === 1) availableProducts = productList.filter(p => isExactMatch(p, ["raspberry hibiscus"]));
-                else availableProducts = productList.filter(p => isExactMatch(p, ["roti coklat klasik"]));
-            } else if (pkgName.includes("bundling drink & food 3")) {
-                if (activeSlotIndex === 0 || activeSlotIndex === 1) availableProducts = productList.filter(p => isExactMatch(p, ["kopi kenangan mantan"]));
-                else availableProducts = productList.filter(p => isExactMatch(p, ["roti susu manis"]));
-            } else if (pkgName.includes("bundling drink & food 4")) {
-                if (activeSlotIndex === 0 || activeSlotIndex === 1) availableProducts = productList.filter(p => isExactMatch(p, ["cafe malt latte"]));
-                else availableProducts = productList.filter(p => isExactMatch(p, ["roti srikaya"]));
-            } else if (pkgName.includes("bundling drink & food 5")) {
-                if (activeSlotIndex === 0 || activeSlotIndex === 1) availableProducts = productList.filter(p => isExactMatch(p, ["og thai tea"]));
-                else availableProducts = productList.filter(p => isExactMatch(p, ["roti susu manis"]));
-            } else if (pkgName.includes("bundling drink & food 6")) {
-                if (activeSlotIndex === 0 || activeSlotIndex === 1) availableProducts = productList.filter(p => isExactMatch(p, ["kopi kenangan mantan"]));
-                else availableProducts = productList.filter(p => isExactMatch(p, ["chocolate choux puff"]));
-            } else if (pkgName.includes("bundling drink & food 7")) {
-                if (activeSlotIndex === 0 || activeSlotIndex === 1) availableProducts = productList.filter(p => isExactMatch(p, ["kopi kenangan mantan"]));
-                else availableProducts = productList.filter(p => isExactMatch(p, ["wahyu sapi toast"]));
-            } else if (pkgName.includes("bundling drink & food 8")) {
-                if (activeSlotIndex === 0 || activeSlotIndex === 1) availableProducts = productList.filter(p => isExactMatch(p, ["kopi kenangan mantan"]));
-                else availableProducts = productList.filter(p => isExactMatch(p, ["salt bread choco butter"]));
-            } else if (pkgName.includes("paket hemat 1")) {
-                if (activeSlotIndex === 0) availableProducts = productList.filter(p => isExactMatch(p, ["americano"]));
-                else availableProducts = productList.filter(p => isExactMatch(p, ["chocolate croissant", "chocolate donut"]));
-            } else if (pkgName.includes("paket hemat 2")) {
-                if (activeSlotIndex === 0) availableProducts = productList.filter(p => isExactMatch(p, ["kopi kenangan mantan"]));
-                else availableProducts = productList.filter(p => isExactMatch(p, ["roti coklat klasik", "roti susu manis"]));
-            } else if (pkgName.includes("paket hemat 3")) {
-                if (activeSlotIndex === 0) availableProducts = productList.filter(p => isExactMatch(p, ["dutch chocolate", "avocado milk"]));
-                else availableProducts = productList.filter(p => isExactMatch(p, ["roti coklat klasik", "butter croissant", "sugar donut"]));
             } else if (pkgName.includes("bundling drink & food")) {
                 // Untuk semua varian Bundling Drink & Food, slot 0 & 1 adalah Minuman, slot 2 & 3 adalah Roti/Snack
-                if (activeSlotIndex === 0 || activeSlotIndex === 1) {
+                if (activeSlotIndex <= 1) {
                     const allowedDrinks = ["americano", "raspberry hibiscus", "kopi kenangan mantan", "cafe malt latte", "og thai tea"];
                     availableProducts = productList.filter(p => isExactMatch(p, allowedDrinks));
                 } else {
@@ -1183,7 +1181,6 @@ bundlingSlots = Array(totalSlots).fill(null);
             }
 
             if (availableProducts.length === 0) {
-                // Fallback jika pencarian spesifik kosong, tampilkan semua produk dari brand terkait
                 availableProducts = productList;
             }
 
