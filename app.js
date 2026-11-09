@@ -2325,13 +2325,17 @@
             return Array.from(variants);
         }
 
-        async function getCustomerOrderCount(phone) {
+                async function getCustomerOrderCount(phone) {
             const variants = normalizePhoneVariants(phone);
             if (variants.length === 0) return 0;
             const { count, error } = await supabaseClient
                 .from('orders')
                 .select('*', { count: 'exact', head: true })
-                .in('customer_phone', variants);
+                .in('customer_phone', variants)
+                // 🔥 TAMBAHAN: Kecualikan status yang dibatalkan
+                .not('status', 'ilike', '%batal%')
+                .not('status', 'ilike', '%cancel%');
+                
             if (error) {
                 console.error('Gagal hitung order:', error);
                 return 0;
@@ -2346,7 +2350,10 @@
             const { data, error } = await supabaseClient
                 .from('orders')
                 .select('total_price')
-                .in('customer_phone', variants);
+                .in('customer_phone', variants)
+                // 🔥 TAMBAHAN: Kecualikan status yang dibatalkan
+                .not('status', 'ilike', '%batal%')
+                .not('status', 'ilike', '%cancel%');
 
             if (error || !data) {
                 console.error('Gagal mengambil riwayat transaksi order:', error);
@@ -2497,13 +2504,16 @@
 
         // ======================== BEST SELLER ========================
 
-        async function renderBestSellerFromOrders() {
+                async function renderBestSellerFromOrders() {
             const container = document.getElementById('bestSellerList');
             if (!container) return;
 
             const { data: orders, error } = await supabaseClient
                 .from('orders')
-                .select('items');
+                .select('items')
+                // 🔥 TAMBAHAN: Kecualikan orderan batal dari Best Seller
+                .not('status', 'ilike', '%batal%')
+                .not('status', 'ilike', '%cancel%');
 
             if (error || !orders) {
                 container.innerHTML = `<p class="text-gray-400 text-center py-6">Belum ada data penjualan.</p>`;
