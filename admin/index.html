@@ -88,6 +88,7 @@
         .admin-badge-diproses { background: #F59E0B; color: white; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; display: inline-block; }
         .admin-badge-siap { background: #10B981; color: white; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; display: inline-block; }
         .admin-badge-selesai { background: #6B7280; color: white; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; display: inline-block; }
+        .admin-badge-dibatalkan { background: #ef4444; color: white; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; display: inline-block; }
         
         /* ========== SELECT STATUS ========== */
         .admin-status-select { 
@@ -284,6 +285,8 @@
                                         <option value="Sedang Diproses" ${order.status === 'Sedang Diproses' ? 'selected' : ''}>Diproses</option>
                                         <option value="Siap Diambil/Diantar" ${order.status === 'Siap Diambil/Diantar' ? 'selected' : ''}>Siap</option>
                                         <option value="Selesai" ${order.status === 'Selesai' ? 'selected' : ''}>Selesai</option>
+                                        <!-- OPSI CANCEL BARU -->
+                                        <option value="Dibatalkan" ${order.status === 'Dibatalkan' ? 'selected' : ''} style="color: #ef4444; font-weight: bold;">Cancel / Batal</option>
                                     </select>
                                 </div>
                             </div>
