@@ -2365,7 +2365,7 @@
             return { totalOrders, totalSpend };
         }
 
-        function updateAccountSpendProgressUI(spendInfo) {
+                function updateAccountSpendProgressUI(spendInfo) {
             if (!spendInfo) return;
             const { currentTier, nextTier, totalSpend, progressPercent, remainingToNext, targetMax } = spendInfo;
             const formattedSpend = `Rp${totalSpend.toLocaleString('id-ID')}`;
@@ -2407,7 +2407,8 @@
             const annInfo = document.getElementById('annSpendNextInfo');
 
             if (annBadge) annBadge.innerText = `${currentTier.icon} ${currentTier.level}`;
-            if (annTotal) annTotal.innerText = `${formattedSpend} (${progressPercent}%)`;
+            // 🔥 PERBAIKAN: Ubah format agar tidak menyerupai persentase cashback
+            if (annTotal) annTotal.innerText = `${formattedSpend} / ${formattedTarget}`;
             if (annBar) annBar.style.width = `${progressPercent}%`;
             if (annInfo) annInfo.innerText = nextHintText;
 
@@ -2421,7 +2422,8 @@
             if (cartBox) {
                 cartBox.classList.remove('hidden');
                 if (cartLbl) cartLbl.innerText = `${currentTier.icon} ${currentTier.level}`;
-                if (cartTot) cartTot.innerText = `${formattedSpend} (${progressPercent}%)`;
+                // 🔥 PERBAIKAN: Ubah format agar tidak menyerupai persentase cashback
+                if (cartTot) cartTot.innerText = `${formattedSpend} / ${formattedTarget}`;
                 if (cartBar) cartBar.style.width = `${progressPercent}%`;
                 if (cartNxt) cartNxt.innerText = nextHintText;
             }
@@ -2680,6 +2682,76 @@
         let currentAuthMode = 'login'; // 'login' atau 'register'
         let openedFromAnnouncement = false;
 
+                // ======================== LOG HISTORY POIN ========================
+        function logPointActivity(type, amount, description, balanceAfter) {
+            if (!loggedInCustomer) return;
+            const cleanPhone = loggedInCustomer.phone.replace(/[^0-9]/g, '');
+            const key = `ngopa_point_history_${cleanPhone}`;
+            
+            let history = [];
+            try {
+                history = JSON.parse(localStorage.getItem(key) || '[]');
+            } catch(e) {}
+
+            // type: 'in' (masuk) atau 'out' (keluar)
+            history.unshift({
+                id: 'log-' + Date.now() + '-' + Math.random().toString(36).substring(2, 7),
+                date: new Date().toISOString(),
+                type: type, 
+                amount: Math.abs(amount),
+                description: description,
+                balance: balanceAfter
+            });
+
+            // Batasi maksimal 50 riwayat terakhir agar tidak membebani browser
+            if (history.length > 50) history = history.slice(0, 50);
+            
+            localStorage.setItem(key, JSON.stringify(history));
+            renderPointHistoryUI();
+        }
+
+        function renderPointHistoryUI() {
+            const container = document.getElementById('dashPointHistoryList');
+            if (!container || !loggedInCustomer) return;
+            
+            const cleanPhone = loggedInCustomer.phone.replace(/[^0-9]/g, '');
+            const key = `ngopa_point_history_${cleanPhone}`;
+            
+            let history = [];
+            try {
+                history = JSON.parse(localStorage.getItem(key) || '[]');
+            } catch(e) {}
+
+            if (history.length === 0) {
+                container.innerHTML = '<p class="text-[10px] text-gray-500 dark:text-gray-400 text-center py-4 italic">Belum ada riwayat aktivitas poin.</p>';
+                return;
+            }
+
+            container.innerHTML = history.map(log => {
+                const isIn = log.type === 'in';
+                const colorClass = isIn ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400';
+                const icon = isIn ? 'fa-circle-plus' : 'fa-circle-minus';
+                const sign = isIn ? '+' : '-';
+                const dateStr = new Date(log.date).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
+                
+                return `
+                    <div class="flex items-center justify-between bg-white dark:bg-brand-900/50 p-2.5 rounded-xl border border-brand-100 dark:border-brand-700/60 shadow-sm">
+                        <div class="flex items-start gap-2.5">
+                            <i class="fa-solid ${icon} ${colorClass} mt-0.5 text-sm"></i>
+                            <div>
+                                <p class="font-extrabold text-brand-900 dark:text-gray-200 leading-tight">${log.description}</p>
+                                <p class="text-[9px] text-gray-500 dark:text-gray-400 mt-0.5 font-medium">${dateStr}</p>
+                            </div>
+                        </div>
+                        <div class="text-right shrink-0">
+                            <span class="font-black text-xs ${colorClass}">${sign}${log.amount} Poin</span>
+                            <p class="text-[9px] text-gray-400 font-bold mt-0.5">Sisa: ${log.balance}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
         function openAccountModal(mode = 'login') {
             openedFromAnnouncement = false;
             currentAuthMode = mode;
@@ -2727,7 +2799,7 @@
             }
         }
 
-        function renderAccountModalUI() {
+                function renderAccountModalUI() {
             const authSec = document.getElementById('authFormSection');
             const dashSec = document.getElementById('userDashboardSection');
             
@@ -2742,8 +2814,11 @@
                 document.getElementById('dashCustomerPoints').innerText = `${loggedInCustomer.points || 0} Poin`;
                 document.getElementById('dashStreakCount').innerText = loggedInCustomer.checkin_streak || 0;
                 
-                // Cek apakah hari ini sudah check-in & sinkronisasi progress level akun dari tabel orders
                 checkTodayCheckinStatus();
+                
+                // 🔥 TAMBAHKAN INI: Memanggil fungsi untuk merender list riwayat poin
+                if (typeof renderPointHistoryUI === 'function') renderPointHistoryUI();
+                
                 if (typeof syncCustomerLoyaltyDiscount === 'function') {
                     syncCustomerLoyaltyDiscount(loggedInCustomer.phone);
                 }
@@ -3361,7 +3436,7 @@ async function doDailyCheckinFromAnnouncement() {
             return `ngopa_point_batches_${clean}`;
         }
 
-        function loadAndCleanExpiredPointBatches(phone) {
+                function loadAndCleanExpiredPointBatches(phone) {
             const targetPhone = phone || loggedInCustomer?.phone;
             if (!targetPhone) return [];
             const key = getCustomerPointBatchesKey(targetPhone);
@@ -3409,8 +3484,12 @@ async function doDailyCheckinFromAnnouncement() {
                         .update({ points: activeTotal })
                         .eq('id', loggedInCustomer.id)
                         .then(() => {});
+                    
                     if (expiredPointsTotal > 0) {
                         showToast(`⚠️ ${expiredPointsTotal} Poin telah hangus karena melewati batas waktu 2 bulan.`);
+                        
+                        // 🔥 TAMBAHKAN INI: Mencatat log poin hangus
+                        logPointActivity('out', expiredPointsTotal, 'Poin Kadaluarsa (Hangus)', activeTotal);
                     }
                 }
             }
@@ -3418,7 +3497,7 @@ async function doDailyCheckinFromAnnouncement() {
             return validBatches;
         }
 
-        async function addPointBatchWithExpiry(amount, sourceLabel) {
+                async function addPointBatchWithExpiry(amount, sourceLabel) {
             const pts = Math.round(Number(amount) || 0);
             if (!loggedInCustomer || pts <= 0) return;
 
@@ -3451,10 +3530,13 @@ async function doDailyCheckinFromAnnouncement() {
                 console.error('Gagal sinkronisasi poin ke Supabase:', e);
             }
 
+            // 🔥 TAMBAHKAN INI: Mencatat log poin masuk
+            logPointActivity('in', pts, sourceLabel || 'Reward Poin', newTotal);
+
             renderPointExpiryUI();
         }
 
-        function consumePointsFIFO(pointsToUse) {
+          function consumePointsFIFO(pointsToUse) {
             if (!loggedInCustomer || pointsToUse <= 0) return;
             let remainingToDeduct = Number(pointsToUse);
             const batches = loadAndCleanExpiredPointBatches(loggedInCustomer.phone);
@@ -3480,6 +3562,10 @@ async function doDailyCheckinFromAnnouncement() {
             const newTotal = updatedBatches.reduce((sum, b) => sum + (Number(b.remaining) || 0), 0);
             loggedInCustomer.points = newTotal;
             localStorage.setItem('ngopa_customer', JSON.stringify(loggedInCustomer));
+            
+            // 🔥 TAMBAHKAN INI: Mencatat log poin keluar (dipakai checkout)
+            logPointActivity('out', Number(pointsToUse), 'Potongan Harga Checkout', newTotal);
+
             renderPointExpiryUI();
         }
 
