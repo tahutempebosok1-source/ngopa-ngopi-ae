@@ -138,6 +138,16 @@
             font-weight: bold;
             display: inline-block;
         }
+        
+        .admin-badge-dibatalkan {
+    background: #ef4444; /* Warna Merah */
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: bold;
+    display: inline-block;
+}
 
         .admin-status-select {
             background: #1B4326;

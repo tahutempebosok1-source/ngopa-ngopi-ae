@@ -349,7 +349,7 @@
             }
         }
 
-        async function loadAdminOrders() {
+                async function loadAdminOrders() {
             const container = document.getElementById('adminOrderList');
             container.innerHTML = '<p style="text-align:center; color:#9ca3af; padding:20px;">Memuat data...</p>';
 
@@ -401,8 +401,6 @@
                         // Find one with proof_image_url
                         const validShare = relatedShares.find(s => s.proof_image_url);
                         if (validShare) {
-                            // We need to find the index in cachedAdminShareProofs if we want to use openShareProofLightbox
-                            // Easier: just create a direct preview function
                             proofHtml = `
                                 <div style="margin-top: 12px; padding: 10px; background: rgba(255, 193, 7, 0.1); border: 1px solid #FFC107; border-radius: 12px; display: flex; align-items: center; gap: 10px;">
                                     <div style="flex: 1;">
@@ -442,6 +440,7 @@
                                         <option value="Sedang Diproses" ${order.status === 'Sedang Diproses' ? 'selected' : ''}>Diproses</option>
                                         <option value="Siap Diambil/Diantar" ${order.status === 'Siap Diambil/Diantar' ? 'selected' : ''}>Siap</option>
                                         <option value="Selesai" ${order.status === 'Selesai' ? 'selected' : ''}>Selesai</option>
+                                        <option value="Dibatalkan" ${order.status === 'Dibatalkan' ? 'selected' : ''} style="color: #ef4444; font-weight: bold;">Cancel / Batal</option>
                                     </select>
                                 </div>
                             </div>
@@ -2567,7 +2566,7 @@
             }
         }
 
-        async function renderAdminDashboard() {
+                async function renderAdminDashboard() {
             const tbody = document.getElementById('adminOrderTableBody');
             const emptyState = document.getElementById('adminEmptyState');
 
@@ -2608,6 +2607,7 @@
                                 <option value="Sedang Diproses" ${order.status === 'Sedang Diproses' ? 'selected' : ''}>Sedang Diproses</option>
                                 <option value="Siap Diambil/Diantar" ${order.status === 'Siap Diambil/Diantar' ? 'selected' : ''}>Siap Diambil/Diantar</option>
                                 <option value="Selesai" ${order.status === 'Selesai' ? 'selected' : ''}>Selesai</option>
+                                <option value="Dibatalkan" ${order.status === 'Dibatalkan' ? 'selected' : ''} style="color: #ef4444; font-weight: bold;">Dibatalkan (Cancel)</option>
                             </select>
                         </td>
                     </tr>
