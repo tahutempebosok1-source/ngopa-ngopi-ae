@@ -2842,6 +2842,107 @@
             showToast("Berhasil keluar akun.");
         }
 
+   // ======================== RIWAYAT PESANAN CUSTOMER ========================
+        function openOrderHistoryModal() {
+            if (!loggedInCustomer) {
+                showValidationAlert("Silakan login terlebih dahulu untuk melihat riwayat pesanan.");
+                return;
+            }
+            renderOrderHistory();
+            openModal('orderHistoryModal');
+        }
+
+        async function renderOrderHistory() {
+            const container = document.getElementById('orderHistoryList');
+            container.innerHTML = '<p class="text-center text-xs text-gray-500 dark:text-gray-400 py-6">Memuat riwayat pesanan...</p>';
+            
+            const variants = normalizePhoneVariants(loggedInCustomer.phone);
+            if (variants.length === 0) {
+                container.innerHTML = '<p class="text-center text-xs text-gray-500 dark:text-gray-400 py-6">Nomor HP tidak valid.</p>';
+                return;
+            }
+
+            try {
+                // Ambil data dari tabel orders berdasarkan variasi nomor HP
+                const { data: orders, error } = await supabaseClient
+                    .from('orders')
+                    .select('*')
+                    .in('customer_phone', variants)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                if (!orders || orders.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-8">
+                            <i class="fa-solid fa-receipt text-4xl text-gray-300 dark:text-gray-600 mb-3"></i>
+                            <p class="text-sm font-bold text-gray-500 dark:text-gray-400">Belum ada riwayat pesanan.</p>
+                            <p class="text-xs text-gray-400 mt-1">Yuk pesan menu favoritmu sekarang!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = orders.map(order => {
+                    // Format tanggal
+                    const date = new Date(order.created_at).toLocaleString('id-ID', { 
+                        weekday: 'long', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' 
+                    });
+                    
+                    // Warna Badge Status
+                    let statusClass = "bg-gray-500 text-white";
+                    const s = (order.status || 'Pesanan Diterima').toLowerCase();
+                    if (s.includes('diterima')) statusClass = "bg-blue-500 text-white";
+                    else if (s.includes('proses')) statusClass = "bg-amber-500 text-white";
+                    else if (s.includes('siap')) statusClass = "bg-emerald-500 text-white";
+                    else if (s.includes('selesai')) statusClass = "bg-gray-600 text-white";
+                    else if (s.includes('batal')) statusClass = "bg-red-500 text-white";
+
+                    // Render item
+                    const itemsHtml = (order.items || []).map(item => `
+                        <div class="flex justify-between items-start text-[11px] mb-1.5">
+                            <div class="flex items-start gap-1.5 pr-2">
+                                <span class="font-black text-brand-700 dark:text-amber-400 mt-0.5">${item.quantity || 1}x</span>
+                                <div>
+                                    <span class="font-semibold text-gray-700 dark:text-gray-200">${item.name} ${item.size ? `(${item.size})` : ''}</span>
+                                    ${item.note ? `<p class="text-[9px] text-gray-400 italic">"${item.note}"</p>` : ''}
+                                </div>
+                            </div>
+                            <span class="font-bold text-brand-900 dark:text-white whitespace-nowrap">Rp${(Number(item.price) * (item.quantity || 1)).toLocaleString('id-ID')}</span>
+                        </div>
+                    `).join('');
+
+                    return `
+                        <div class="bg-brand-50 dark:bg-brand-800 rounded-2xl p-4 border border-brand-200 dark:border-brand-700 shadow-sm mb-3">
+                            <!-- Header Tanggal & Status -->
+                            <div class="flex justify-between items-start mb-3 pb-3 border-b border-brand-200 dark:border-brand-700">
+                                <div>
+                                    <p class="text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">${date}</p>
+                                    <p class="text-xs font-black text-brand-900 dark:text-white mt-0.5">Kode: ${order.order_code || `NGOP-${order.id}`}</p>
+                                </div>
+                                <span class="${statusClass} px-2.5 py-1 rounded-full text-[9px] font-black uppercase shadow-sm">${order.status || 'Pesanan Diterima'}</span>
+                            </div>
+                            
+                            <!-- List Item -->
+                            <div class="mb-3">
+                                ${itemsHtml || '<p class="text-[10px] text-gray-500 italic">Tidak ada detail item.</p>'}
+                            </div>
+                            
+                            <!-- Total -->
+                            <div class="flex justify-between items-center pt-3 border-t border-brand-200 dark:border-brand-700">
+                                <span class="text-[10px] text-gray-500 dark:text-gray-400 font-bold">Total Pembayaran</span>
+                                <span class="text-sm font-black text-emerald-600 dark:text-emerald-400">Rp${Number(order.total_price).toLocaleString('id-ID')}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (err) {
+                console.error("Gagal load riwayat:", err);
+                container.innerHTML = '<p class="text-center text-xs text-red-500 py-6">Gagal memuat riwayat. Periksa koneksi internetmu.</p>';
+            }
+        }
+
         function checkTodayCheckinStatus() {
             const btnCheckin = document.getElementById('btnDailyCheckin');
             if (!btnCheckin || !loggedInCustomer) return;
