@@ -9,9 +9,9 @@
 
         let ACCOUNT_SPEND_LEVELS = [
             { minSpend: 0, maxSpend: 149999, nextThreshold: 150000, level: 'Anak Baru Ngopi', icon: '🌱', cashbackRate: 0 },
-            { minSpend: 150000, maxSpend: 299999, nextThreshold: 300000, level: 'Ngopers Amatir', icon: '🐣', cashbackRate: 0.03 },
-            { minSpend: 300000, maxSpend: 499999, nextThreshold: 500000, level: 'Ngopers Addict', icon: '🔥', cashbackRate: 0.06 },
-            { minSpend: 500000, maxSpend: 1000000, nextThreshold: 1000000, level: 'Ngopers Veteran', icon: '👑', cashbackRate: 0.09 }
+            { minSpend: 150000, maxSpend: 299999, nextThreshold: 300000, level: 'Ngopers Amatir', icon: '🐣', cashbackRate: 0.01 },
+            { minSpend: 300000, maxSpend: 499999, nextThreshold: 500000, level: 'Ngopers Addict', icon: '🔥', cashbackRate: 0.03 },
+            { minSpend: 500000, maxSpend: 1000000, nextThreshold: 1000000, level: 'Ngopers Veteran', icon: '👑', cashbackRate: 0.06 }
         ];
 
         // Fungsi untuk mengambil data konfigurasi dari Supabase saat aplikasi dibuka
