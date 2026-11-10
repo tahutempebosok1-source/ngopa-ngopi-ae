@@ -1096,10 +1096,15 @@
                     </div>
                 </div>
 
-                <!-- Box Perkiraan Buka (Jika Voucher Habis / Tutup / Maintenance) -->
-                <div id="announcementEstimationBox" class="mb-2 py-1.5 px-3 bg-amber-500/10 dark:bg-amber-400/10 rounded-xl border border-amber-400/40 w-full text-left hidden">
-                    <p class="text-[8px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-wider">Perkiraan Buka Kembali</p>
-                    <p class="text-[11px] font-bold text-brand-900 dark:text-white" id="announcementEstimationText">Jika stok ready!</p>
+                               <!-- Box Perkiraan Buka (Ditambahkan Icon Hourglass) -->
+                <div id="announcementEstimationBox" class="mb-2 py-1.5 px-3 bg-amber-500/10 dark:bg-amber-400/10 rounded-xl border border-amber-400/40 w-full hidden">
+                    <div class="flex items-center gap-2 text-left">
+                        <i class="fa-solid fa-hourglass-half text-amber-500 text-base shrink-0"></i>
+                        <div>
+                            <p id="announcementEstimationLabel" class="text-[8px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-wider">Perkiraan Buka Kembali</p>
+                            <p class="text-[11px] font-bold text-brand-900 dark:text-white" id="announcementEstimationText">Jika stok ready!</p>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- SECTION AKUN & CHECK-IN -->

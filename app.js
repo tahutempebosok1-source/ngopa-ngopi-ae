@@ -3226,7 +3226,8 @@
                 status: "voucher_empty", // Pilihan status: 'open', 'closed', 'maintenance', 'traveling', 'vacation', 'voucher_empty'
                 operating_days: "Jumat - Minggu",
                 opening_hours: "08:00 - 23:20 WIB",
-                reopen_estimation: "Jika stok ready!"
+                reopen_estimation: "Jika stok ready!",
+                reopen_label: "Perkiraan Buka Kembali"
             };
 
             try {
@@ -3284,10 +3285,18 @@
             const iconEl = document.getElementById('announcementIcon');
             if (iconEl) iconEl.className = `fa-solid ${iconClass} text-amber-400 text-2xl`;
 
-            const estimationBox = document.getElementById('announcementEstimationBox');
-            // 🔥 PERBAIKAN: Tampilkan asalkan ada teks isinya, tanpa peduli status toko
+                       const estimationBox = document.getElementById('announcementEstimationBox');
+            // 🔥 Tampilkan asalkan ada teks isinya, tanpa peduli status toko
             if (annData.reopen_estimation && annData.reopen_estimation.trim() !== '') {
                 estimationBox.style.display = 'block';
+                
+                // 🔥 Update Label Judul dari Database
+                const estimationLabelEl = document.getElementById('announcementEstimationLabel');
+                if (estimationLabelEl) {
+                    estimationLabelEl.innerText = annData.reopen_label || 'Perkiraan Buka Kembali';
+                }
+
+                // Update Isi Teks
                 document.getElementById('announcementEstimationText').innerText = annData.reopen_estimation;
             } else {
                 estimationBox.style.display = 'none';
