@@ -1242,3 +1242,11 @@
             border: 1.5px solid #2E6F40 !important;
             color: #ffffff !important;
         }
+        /* Tambahkan di paling bawah style.css */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
