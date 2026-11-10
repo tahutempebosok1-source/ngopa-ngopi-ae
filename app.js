@@ -3285,7 +3285,8 @@
             if (iconEl) iconEl.className = `fa-solid ${iconClass} text-amber-400 text-2xl`;
 
             const estimationBox = document.getElementById('announcementEstimationBox');
-            if (annData.reopen_estimation && (annData.status === 'voucher_empty' || annData.status === 'closed' || annData.status === 'maintenance')) {
+            // 🔥 PERBAIKAN: Tampilkan asalkan ada teks isinya, tanpa peduli status toko
+            if (annData.reopen_estimation && annData.reopen_estimation.trim() !== '') {
                 estimationBox.style.display = 'block';
                 document.getElementById('announcementEstimationText').innerText = annData.reopen_estimation;
             } else {
