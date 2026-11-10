@@ -1168,7 +1168,7 @@
 
             // 🔥 PAKET BIASA (manual select) - kode lama
             activeBundlingItem = { ...item, price: item.price + (isOutsideJava(selectedOutlet) ? 2000 : 0) };
-            let totalSlots = item.slotCount || 2;
+            let totalSlots = item.slotCount || item.slot_count || 2;
             const pkgName = (item.name || '').toLowerCase();
             const pkgDesc = (item.description || item.desc || '').toLowerCase();
 
@@ -3188,6 +3188,7 @@
         // ======================== DOMContentLoaded ========================
 
         document.addEventListener('DOMContentLoaded', async function () {
+            await fetchDynamicConfigsFromDB();
             renderCategories();
             await renderMenu();
             await renderOutlets();
