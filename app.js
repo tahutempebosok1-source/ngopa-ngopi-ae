@@ -349,7 +349,7 @@
             }
         }
 
-                async function loadAdminOrders() {
+        async function loadAdminOrders() {
             const container = document.getElementById('adminOrderList');
             container.innerHTML = '<p style="text-align:center; color:#9ca3af; padding:20px;">Memuat data...</p>';
 
@@ -471,6 +471,13 @@
                 const result = await response.json();
 
                 if (result.success) {
+                    // 🔥 TAMBAHKAN INI: Tarik Poin Jika Dibatalkan
+                    if (newStatus.toLowerCase().includes('batal') || newStatus.toLowerCase().includes('cancel')) {
+                        const { data: orderData } = await supabaseClient.from('orders').select('customer_phone').eq('id', orderId).single();
+                        if (orderData && orderData.customer_phone) {
+                            await revokePointsOnCancellation(orderId, orderData.customer_phone);
+                        }
+                    }
                     alert('✅ Status berhasil diperbarui!');
                     loadAdminOrders();
                 } else {
@@ -479,6 +486,44 @@
             } catch (err) {
                 alert('❌ Gagal terhubung ke server! Pastikan internet aktif.');
                 console.error(err);
+            }
+        }
+
+        async function revokePointsOnCancellation(orderId, customerPhone) {
+            try {
+                const { data: order, error } = await supabaseClient
+                    .from('orders')
+                    .select('points_earned')
+                    .eq('id', orderId)
+                    .single();
+
+                if (error || !order || !order.points_earned || order.points_earned <= 0) return;
+
+                const ptsToRevoke = order.points_earned;
+                const variants = normalizePhoneVariants(customerPhone);
+                const { data: customer } = await supabaseClient
+                    .from('customers')
+                    .select('id, points')
+                    .in('phone', variants)
+                    .maybeSingle();
+
+                if (customer) {
+                    const newPoints = Math.max(0, (customer.points || 0) - ptsToRevoke);
+                    await supabaseClient
+                        .from('customers')
+                        .update({ points: newPoints })
+                        .eq('id', customer.id);
+
+                    if (loggedInCustomer && loggedInCustomer.id === customer.id) {
+                        loggedInCustomer.points = newPoints;
+                        localStorage.setItem('ngopa_customer', JSON.stringify(loggedInCustomer));
+                        logPointActivity('out', ptsToRevoke, 'Order Dibatalkan (Poin Ditarik)', newPoints);
+                        renderAccountModalUI();
+                    }
+                    console.log(`Berhasil menarik ${ptsToRevoke} poin dari customer ${customerPhone}`);
+                }
+            } catch (e) {
+                console.error("Gagal menarik poin batal:", e);
             }
         }
 
@@ -2109,6 +2154,7 @@
                 customer_phone: phone,
                 total_price: grandTotalVal,
                 status: 'Pesanan Diterima',
+                points_earned: earnedCashbackPoints,
                 items: cart.map((item, idx) => ({
                     index: idx + 1,
                     name: item.name,
@@ -2325,7 +2371,7 @@
             return Array.from(variants);
         }
 
-                async function getCustomerOrderCount(phone) {
+        async function getCustomerOrderCount(phone) {
             const variants = normalizePhoneVariants(phone);
             if (variants.length === 0) return 0;
             const { count, error } = await supabaseClient
@@ -2365,7 +2411,7 @@
             return { totalOrders, totalSpend };
         }
 
-                function updateAccountSpendProgressUI(spendInfo) {
+        function updateAccountSpendProgressUI(spendInfo) {
             if (!spendInfo) return;
             const { currentTier, nextTier, totalSpend, progressPercent, remainingToNext, targetMax } = spendInfo;
             const formattedSpend = `Rp${totalSpend.toLocaleString('id-ID')}`;
@@ -2506,7 +2552,7 @@
 
         // ======================== BEST SELLER ========================
 
-                async function renderBestSellerFromOrders() {
+        async function renderBestSellerFromOrders() {
             const container = document.getElementById('bestSellerList');
             if (!container) return;
 
@@ -2578,7 +2624,7 @@
             }
         }
 
-                async function renderAdminDashboard() {
+        async function renderAdminDashboard() {
             const tbody = document.getElementById('adminOrderTableBody');
             const emptyState = document.getElementById('adminEmptyState');
 
@@ -2637,6 +2683,13 @@
                 console.error("Gagal update status:", error);
                 showToast("Gagal mengubah status!");
             } else {
+                // Tambahan revoke points jika dibatalkan via URL
+                if (newStatus.toLowerCase().includes('batal') || newStatus.toLowerCase().includes('cancel')) {
+                    const { data: orderData } = await supabaseClient.from('orders').select('customer_phone').eq('id', orderId).single();
+                    if (orderData && orderData.customer_phone) {
+                        await revokePointsOnCancellation(orderId, orderData.customer_phone);
+                    }
+                }
                 showToast("Status berhasil diperbarui!");
                 await renderAdminDashboard();
             }
@@ -2682,7 +2735,7 @@
         let currentAuthMode = 'login'; // 'login' atau 'register'
         let openedFromAnnouncement = false;
 
-                // ======================== LOG HISTORY POIN ========================
+        // ======================== LOG HISTORY POIN ========================
         function logPointActivity(type, amount, description, balanceAfter) {
             if (!loggedInCustomer) return;
             const cleanPhone = loggedInCustomer.phone.replace(/[^0-9]/g, '');
@@ -2799,7 +2852,7 @@
             }
         }
 
-                function renderAccountModalUI() {
+        function renderAccountModalUI() {
             const authSec = document.getElementById('authFormSection');
             const dashSec = document.getElementById('userDashboardSection');
             
@@ -2927,7 +2980,7 @@
             showToast("Berhasil keluar akun.");
         }
 
-   // ======================== RIWAYAT PESANAN CUSTOMER ========================
+        // ======================== RIWAYAT PESANAN CUSTOMER ========================
         function openOrderHistoryModal() {
             if (!loggedInCustomer) {
                 showValidationAlert("Silakan login terlebih dahulu untuk melihat riwayat pesanan.");
@@ -2983,6 +3036,15 @@
                     else if (s.includes('selesai')) statusClass = "bg-gray-600 text-white";
                     else if (s.includes('batal')) statusClass = "bg-red-500 text-white";
 
+                    // 🔥 PERBAIKAN: Sembunyikan poin jika status dibatalkan
+                    const isCancelled = (order.status || '').toLowerCase().includes('batal') || (order.status || '').toLowerCase().includes('cancel');
+                    const earnedPts = isCancelled ? 0 : (order.points_earned || 0);
+                    const pointsHtml = earnedPts > 0 
+                        ? `<div class="mt-2 text-[10px] font-extrabold text-amber-600 dark:text-amber-400 bg-amber-400/10 inline-block px-2 py-1 rounded-md border border-amber-400/30">
+                               <i class="fa-solid fa-coins"></i> +${earnedPts} Poin Cashback
+                           </div>` 
+                        : '';
+
                     // Render item
                     const itemsHtml = (order.items || []).map(item => `
                         <div class="flex justify-between items-start text-[11px] mb-1.5">
@@ -3004,6 +3066,8 @@
                                 <div>
                                     <p class="text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">${date}</p>
                                     <p class="text-xs font-black text-brand-900 dark:text-white mt-0.5">Kode: ${order.order_code || `NGOP-${order.id}`}</p>
+                                    <!-- 🔥 TAMBAHKAN INI: Tampilkan Poin -->
+                                    ${pointsHtml}
                                 </div>
                                 <span class="${statusClass} px-2.5 py-1 rounded-full text-[9px] font-black uppercase shadow-sm">${order.status || 'Pesanan Diterima'}</span>
                             </div>
@@ -3436,7 +3500,7 @@ async function doDailyCheckinFromAnnouncement() {
             return `ngopa_point_batches_${clean}`;
         }
 
-                function loadAndCleanExpiredPointBatches(phone) {
+        function loadAndCleanExpiredPointBatches(phone) {
             const targetPhone = phone || loggedInCustomer?.phone;
             if (!targetPhone) return [];
             const key = getCustomerPointBatchesKey(targetPhone);
@@ -3497,7 +3561,7 @@ async function doDailyCheckinFromAnnouncement() {
             return validBatches;
         }
 
-                async function addPointBatchWithExpiry(amount, sourceLabel) {
+        async function addPointBatchWithExpiry(amount, sourceLabel) {
             const pts = Math.round(Number(amount) || 0);
             if (!loggedInCustomer || pts <= 0) return;
 
@@ -3536,7 +3600,7 @@ async function doDailyCheckinFromAnnouncement() {
             renderPointExpiryUI();
         }
 
-          function consumePointsFIFO(pointsToUse) {
+        function consumePointsFIFO(pointsToUse) {
             if (!loggedInCustomer || pointsToUse <= 0) return;
             let remainingToDeduct = Number(pointsToUse);
             const batches = loadAndCleanExpiredPointBatches(loggedInCustomer.phone);
