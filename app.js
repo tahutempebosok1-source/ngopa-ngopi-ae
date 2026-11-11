@@ -2852,7 +2852,57 @@
                 `;
             }).join('');
         }
+        // ======================== FITUR UPLOAD FOTO PROFIL ========================
+        function handleAvatarUpload(event) {
+            const file = event.target.files[0];
+            if (!file || !loggedInCustomer) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const maxDim = 200; // Kompresi ukuran agar ringan
+                    let w = img.width;
+                    let h = img.height;
+                    
+                    if (w > maxDim || h > maxDim) {
+                        if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
+                        else { w = Math.round((w * maxDim) / h); h = maxDim; }
+                    }
+                    
+                    canvas.width = w;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+                    
+                    const base64 = canvas.toDataURL('image/jpeg', 0.8);
+                    
+                    // Simpan ke localStorage berdasarkan Nomor HP
+                    localStorage.setItem(`ngopa_avatar_${loggedInCustomer.phone}`, base64);
+                    updateAvatarUI(base64);
+                    showToast("Foto profil berhasil diperbarui!");
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
 
+        function updateAvatarUI(base64) {
+            const imgEl = document.getElementById('dashAvatarImg');
+            const initialEl = document.getElementById('dashAvatarInitial');
+            if (!imgEl || !initialEl) return;
+            
+            if (base64) {
+                imgEl.src = base64;
+                imgEl.classList.remove('hidden');
+                initialEl.classList.add('hidden');
+            } else {
+                imgEl.src = '';
+                imgEl.classList.add('hidden');
+                initialEl.classList.remove('hidden');
+            }
+        }
         function openAccountModal(mode = 'login') {
             openedFromAnnouncement = false;
             currentAuthMode = mode;
@@ -2910,9 +2960,13 @@
                 
                 const customerDisplayName = loggedInCustomer.name || loggedInCustomer.phone || 'Customer';
                 
-                // 🔥 UPDATE DATA KE DESAIN BARU
+                  // 🔥 UPDATE DATA KE DESAIN BARU
                 const avatarEl = document.getElementById('dashAvatarInitial');
                 if (avatarEl) avatarEl.innerText = customerDisplayName.charAt(0).toUpperCase();
+                
+                // 🔥 TAMBAHKAN INI: Load foto profil dari localStorage
+                const savedAvatar = localStorage.getItem(`ngopa_avatar_${loggedInCustomer.phone}`);
+                updateAvatarUI(savedAvatar);
                 
                 document.getElementById('dashCustomerName').innerText = customerDisplayName;
                 document.getElementById('dashCustomerPhone').innerText = loggedInCustomer.phone;
