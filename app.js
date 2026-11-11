@@ -2900,24 +2900,27 @@
             }
         }
 
-        function renderAccountModalUI() {
+                function renderAccountModalUI() {
             const authSec = document.getElementById('authFormSection');
             const dashSec = document.getElementById('userDashboardSection');
             
             if (loggedInCustomer) {
                 authSec.classList.add('hidden');
                 dashSec.classList.remove('hidden');
-                const customerDisplayName = loggedInCustomer.name || loggedInCustomer.phone || '';
-                const greetingEl = document.getElementById('dashGreetingName');
-                if (greetingEl) greetingEl.innerText = customerDisplayName;
+                
+                const customerDisplayName = loggedInCustomer.name || loggedInCustomer.phone || 'Customer';
+                
+                // 🔥 UPDATE DATA KE DESAIN BARU
+                const avatarEl = document.getElementById('dashAvatarInitial');
+                if (avatarEl) avatarEl.innerText = customerDisplayName.charAt(0).toUpperCase();
+                
                 document.getElementById('dashCustomerName').innerText = customerDisplayName;
                 document.getElementById('dashCustomerPhone').innerText = loggedInCustomer.phone;
-                document.getElementById('dashCustomerPoints').innerText = `${loggedInCustomer.points || 0} Poin`;
+                document.getElementById('dashCustomerPoints').innerHTML = `${loggedInCustomer.points || 0} <span class="text-[10px]">pts</span>`;
                 document.getElementById('dashStreakCount').innerText = loggedInCustomer.checkin_streak || 0;
                 
                 checkTodayCheckinStatus();
                 
-                // 🔥 TAMBAHKAN INI: Memanggil fungsi untuk merender list riwayat poin
                 if (typeof renderPointHistoryUI === 'function') renderPointHistoryUI();
                 
                 if (typeof syncCustomerLoyaltyDiscount === 'function') {
@@ -3143,6 +3146,14 @@
         function checkTodayCheckinStatus() {
             const btnCheckin = document.getElementById('btnDailyCheckin');
             if (!btnCheckin || !loggedInCustomer) return;
+            // 🔥 Update Teks Tanggal Kedaluarsa (Simulasi visual)
+            const expiryEl = document.getElementById('checkinExpiryText');
+            if (expiryEl) {
+                const nextMonth = new Date();
+                nextMonth.setMonth(nextMonth.getMonth() + 1);
+                expiryEl.innerText = `Berakhir ${nextMonth.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}`;
+            }
+
 
             const todayStr = new Date().toISOString().split('T')[0];
             if (loggedInCustomer.last_checkin === todayStr) {
