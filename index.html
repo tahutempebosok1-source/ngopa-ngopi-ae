@@ -78,32 +78,37 @@
             </div>
         </div>
 
-        <!-- BARIS 2: INFORMASI OUTLET (Sesuai Referensi) -->
+         <!-- BARIS 2: INFORMASI OUTLET -->
         <div onclick="openModal('outletModal')" class="w-full bg-brand-800 hover:bg-brand-700/80 transition-colors cursor-pointer group">
-            <div class="max-w-4xl mx-auto px-3 md:px-4 py-2 flex items-center text-xs">
+            <!-- Tambahan w-full & overflow-hidden agar membatasi teks panjang -->
+            <div class="max-w-4xl mx-auto px-3 md:px-4 py-2 flex items-center text-xs w-full overflow-hidden">
+                
                 <!-- Ikon Lokasi -->
                 <i class="fa-solid fa-location-dot text-amber-400 mr-1.5 text-sm shrink-0 group-hover:scale-110 transition-transform"></i>
                 
-                <!-- Nama Outlet -->
-                <span id="currentOutletName" class="font-extrabold text-white whitespace-nowrap shrink-0 group-hover:text-amber-300 transition-colors">Pilih Outlet</span>
-                <!-- 🔥 BADGE OUTLET MAHAL -->
-                    <span id="headerOutletPremiumBadge" class="hidden text-[8px] md:text-[9px] font-black bg-rose-500 text-white px-1.5 py-0.5 rounded-md shadow-sm">Outlet Mahal</span>
+                <!-- Nama Outlet & Badge -->
+                <div class="flex items-center gap-1.5 shrink-0 mr-1">
+                    <span id="currentOutletName" class="font-extrabold text-white whitespace-nowrap group-hover:text-amber-300 transition-colors">Pilih Outlet</span>
+                    
+                    <!-- Badge Outlet Mahal -->
+                    <span id="headerOutletPremiumBadge" class="hidden text-[8px] md:text-[9px] font-black bg-rose-500 text-white px-1.5 py-0.5 rounded-md shadow-sm whitespace-nowrap">Outlet Mahal</span>
                 </div>
-                <!-- Detail Alamat & Jam (Hanya muncul jika outlet sudah dipilih) -->
-                <div id="headerOutletDetails" class="hidden items-center flex-1 min-w-0 ml-1 md:ml-1.5">
-                    <span class="text-gray-400 mx-1 md:mx-1.5 shrink-0 font-bold">·</span>
+                
+                <!-- Detail Alamat & Jam -->
+                <div id="headerOutletDetails" class="hidden items-center flex-1 min-w-0">
+                    <span class="text-gray-400 mx-1 shrink-0 font-bold">·</span>
                     
-                    <!-- Alamat (Otomatis terpotong dengan titik-titik jika panjang) -->
-                    <span id="currentOutletAddress" class="text-gray-300 truncate text-[10px] md:text-[11px] flex-1"></span>
+                    <!-- Alamat: whitespace-nowrap & truncate agar tidak turun baris -->
+                    <span id="currentOutletAddress" class="text-gray-300 truncate text-[10px] md:text-[11px] flex-1 whitespace-nowrap"></span>
                     
-                    <!-- Jam Operasional -->
+                    <!-- Jam Operasional: shrink-0 agar selalu utuh di kanan -->
                     <span class="text-gray-300 font-semibold text-[10px] md:text-[11px] ml-1.5 whitespace-nowrap shrink-0 flex items-center gap-1">
                         ( <i class="fa-regular fa-clock text-[9px]"></i> <span id="currentOutletHours">-</span> )
                     </span>
                 </div>
 
                 <!-- Panah Kanan -->
-                <i class="fa-solid fa-chevron-right text-amber-400/70 ml-auto text-[10px] shrink-0 group-hover:translate-x-1 transition-transform"></i>
+                <i class="fa-solid fa-chevron-right text-amber-400/70 ml-2 text-[10px] shrink-0 group-hover:translate-x-1 transition-transform"></i>
             </div>
         </div>
     </header>
