@@ -951,7 +951,7 @@
                                 ${!isAvailable ? '<span class="out-of-stock-badge">HABIS</span>' : ''}
                                 <img src="${item.image_url}" alt="${item.name}" onerror="this.src='logo-ngopa-ngopi-ae.png'" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300">
                             </div>
-                            <h4 class="font-extrabold text-xs md:text-sm text-brand-900 line-clamp-1 group-hover:text-amber-400 transition-colors">${item.name}</h4>
+                            <h4 class="font-extrabold text-xs md:text-sm text-brand-900 line-clamp-2 group-hover:text-amber-400 transition-colors">${item.name}</h4>
                             ${itemDesc ? `<p class="text-[10px] text-amber-600 dark:text-amber-400 font-semibold line-clamp-2 mt-0.5 leading-snug">${itemDesc}</p>` : ''}
                             <p class="text-[10px] text-gray-400 font-medium mt-0.5">${item.category}</p>
                             ${shareBtnHtml}

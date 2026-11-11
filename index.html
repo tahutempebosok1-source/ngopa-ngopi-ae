@@ -41,43 +41,43 @@
         <span class="text-xs font-black" id="toastMessage">Item sudah dimasukkan ke keranjang</span>
     </div>
 
-    <!-- ========== HEADER ========== -->
+        <!-- ========== HEADER ========== -->
     <header class="sticky top-0 z-40 glass-nav text-white shadow-md">
-        <div class="max-w-4xl mx-auto px-4 py-2.5 flex items-center justify-between">
-            <div class="flex items-center gap-4 flex-1">
-                <img src="logo-ngopa-ngopi-ae.png" alt="Logo" class="h-11 w-auto object-contain" />
-                <div>
-                    <h1 class="font-black text-lg leading-tight text-white tracking-wide">Ngopa Ngopi Ae</h1>
-                    <p class="text-[11px] font-bold flex items-center gap-1.5 cursor-pointer group transition-colors duration-200 hover:text-amber-300"
+        <div class="max-w-4xl mx-auto px-3 md:px-4 py-2 md:py-2.5 flex items-center justify-between">
+            <!-- Area Kiri: Logo & Teks -->
+            <div class="flex items-center gap-2 md:gap-4 flex-1 min-w-0">
+                <img src="logo-ngopa-ngopi-ae.png" alt="Logo" class="h-9 md:h-11 w-auto object-contain shrink-0" />
+                <div class="min-w-0">
+                    <h1 class="font-black text-sm md:text-lg leading-tight text-white tracking-wide truncate">Ngopa Ngopi Ae</h1>
+                    <p class="text-[9px] md:text-[11px] font-bold flex items-center gap-1 md:gap-1.5 cursor-pointer group transition-colors duration-200 hover:text-amber-300 truncate"
                         onclick="openModal('outletModal')">
-                        <i
-                            class="fa-solid fa-location-dot text-amber-400 text-sm group-hover:scale-110 transition-transform duration-200"></i>
-                        <span id="currentOutletName" class="text-white/90 group-hover:text-white">Pilih Outlet</span>
-                        <i
-                            class="fa-solid fa-chevron-down text-[10px] text-amber-400/70 group-hover:text-amber-400 transition-colors"></i>
+                        <i class="fa-solid fa-location-dot text-amber-400 text-[10px] md:text-sm group-hover:scale-110 transition-transform duration-200 shrink-0"></i>
+                        <span id="currentOutletName" class="text-white/90 group-hover:text-white truncate">Pilih Outlet</span>
+                        <i class="fa-solid fa-chevron-down text-[8px] md:text-[10px] text-amber-400/70 group-hover:text-amber-400 transition-colors shrink-0"></i>
                     </p>
                 </div>
             </div>
-            <div class="flex items-center gap-3">
+            <!-- Area Kanan: Tombol -->
+            <div class="flex items-center gap-1.5 md:gap-3 shrink-0">
                 <button onclick="openAccountModal('login')"
-                    class="p-2.5 bg-brand-700 hover:bg-brand-500 rounded-xl transition border border-brand-500/30 text-amber-400 relative"
+                    class="p-2 md:p-2.5 bg-brand-700 hover:bg-brand-500 rounded-xl transition border border-brand-500/30 text-amber-400 relative"
                     title="Check-in Harian & Poin">
-                    <i class="fa-solid fa-calendar-check text-lg"></i>
+                    <i class="fa-solid fa-calendar-check text-base md:text-lg"></i>
                 </button>
                 <button onclick="toggleTheme()"
-                    class="p-2.5 bg-brand-700 hover:bg-brand-500 rounded-xl transition border border-brand-500/30 text-white"
+                    class="p-2 md:p-2.5 bg-brand-700 hover:bg-brand-500 rounded-xl transition border border-brand-500/30 text-white"
                     title="Ganti Mode">
-                    <i id="themeIcon" class="fa-solid fa-moon text-lg"></i>
+                    <i id="themeIcon" class="fa-solid fa-moon text-base md:text-lg"></i>
                 </button>
                 <button onclick="openModal('cartModal')"
-                    class="relative p-2.5 bg-brand-700 hover:bg-brand-500 rounded-xl transition border border-brand-500/30">
-                    <i class="fa-solid fa-cart-shopping text-white text-lg"></i>
+                    class="relative p-2 md:p-2.5 bg-brand-700 hover:bg-brand-500 rounded-xl transition border border-brand-500/30">
+                    <i class="fa-solid fa-cart-shopping text-white text-base md:text-lg"></i>
                     <span id="cartCount"
-                        class="absolute -top-1.5 -right-1.5 bg-amber-400 text-brand-900 font-black text-xs w-5 h-5 rounded-full flex items-center justify-center hidden shadow">0</span>
+                        class="absolute -top-1.5 -right-1.5 bg-amber-400 text-brand-900 font-black text-[10px] md:text-xs w-4 h-4 md:w-5 md:h-5 rounded-full flex items-center justify-center hidden shadow">0</span>
                 </button>
                 <button onclick="toggleSidebar()"
-                    class="p-2.5 bg-brand-700 hover:bg-brand-500 rounded-xl transition border border-brand-500/30 text-white">
-                    <i class="fa-solid fa-bars text-lg"></i>
+                    class="p-2 md:p-2.5 bg-brand-700 hover:bg-brand-500 rounded-xl transition border border-brand-500/30 text-white">
+                    <i class="fa-solid fa-bars text-base md:text-lg"></i>
                 </button>
             </div>
         </div>
