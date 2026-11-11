@@ -1,5 +1,6 @@
 // ======================== STATE & DINAMIS CONFIG DARI SUPABASE ========================
         let BUNDLING_PRESETS = {};
+        let premiumOutletIds = [];
         let LOYALTY_LEVELS = [
             { minOrders: 0, level: 'Anak Baru Ngopi', icon: '🌱', desc: 'Baru coba', voucher: null, discount: 0 },
             { minOrders: 10, level: 'Ngopers Amatir', icon: '🐣', desc: 'Mulai sering', voucher: 'Diskon Rp200/transaksi', discount: 200 },
@@ -46,6 +47,12 @@
                             discount: r.discount_amount
                         }));
                     }
+                }
+
+                // 3. Ambil Data Outlet Premium (Surcharge)
+                const { data: premiumData } = await supabaseClient.from('outlet_surcharges').select('outlet_id');
+                if (premiumData) {
+                    premiumOutletIds = premiumData.map(d => Number(d.outlet_id));
                 }
             } catch (e) {
                 console.warn('Gagal memuat konfigurasi dinamis dari Supabase, menggunakan data default lokal.', e);
@@ -792,13 +799,23 @@
         }
 
         function isOutsideJava(outletObj) {
-            if (!outletObj || !outletObj.address) return false;
+            if (!outletObj) return false;
+
+            // 🔥 1. CEK DARI DATABASE PREMIUM OUTLET
+            // Jika ID outlet ada di dalam tabel outlet_surcharges, maka langsung return true
+            if (premiumOutletIds.includes(Number(outletObj.id))) {
+                return true;
+            }
+
+            // Jika tidak ada di database, gunakan logika lama (berdasarkan alamat/nama)
+            if (!outletObj.address) return false;
             const addr = outletObj.address.toLowerCase();
             const name = outletObj.name.toLowerCase();
             const outsideKeywords = ['bali', 'sulawesi', 'sumatera', 'kalimantan', 'ntb', 'ntt', 'papua', 'maluku', 'jambi', 'lampung', 'medan', 'palembang', 'batam', 'makassar', 'samarinda', 'banjarmasin', 'pontianak', 'manado', 'pekanbaru', 'aceh'];
             let isOutside = false;
             outsideKeywords.forEach(keyword => { if (addr.includes(keyword)) isOutside = true; });
             if (['tangerang', 'bekasi', 'bogor', 'depok', 'jakarta', 'surabaya', 'bandung'].some(k => addr.includes(k))) isOutside = false;
+            
             if (selectedBrand === 'Kopi Kenangan') {
                 const premiumKeywords = ['stasiun', 'mall', 'dt', 'drive thru', 'transmart', 'trans', 'plaza', 'square'];
                 let isPremiumLocation = false;
