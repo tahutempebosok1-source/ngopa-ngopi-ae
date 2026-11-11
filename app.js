@@ -3221,6 +3221,84 @@
             }
         }
 
+                         // ======================== DETAIL KALENDER CHECK-IN ========================
+        function openCheckinDetailModal() {
+            if (!loggedInCustomer) {
+                showValidationAlert("Silakan login untuk melihat detail check-in.");
+                return;
+            }
+
+            // 🔥 SESUAIKAN DENGAN SISTEM: +15 Poin / hari, Bonus +50 Poin tiap 7 hari
+            let rewards = [];
+            for (let i = 1; i <= 28; i++) {
+                if (i % 7 === 0) {
+                    // Hari ke-7, 14, 21, 28 adalah Bonus
+                    rewards.push({ day: i, type: 'banner', val: 'BONUS +50 Pts' });
+                } else {
+                    // Hari biasa
+                    rewards.push({ day: i, type: 'pts', val: '+15 Pts' });
+                }
+            }
+
+            // Hitung status visual berdasarkan streak customer
+            const streak = loggedInCustomer.checkin_streak || 0;
+            const todayStr = new Date().toISOString().split('T')[0];
+            const isCheckedInToday = loggedInCustomer.last_checkin === todayStr;
+            
+            // Tentukan posisi "Hari Ini" di kalender
+            // Jika sudah checkin hari ini, berarti posisi hari ini adalah sejumlah streak.
+            // Jika belum checkin, berarti posisi hari ini adalah streak + 1.
+            let currentVisualDay = isCheckedInToday ? streak : streak + 1;
+            // Jika streak 0 (baru reset setelah dapat bonus / akun baru), hari ini adalah hari ke-1
+            if (currentVisualDay === 0) currentVisualDay = 1; 
+
+            const gridContainer = document.getElementById('checkinCalendarGrid');
+
+            gridContainer.innerHTML = rewards.map((item, index) => {
+                const dayNum = index + 1;
+                
+                // Logic visual: Anggap siklus 7 hari berulang (1-7, 8-14, dst)
+                const dayInCycle = ((dayNum - 1) % 7) + 1; 
+                
+                // Cek apakah hari ini di kalender sudah terlewati atau sedang aktif
+                const isChecked = (dayNum < currentVisualDay) || (isCheckedInToday && dayNum === currentVisualDay);
+                const isToday = (dayNum === currentVisualDay) && !isCheckedInToday;
+
+                // Desain untuk item biasa (+15 Pts)
+                if (item.type === 'pts') {
+                    const icon = `<i class="fa-solid fa-coins text-xl ${isChecked ? 'text-[#C2833B]' : (isToday ? 'text-gray-600' : 'text-gray-300')}"></i>`;
+                    return `
+                        <div class="rounded-xl flex flex-col items-center justify-center py-3 px-1 border ${isChecked ? 'bg-[#F6E8D6] border-[#F6E8D6]' : (isToday ? 'bg-white border-[#C2833B]' : 'bg-white border-gray-200')}">
+                            ${isChecked ? '<i class="fa-solid fa-circle-check text-[#C2833B] text-xl"></i>' : icon}
+                            <span class="font-extrabold text-[11px] mt-1 ${isChecked ? 'text-[#C2833B]' : (isToday ? 'text-gray-700' : 'text-gray-400')}">${item.val}</span>
+                            <span class="text-[9px] font-semibold mt-0.5 ${isChecked ? 'text-[#C2833B]' : 'text-gray-400'}">Hari ke-${dayNum}</span>
+                        </div>
+                    `;
+                }
+
+                // Desain untuk Banner (Bonus +50 Pts)
+                if (item.type === 'banner') {
+                    return `
+                        <div class="col-span-3 rounded-xl flex flex-col items-center justify-center py-4 px-2 border ${isChecked ? 'bg-[#F6E8D6] border-[#F6E8D6]' : (isToday ? 'bg-white border-[#C2833B]' : 'bg-white border-gray-200')}">
+                            ${isChecked ? '<i class="fa-solid fa-circle-check text-[#C2833B] text-2xl mb-1"></i>' : '<i class="fa-solid fa-gift text-gray-300 text-2xl mb-1"></i>'}
+                            <span class="font-extrabold text-sm ${isChecked ? 'text-[#C2833B]' : (isToday ? 'text-gray-700' : 'text-gray-400')}">${item.val}</span>
+                            <span class="text-[9px] font-semibold mt-1 ${isChecked ? 'text-[#C2833B]' : 'text-gray-400'}">Hari ke-${dayNum} (Streak 7 Hari)</span>
+                        </div>
+                    `;
+                }
+            }).join('');
+
+            openModal('checkinDetailModal');
+            // Efek animasi pop-up
+            setTimeout(() => {
+                const content = document.getElementById('checkinDetailContent');
+                if(content) {
+                    content.style.transform = 'scale(1)';
+                    content.style.opacity = '1';
+                }
+            }, 10);
+        }
+
         async function doDailyCheckin() {
             if (!loggedInCustomer) return;
 

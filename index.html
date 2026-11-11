@@ -789,7 +789,7 @@
 
     <!-- Payment Info Modal -->
     <div id="paymentInfoModal"
-        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-90 flex items-center justify-center p-4 hidden">
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[90] flex items-center justify-center p-4 hidden">
         <div
             class="bg-white w-full max-w-md rounded-3xl p-5 max-h-[85vh] overflow-y-auto shadow-2xl border border-brand-200">
             <div class="flex justify-between items-center pb-3 border-b">
@@ -1521,7 +1521,7 @@
                                 <h4 class="font-black text-sm text-brand-900 dark:text-white">Daily Check-In</h4>
                                 <p id="checkinExpiryText" class="text-[9px] text-gray-400 font-semibold">Berakhir 30 Nov 2026</p>
                             </div>
-                            <span class="text-[10px] font-bold text-blue-500 cursor-pointer" onclick="openModal('faqModal')">Detail</span>
+                            <span class="text-[10px] font-bold text-blue-500 cursor-pointer hover:underline" onclick="openCheckinDetailModal()">Detail</span>
                         </div>
                         
                         <!-- Kotak-kotak checkin (Simulasi visual) -->
@@ -1714,6 +1714,37 @@
             <button onclick="closeModal('orderHistoryModal')" class="mt-4 w-full py-3 bg-brand-800 hover:bg-brand-700 text-white font-extrabold rounded-xl text-xs transition shrink-0 cursor-pointer">
                 Tutup Riwayat
             </button>
+        </div>
+    </div>
+    <!-- ========== MODAL DETAIL DAILY CHECK-IN (KALENDER 28 HARI) ========== -->
+    <div id="checkinDetailModal"
+        class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[70] flex items-center justify-center p-4 hidden transition-opacity duration-300">
+        <div class="bg-[#F8F9FA] w-full max-w-md rounded-3xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-95 opacity-0" id="checkinDetailContent">
+            
+            <!-- Header Modal -->
+            <div class="flex items-center justify-between p-4 bg-white border-b border-gray-200 shrink-0">
+                <button onclick="closeModal('checkinDetailModal')" class="text-gray-600 hover:text-gray-900 text-xl font-bold w-8 h-8 flex items-center justify-center">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <h3 class="font-extrabold text-base text-gray-900">Daily Check-In</h3>
+                <button class="text-blue-500 text-xl font-bold w-8 h-8 flex items-center justify-center" onclick="showToast('Selesaikan check-in setiap hari untuk klaim hadiah!')">
+                    <i class="fa-solid fa-circle-info"></i>
+                </button>
+            </div>
+
+            <!-- Area Kalender (Scrollable) -->
+            <div class="p-4 overflow-y-auto flex-1 scrollbar-hide">
+                <div id="checkinCalendarGrid" class="grid grid-cols-3 gap-2.5">
+                    <!-- Akan diisi oleh JavaScript -->
+                </div>
+            </div>
+
+            <!-- Footer Modal -->
+            <div class="p-4 bg-white border-t border-gray-200 shrink-0 text-center">
+                <p class="font-extrabold text-base text-[#C2833B] flex items-center justify-center gap-2">
+                    <i class="fa-regular fa-calendar-check text-xl"></i> Check-in lagi besok
+                </p>
+            </div>
         </div>
     </div>
     <script src="app.js"></script>
