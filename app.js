@@ -698,26 +698,27 @@
             }
         }
 
-                function chooseOutlet(id) {
+                        function chooseOutlet(id) {
             const found = outlets.find(o => o.id === id);
             if (!found) return;
             selectedOutlet = found;
             
-            // 🔥 TAMPILKAN DETAIL DI HEADER
+            // 🔥 UPDATE HEADER BARIS KEDUA
             document.getElementById('currentOutletName').innerText = selectedOutlet.name;
             
-            const detailsEl = document.getElementById('headerOutletDetails');
-            const addrEl = document.getElementById('currentOutletAddress');
-            const hoursEl = document.getElementById('currentOutletHours');
-            
-            if (detailsEl) {
-                detailsEl.classList.remove('hidden');
-                detailsEl.classList.add('flex');
-            }
-            if (addrEl) addrEl.innerText = selectedOutlet.address;
-            if (hoursEl) hoursEl.innerText = selectedOutlet.hours || 'Jam tidak tersedia';
+            const detailsContainer = document.getElementById('headerOutletDetails');
+            const addressSpan = document.getElementById('currentOutletAddress');
+            const hoursSpan = document.getElementById('currentOutletHours');
 
-            // Logika bawaan (tidak diubah)
+            // Tampilkan detail alamat & jam
+            if (detailsContainer) {
+                detailsContainer.classList.remove('hidden');
+                detailsContainer.classList.add('flex');
+            }
+            if (addressSpan) addressSpan.innerText = selectedOutlet.address;
+            if (hoursSpan) hoursSpan.innerText = selectedOutlet.hours || 'Tutup';
+
+            // Logika bawaan dari kode Anda (Tidak diubah)
             const statusObj = checkOutletStatus(selectedOutlet.hours);
             document.getElementById('successOutletTitle').innerText = selectedOutlet.name;
             document.getElementById('successOutletAddr').innerText = selectedOutlet.address;

@@ -42,60 +42,66 @@
     </div>
 
            <!-- ========== HEADER ========== -->
-    <header class="sticky top-0 z-40 glass-nav text-white shadow-md">
-        <div class="max-w-4xl mx-auto px-3 md:px-4 py-2 md:py-2.5 flex items-center justify-between">
-            <!-- Area Kiri: Logo & Teks -->
-            <div class="flex items-center gap-2 md:gap-4 flex-1 min-w-0">
-                <img src="logo-ngopa-ngopi-ae.png" alt="Logo" class="h-9 md:h-11 w-auto object-contain shrink-0" />
-                
-                <div class="min-w-0 flex-1 flex flex-col justify-center">
-                    <h1 class="font-black text-sm md:text-lg leading-tight text-white tracking-wide truncate">Ngopa Ngopi Ae</h1>
-                    
-                    <!-- 🔥 LOKASI OUTLET LAYOUT BARU -->
-                    <div onclick="openModal('outletModal')" class="flex items-center gap-1 md:gap-1.5 cursor-pointer group transition-colors duration-200 w-full mt-0.5">
-                        <i class="fa-solid fa-location-dot text-amber-400 text-[10px] md:text-xs shrink-0 group-hover:scale-110 transition-transform"></i>
-                        
-                        <!-- Nama Outlet -->
-                        <span id="currentOutletName" class="text-[10px] md:text-xs font-black text-white whitespace-nowrap shrink-0 group-hover:text-amber-300 transition-colors">Pilih Outlet</span>
-                        
-                        <!-- Alamat & Jam (Disembunyikan default, muncul setelah pilih outlet) -->
-                        <div id="headerOutletDetails" class="hidden items-center gap-1 overflow-hidden truncate flex-1 group-hover:text-amber-300 transition-colors">
-                            <span class="text-gray-400 text-[10px] shrink-0 font-bold">·</span>
-                            <span id="currentOutletAddress" class="text-gray-300 text-[9px] md:text-[10px] font-medium truncate flex-1"></span>
-                            
-                            <span class="text-gray-300 text-[9px] md:text-[10px] font-medium whitespace-nowrap flex items-center gap-0.5 ml-1 shrink-0">
-                                ( <i class="fa-regular fa-clock text-[8px]"></i> <span id="currentOutletHours">-</span> )
-                            </span>
-                        </div>
-                        
-                        <!-- Panah Kanan -->
-                        <i class="fa-solid fa-chevron-right text-[8px] md:text-[10px] text-amber-400/70 ml-auto shrink-0 group-hover:translate-x-1 transition-transform"></i>
-                    </div>
-                </div>
+        <!-- ========== HEADER (TWO-TIER LAYOUT) ========== -->
+    <header class="sticky top-0 z-40 glass-nav text-white shadow-md flex flex-col">
+        
+        <!-- BARIS 1: LOGO & TOMBOL TOGGLE -->
+        <div class="max-w-4xl mx-auto w-full px-3 md:px-4 py-2 md:py-2.5 flex items-center justify-between border-b border-brand-500/20">
+            <!-- Kiri: Logo & Nama Brand -->
+            <div class="flex items-center gap-2 md:gap-3 min-w-0">
+                <img src="logo-ngopa-ngopi-ae.png" alt="Logo" class="h-8 md:h-10 w-auto object-contain shrink-0" />
+                <h1 class="font-black text-sm md:text-lg leading-tight text-white tracking-wide truncate">Ngopa Ngopi Ae</h1>
             </div>
             
-            <!-- Area Kanan: Tombol -->
-            <div class="flex items-center gap-1.5 md:gap-3 shrink-0">
+            <!-- Kanan: Tombol -->
+            <div class="flex items-center gap-1.5 md:gap-2 shrink-0">
                 <button onclick="openAccountModal('login')"
-                    class="p-2 md:p-2.5 bg-brand-700 hover:bg-brand-500 rounded-xl transition border border-brand-500/30 text-amber-400 relative"
+                    class="p-1.5 md:p-2 bg-brand-700 hover:bg-brand-500 rounded-xl transition border border-brand-500/30 text-amber-400"
                     title="Check-in Harian & Poin">
-                    <i class="fa-solid fa-calendar-check text-base md:text-lg"></i>
+                    <i class="fa-solid fa-calendar-check text-sm md:text-base"></i>
                 </button>
                 <button onclick="toggleTheme()"
-                    class="p-2 md:p-2.5 bg-brand-700 hover:bg-brand-500 rounded-xl transition border border-brand-500/30 text-white"
+                    class="p-1.5 md:p-2 bg-brand-700 hover:bg-brand-500 rounded-xl transition border border-brand-500/30 text-white"
                     title="Ganti Mode">
-                    <i id="themeIcon" class="fa-solid fa-moon text-base md:text-lg"></i>
+                    <i id="themeIcon" class="fa-solid fa-moon text-sm md:text-base"></i>
                 </button>
                 <button onclick="openModal('cartModal')"
-                    class="relative p-2 md:p-2.5 bg-brand-700 hover:bg-brand-500 rounded-xl transition border border-brand-500/30">
-                    <i class="fa-solid fa-cart-shopping text-white text-base md:text-lg"></i>
+                    class="relative p-1.5 md:p-2 bg-brand-700 hover:bg-brand-500 rounded-xl transition border border-brand-500/30">
+                    <i class="fa-solid fa-cart-shopping text-white text-sm md:text-base"></i>
                     <span id="cartCount"
-                        class="absolute -top-1.5 -right-1.5 bg-amber-400 text-brand-900 font-black text-[10px] md:text-xs w-4 h-4 md:w-5 md:h-5 rounded-full flex items-center justify-center hidden shadow">0</span>
+                        class="absolute -top-1.5 -right-1.5 bg-amber-400 text-brand-900 font-black text-[9px] md:text-xs w-4 h-4 md:w-5 md:h-5 rounded-full flex items-center justify-center hidden shadow">0</span>
                 </button>
                 <button onclick="toggleSidebar()"
-                    class="p-2 md:p-2.5 bg-brand-700 hover:bg-brand-500 rounded-xl transition border border-brand-500/30 text-white">
-                    <i class="fa-solid fa-bars text-base md:text-lg"></i>
+                    class="p-1.5 md:p-2 bg-brand-700 hover:bg-brand-500 rounded-xl transition border border-brand-500/30 text-white">
+                    <i class="fa-solid fa-bars text-sm md:text-base"></i>
                 </button>
+            </div>
+        </div>
+
+        <!-- BARIS 2: INFORMASI OUTLET (Sesuai Referensi) -->
+        <div onclick="openModal('outletModal')" class="w-full bg-brand-800 hover:bg-brand-700/80 transition-colors cursor-pointer group">
+            <div class="max-w-4xl mx-auto px-3 md:px-4 py-2 flex items-center text-xs">
+                <!-- Ikon Lokasi -->
+                <i class="fa-solid fa-location-dot text-amber-400 mr-1.5 text-sm shrink-0 group-hover:scale-110 transition-transform"></i>
+                
+                <!-- Nama Outlet -->
+                <span id="currentOutletName" class="font-extrabold text-white whitespace-nowrap shrink-0 group-hover:text-amber-300 transition-colors">Pilih Outlet</span>
+                
+                <!-- Detail Alamat & Jam (Hanya muncul jika outlet sudah dipilih) -->
+                <div id="headerOutletDetails" class="hidden items-center flex-1 min-w-0 ml-1 md:ml-1.5">
+                    <span class="text-gray-400 mx-1 md:mx-1.5 shrink-0 font-bold">·</span>
+                    
+                    <!-- Alamat (Otomatis terpotong dengan titik-titik jika panjang) -->
+                    <span id="currentOutletAddress" class="text-gray-300 truncate text-[10px] md:text-[11px] flex-1"></span>
+                    
+                    <!-- Jam Operasional -->
+                    <span class="text-gray-300 font-semibold text-[10px] md:text-[11px] ml-1.5 whitespace-nowrap shrink-0 flex items-center gap-1">
+                        ( <i class="fa-regular fa-clock text-[9px]"></i> <span id="currentOutletHours">-</span> )
+                    </span>
+                </div>
+
+                <!-- Panah Kanan -->
+                <i class="fa-solid fa-chevron-right text-amber-400/70 ml-auto text-[10px] shrink-0 group-hover:translate-x-1 transition-transform"></i>
             </div>
         </div>
     </header>
