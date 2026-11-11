@@ -681,17 +681,24 @@
                 container.innerHTML = pageData.map(o => {
                     const statusObj = checkOutletStatus(o.hours);
                     const isSelected = selectedOutlet && o.id === selectedOutlet.id;
+                     // 🔥 CEK PREMIUM & BUAT HTML BADGE
+                    const isPremium = isOutsideJava(o);
+                    const premiumBadgeHtml = isPremium ? `<span class="text-[8px] bg-rose-500 text-white font-black px-1.5 py-0.5 rounded-md ml-1 shrink-0">Outlet Mahal</span>` : '';
                     const badgeHtml = statusObj.isOpen
                         ? `<span class="text-[9px] bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-bold px-2 py-0.5 rounded-full flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Buka</span>`
                         : `<span class="text-[9px] bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 font-bold px-2 py-0.5 rounded-full flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Tutup</span>`;
+                    
                     return `
         <div onclick="chooseOutlet(${o.id})" class="p-3 border rounded-2xl hover:border-brand-500 cursor-pointer transition flex justify-between items-center bg-white dark:bg-brand-900 ${isSelected ? 'bg-amber-50/50 dark:bg-brand-700 border-amber-400' : 'border-gray-100 dark:border-brand-700'}">
             <div class="flex-1 pr-2">
-                <div class="flex items-center justify-between gap-1.5">
-                    <h4 class="font-extrabold text-xs text-brand-900 dark:text-white">${o.name}</h4>
+                <div class="flex items-center justify-between gap-1.5 mb-0.5">
+                    <!-- 🔥 TAMBAHKAN PREMIUM BADGE DI SINI -->
+                    <h4 class="font-extrabold text-xs text-brand-900 dark:text-white flex items-center flex-wrap gap-1">
+                        ${o.name} ${premiumBadgeHtml}
+                    </h4>
                     ${badgeHtml}
                 </div>
-                <p class="text-[10px] text-amber-600 dark:text-amber-400 font-bold mt-0.5 flex items-center gap-1">
+                <p class="text-[10px] text-amber-600 dark:text-amber-400 font-bold flex items-center gap-1">
                     <i class="fa-regular fa-clock text-[9px]"></i> ${o.hours || 'Jam operasional tidak tersedia'}
                 </p>
                 <p class="text-[11px] text-gray-500 dark:text-gray-300 mt-1 line-clamp-2">${o.address}</p>
@@ -712,6 +719,13 @@
             
             // 🔥 UPDATE HEADER BARIS KEDUA
             document.getElementById('currentOutletName').innerText = selectedOutlet.name;
+             // 🔥 TAMPILKAN BADGE JIKA HARGA LEBIH MAHAL (isOutsideJava = true)
+            const isPremium = isOutsideJava(selectedOutlet);
+            const badgeEl = document.getElementById('headerOutletPremiumBadge');
+            if (badgeEl) {
+                if (isPremium) badgeEl.classList.remove('hidden');
+                else badgeEl.classList.add('hidden');
+            }
             
             const detailsContainer = document.getElementById('headerOutletDetails');
             const addressSpan = document.getElementById('currentOutletAddress');
