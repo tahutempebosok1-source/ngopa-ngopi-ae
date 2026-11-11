@@ -1325,6 +1325,110 @@
         </div>
     </div>
 
+     <!-- Modal Ketentuan Poin & Reward -->
+    <div id="pointRewardTermsModal"
+        class="fixed inset-0 bg-black/75 backdrop-blur-sm z-[90] flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-brand-900 w-full max-w-md rounded-3xl p-5 shadow-2xl border border-brand-200 dark:border-brand-700 max-h-[85vh] flex flex-col">
+            <div class="flex justify-between items-center border-b border-brand-200 dark:border-brand-700 pb-3 mb-3 shrink-0">
+                <h3 class="font-black text-lg text-brand-900 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-crown text-amber-500"></i> Ketentuan Poin & Reward
+                </h3>
+                <button onclick="closeModal('pointRewardTermsModal')" class="text-gray-500 hover:text-brand-900 dark:text-gray-400 dark:hover:text-white text-xl font-bold">×</button>
+            </div>
+            
+            <div class="overflow-y-auto pr-2 flex-1 space-y-4 text-xs text-gray-700 dark:text-gray-300">
+                <!-- 1. Ketentuan Poin -->
+                <div class="bg-brand-50 dark:bg-brand-800/50 p-4 rounded-2xl border border-brand-200 dark:border-brand-700">
+                    <h4 class="font-extrabold text-brand-900 dark:text-amber-400 mb-2 flex items-center gap-1.5 text-sm"><i class="fa-solid fa-coins"></i> Ketentuan Poin</h4>
+                    <ul class="list-disc pl-4 space-y-1.5 font-medium leading-relaxed">
+                        <li><strong>Check-in Harian:</strong> Dapatkan <span class="text-amber-600 dark:text-amber-400 font-bold">15 Poin</span> setiap hari.</li>
+                        <li><strong>Bonus Streak:</strong> Check-in 7 hari berturut-turut mendapatkan tambahan <span class="text-amber-600 dark:text-amber-400 font-bold">+50 Poin</span>.</li>
+                        <li><strong>Cashback Transaksi:</strong> Dapatkan poin cashback otomatis berdasarkan Level Akun setiap kali bertransaksi.</li>
+                        <li><strong>Masa Berlaku:</strong> Semua poin yang dikumpulkan memiliki masa berlaku maksimal <span class="text-rose-600 dark:text-rose-400 font-bold">2 bulan</span> sejak tanggal perolehan. Poin yang tidak digunakan akan hangus otomatis.</li>
+                    </ul>
+                </div>
+
+                <!-- 2. Ketentuan Level Akun (Berdasarkan Spend) -->
+                <div class="bg-brand-50 dark:bg-brand-800/50 p-4 rounded-2xl border border-brand-200 dark:border-brand-700">
+                    <h4 class="font-extrabold text-brand-900 dark:text-amber-400 mb-2 flex items-center gap-1.5 text-sm"><i class="fa-solid fa-medal"></i> Ketentuan Level Akun (Spend)</h4>
+                    <p class="mb-2 font-medium">Level akun naik berdasarkan akumulasi total belanja (spend) yang sudah selesai (tidak termasuk pesanan batal):</p>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center bg-white dark:bg-brand-900 p-2.5 rounded-xl border border-gray-100 dark:border-brand-700 shadow-sm">
+                            <span class="font-bold">🌱 Anak Baru Ngopi</span>
+                            <div class="text-right">
+                                <span class="block">Rp0 - Rp149.999</span>
+                                <span class="text-[10px] text-gray-500">Cashback 0%</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center bg-white dark:bg-brand-900 p-2.5 rounded-xl border border-gray-100 dark:border-brand-700 shadow-sm">
+                            <span class="font-bold">🐣 Ngopers Amatir</span>
+                            <div class="text-right">
+                                <span class="block">Rp150.000 - Rp299.999</span>
+                                <span class="text-[10px] text-amber-500 font-bold">Cashback 1%</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center bg-white dark:bg-brand-900 p-2.5 rounded-xl border border-gray-100 dark:border-brand-700 shadow-sm">
+                            <span class="font-bold">🔥 Ngopers Addict</span>
+                            <div class="text-right">
+                                <span class="block">Rp300.000 - Rp499.999</span>
+                                <span class="text-[10px] text-amber-500 font-bold">Cashback 3%</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center bg-white dark:bg-brand-900 p-2.5 rounded-xl border border-gray-100 dark:border-brand-700 shadow-sm">
+                            <span class="font-bold">👑 Ngopers Veteran</span>
+                            <div class="text-right">
+                                <span class="block">Rp500.000 - Rp1.000.000</span>
+                                <span class="text-[10px] text-amber-500 font-bold">Cashback 6%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Ketentuan Total Transaksi (Loyalty Card) -->
+                <div class="bg-brand-50 dark:bg-brand-800/50 p-4 rounded-2xl border border-brand-200 dark:border-brand-700">
+                    <h4 class="font-extrabold text-brand-900 dark:text-amber-400 mb-2 flex items-center gap-1.5 text-sm"><i class="fa-solid fa-receipt"></i> Ketentuan Total Transaksi</h4>
+                    <p class="mb-2 font-medium">Dapatkan diskon otomatis yang berlaku untuk pesanan berikutnya berdasarkan jumlah pesanan suksesmu:</p>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center bg-white dark:bg-brand-900 p-2.5 rounded-xl border border-gray-100 dark:border-brand-700 shadow-sm">
+                            <span class="font-bold">🌱 Anak Baru Ngopi</span>
+                            <div class="text-right">
+                                <span class="block">&lt; 10 Order</span>
+                                <span class="text-[10px] text-gray-500">Belum ada diskon</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center bg-white dark:bg-brand-900 p-2.5 rounded-xl border border-gray-100 dark:border-brand-700 shadow-sm">
+                            <span class="font-bold">🐣 Ngopers Amatir</span>
+                            <div class="text-right">
+                                <span class="block">10+ Order</span>
+                                <span class="text-[10px] text-emerald-500 font-bold">Diskon Rp200/transaksi</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center bg-white dark:bg-brand-900 p-2.5 rounded-xl border border-gray-100 dark:border-brand-700 shadow-sm">
+                            <span class="font-bold">🔥 Ngopers Addict</span>
+                            <div class="text-right">
+                                <span class="block">20+ Order</span>
+                                <span class="text-[10px] text-emerald-500 font-bold">Diskon Rp400/transaksi</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center bg-white dark:bg-brand-900 p-2.5 rounded-xl border border-gray-100 dark:border-brand-700 shadow-sm">
+                            <span class="font-bold">👑 Ngopers Veteran</span>
+                            <div class="text-right">
+                                <span class="block">50+ Order</span>
+                                <span class="text-[10px] text-emerald-500 font-bold">Diskon Rp600/transaksi</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="text-[10px] text-center text-gray-500 italic mt-2">*Syarat dan ketentuan dapat berubah sewaktu-waktu tanpa pemberitahuan sebelumnya.</p>
+            </div>
+            
+            <button onclick="closeModal('pointRewardTermsModal')" class="mt-4 w-full py-3 bg-brand-800 hover:bg-brand-700 text-white font-extrabold rounded-xl text-xs transition shrink-0 cursor-pointer">
+                Tutup Ketentuan
+            </button>
+        </div>
+    </div>
+
     <!-- ========== ADMIN PANEL ========== -->
     <div id="adminPanel">
         <div style="max-width:600px; margin:0 auto;">
@@ -1592,13 +1696,13 @@
                                 </div>
                                 <i class="fa-solid fa-chevron-right text-gray-300 text-[10px]"></i>
                             </div>
-                            <div onclick="openModal('loyaltyModal')" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-brand-800 cursor-pointer transition-colors group">
-                                <div class="flex items-center gap-3">
-                                    <i class="fa-solid fa-crown text-gray-600 dark:text-gray-300 group-hover:text-amber-500 transition-colors"></i>
-                                    <span class="text-xs font-bold text-gray-800 dark:text-gray-200">Ketentuan Poin & Reward</span>
-                                </div>
-                                <i class="fa-solid fa-chevron-right text-gray-300 text-[10px]"></i>
-                            </div>
+                            <div onclick="openModal('pointRewardTermsModal')" class="flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-brand-800 cursor-pointer transition-colors group">
+    <div class="flex items-center gap-3">
+        <i class="fa-solid fa-crown text-gray-600 dark:text-gray-300 group-hover:text-amber-500 transition-colors"></i>
+        <span class="text-xs font-bold text-gray-800 dark:text-gray-200">Ketentuan Poin & Reward</span>
+    </div>
+    <i class="fa-solid fa-chevron-right text-gray-300 text-[10px]"></i>
+</div>
                         </div>
                     </div>
 
