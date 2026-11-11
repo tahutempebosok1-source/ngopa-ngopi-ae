@@ -698,15 +698,31 @@
             }
         }
 
-        function chooseOutlet(id) {
+                function chooseOutlet(id) {
             const found = outlets.find(o => o.id === id);
             if (!found) return;
             selectedOutlet = found;
+            
+            // 🔥 TAMPILKAN DETAIL DI HEADER
             document.getElementById('currentOutletName').innerText = selectedOutlet.name;
+            
+            const detailsEl = document.getElementById('headerOutletDetails');
+            const addrEl = document.getElementById('currentOutletAddress');
+            const hoursEl = document.getElementById('currentOutletHours');
+            
+            if (detailsEl) {
+                detailsEl.classList.remove('hidden');
+                detailsEl.classList.add('flex');
+            }
+            if (addrEl) addrEl.innerText = selectedOutlet.address;
+            if (hoursEl) hoursEl.innerText = selectedOutlet.hours || 'Jam tidak tersedia';
+
+            // Logika bawaan (tidak diubah)
             const statusObj = checkOutletStatus(selectedOutlet.hours);
             document.getElementById('successOutletTitle').innerText = selectedOutlet.name;
             document.getElementById('successOutletAddr').innerText = selectedOutlet.address;
             document.getElementById('zoneWarningText').innerText = !statusObj.isOpen ? `⚠️ Perhatian: Outlet ini saat ini sedang TUTUP (${selectedOutlet.hours})` : "";
+            
             closeModal('outletModal');
             openModal('outletSuccessModal');
             setTimeout(() => closeModal('outletSuccessModal'), 1400);
