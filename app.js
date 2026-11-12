@@ -461,7 +461,7 @@
             }
         }
 
-              async function updateOrderStatusAdmin(orderId, newStatus) {
+                            async function updateOrderStatusAdmin(orderId, newStatus) {
             try {
                 // Ambil data order saat ini untuk cek status sebelumnya
                 const { data: currentOrder } = await supabaseClient
@@ -493,7 +493,7 @@
                     }
                     
                     // 🔥 TAMBAHKAN POIN JIKA STATUS DIUBAH MENJADI SELESAI
-                    if (newStatus === 'Selesai' || newStatus === 'Sudah selesai') {
+                    if (currentOrder && (newStatus === 'Selesai' || newStatus === 'Sudah selesai')) {
                         const prevStatus = (currentOrder?.status || '').toLowerCase();
                         if (!prevStatus.includes('selesai')) { // Cegah double award
                             await awardOrderPointsToCustomer(orderId, currentOrder.customer_phone, currentOrder.points_earned);
@@ -549,27 +549,45 @@
             }
         }
 
-                async function awardOrderPointsToCustomer(orderId, customerPhone, pointsToAward) {
+                        async function awardOrderPointsToCustomer(orderId, customerPhone, pointsToAward) {
             const pts = Number(pointsToAward) || 0;
-            if (pts <= 0) return;
+            if (pts <= 0) {
+                console.warn(`Poin tidak ditambahkan karena nilai poin 0 atau tidak valid: ${pointsToAward}`);
+                return;
+            }
             
             try {
                 const variants = normalizePhoneVariants(customerPhone);
-                // Gunakan limit(1) agar tidak error jika ada duplikasi nomor
+                console.log(`Mencari customer dengan nomor: ${variants.join(', ')}`);
+                
                 const { data: customers, error: custErr } = await supabaseClient
                     .from('customers')
                     .select('id, points')
                     .in('phone', variants)
                     .limit(1);
 
+                if (custErr) {
+                    console.error("Error mencari customer:", custErr);
+                    return;
+                }
+
                 const customer = customers && customers.length > 0 ? customers[0] : null;
 
-                if (customer && !custErr) {
+                if (customer) {
                     const newPoints = (customer.points || 0) + pts;
-                    await supabaseClient
+                    console.log(`Mengupdate poin customer ID ${customer.id} dari ${customer.points} menjadi ${newPoints}`);
+                    
+                    const { error: updateErr } = await supabaseClient
                         .from('customers')
                         .update({ points: newPoints })
                         .eq('id', customer.id);
+
+                    if (updateErr) {
+                        console.error("Gagal update poin cashback di database:", updateErr);
+                        return;
+                    }
+
+                    console.log("Berhasil update poin di database.");
 
                     // Jika user sedang login di device yang sama, update tampilannya secara real-time
                     if (typeof loggedInCustomer !== 'undefined' && loggedInCustomer && String(loggedInCustomer.id) === String(customer.id)) {
@@ -597,7 +615,6 @@
                         if (typeof updateCartUI === 'function') updateCartUI();
                         if (typeof showToast === 'function') showToast(`🎁 Selamat! +${pts} Poin Cashback masuk ke akunmu!`);
                     }
-                    console.log(`Berhasil memberikan ${pts} poin cashback ke customer ${customerPhone}`);
                 } else {
                     console.warn(`Customer dengan nomor ${customerPhone} tidak ditemukan.`);
                 }
@@ -2780,7 +2797,7 @@
             }).join('');
         }
 
-          async function updateOrderStatusViaUrl(orderId, newStatus) {
+                    async function updateOrderStatusViaUrl(orderId, newStatus) {
             try {
                 // Ambil data order saat ini
                 const { data: currentOrder } = await supabaseClient
@@ -2806,7 +2823,7 @@
                     }
                     
                     // 🔥 TAMBAHKAN POIN JIKA STATUS DIUBAH MENJADI SELESAI
-                    if (newStatus === 'Selesai' || newStatus === 'Sudah selesai') {
+                    if (currentOrder && (newStatus === 'Selesai' || newStatus === 'Sudah selesai')) {
                         const prevStatus = (currentOrder?.status || '').toLowerCase();
                         if (!prevStatus.includes('selesai')) { // Cegah double award
                             await awardOrderPointsToCustomer(orderId, currentOrder.customer_phone, currentOrder.points_earned);
@@ -3229,15 +3246,23 @@
                     else if (s.includes('selesai')) statusClass = "bg-gray-600 text-white";
                     else if (s.includes('batal')) statusClass = "bg-red-500 text-white";
 
-                    // 🔥 PERBAIKAN: Sembunyikan poin jika status dibatalkan
+                    // 🔥 PERBAIKAN: Tampilkan status poin (Selesai / Pending / Batal)
                     const isCancelled = (order.status || '').toLowerCase().includes('batal') || (order.status || '').toLowerCase().includes('cancel');
-                    const earnedPts = isCancelled ? 0 : (order.points_earned || 0);
-                    const pointsHtml = earnedPts > 0 
-                        ? `<div class="mt-2 text-[10px] font-extrabold text-amber-600 dark:text-amber-400 bg-amber-400/10 inline-block px-2 py-1 rounded-md border border-amber-400/30">
-                               <i class="fa-solid fa-coins"></i> +${earnedPts} Poin Cashback
-                           </div>` 
-                        : '';
-
+                    const isCompleted = (order.status || '').toLowerCase().includes('selesai');
+                    const earnedPts = order.points_earned || 0;
+                    
+                    let pointsHtml = '';
+                    if (earnedPts > 0) {
+                        if (isCancelled) {
+                            pointsHtml = ''; // Sembunyikan jika batal
+                        } else if (isCompleted) {
+                            // Tampil jika sudah selesai
+                            pointsHtml = `<div class="mt-2 text-[10px] font-extrabold text-amber-600 dark:text-amber-400 bg-amber-400/10 inline-block px-2 py-1 rounded-md border border-amber-400/30"><i class="fa-solid fa-coins"></i> +${earnedPts} Poin Cashback</div>`;
+                        } else {
+                            // Tampil "Pending" jika order belum selesai
+                            pointsHtml = `<div class="mt-2 text-[10px] font-extrabold text-gray-500 bg-gray-100 dark:bg-brand-800 inline-block px-2 py-1 rounded-md border border-gray-300 dark:border-brand-600"><i class="fa-solid fa-clock"></i> ${earnedPts} Poin Cashback (Pending)</div>`;
+                        }
+                    }
                     // Render item
                     const itemsHtml = (order.items || []).map(item => `
                         <div class="flex justify-between items-start text-[11px] mb-1.5">
@@ -3464,9 +3489,7 @@
             updateCartUI();
         }
 
-        // ======================== DOMContentLoaded ========================
-
-        document.addEventListener('DOMContentLoaded', async function () {
+                document.addEventListener('DOMContentLoaded', async function () {
             await fetchDynamicConfigsFromDB();
             renderCategories();
             await renderMenu();
@@ -3476,12 +3499,29 @@
             checkAdminAccess();
             initCustomSelect();
             populatePickupTime();
+            
             const floatCart = document.getElementById('floatingCart');
             const floatTop = document.getElementById('floatingTopBtn');
             window.addEventListener('scroll', function () {
                 if (window.scrollY > 300) { floatTop.classList.add('visible'); } else { floatTop.classList.remove('visible'); }
             });
+
             if (loggedInCustomer) {
+                // 🔥 TARIK DATA POIN TERBARU DARI DATABASE
+                try {
+                    const { data: latestCust, error } = await supabaseClient
+                        .from('customers')
+                        .select('*')
+                        .eq('id', loggedInCustomer.id)
+                        .single();
+                    if (latestCust && !error) {
+                        loggedInCustomer = latestCust;
+                        localStorage.setItem('ngopa_customer', JSON.stringify(loggedInCustomer));
+                    }
+                } catch (e) { 
+                    console.error("Gagal sinkronisasi data customer terbaru:", e); 
+                }
+
                 loadAndCleanExpiredPointBatches(loggedInCustomer.phone);
                 renderPointExpiryUI();
                 const nameInput = document.getElementById('custName');
