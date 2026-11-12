@@ -3084,7 +3084,7 @@
             }
         }
 
-        async function handleCustomerLoginRegister() {
+                async function handleCustomerLoginRegister() {
             const name = document.getElementById('authName').value.trim();
             const phone = document.getElementById('authPhone').value.trim();
             const pin = document.getElementById('authPin').value.trim();
@@ -3095,7 +3095,6 @@
             }
 
             try {
-                // Cek apakah akun sudah terdaftar di Supabase
                 let { data: existingUser, error } = await supabaseClient
                     .from('customers')
                     .select('*')
@@ -3114,7 +3113,6 @@
                     }
                     loggedInCustomer = existingUser;
                 } else {
-                    // Mode Register
                     if (existingUser) {
                         if (existingUser.pin === pin) {
                             loggedInCustomer = existingUser;
@@ -3130,7 +3128,6 @@
                             document.getElementById('authName').focus();
                             return;
                         }
-                        // Buat akun baru
                         const newUser = { name, phone, pin, points: 0, checkin_streak: 0, last_checkin: null };
                         const { data: inserted, error: insertErr } = await supabaseClient
                             .from('customers')
@@ -3147,14 +3144,19 @@
                     }
                 }
 
+                // 🔥 PERBAIKAN: Hapus localstorage batch lama agar sistem memuat dari DB yang fresh
+                const cleanPhone = loggedInCustomer.phone.replace(/[^0-9]/g, '');
+                localStorage.removeItem(`ngopa_point_batches_${cleanPhone}`);
+
                 localStorage.setItem('ngopa_customer', JSON.stringify(loggedInCustomer));
                 const nameInput = document.getElementById('custName');
                 const phoneInput = document.getElementById('custPhone');
                 if (nameInput && loggedInCustomer.name) nameInput.value = loggedInCustomer.name;
                 if (phoneInput && loggedInCustomer.phone) phoneInput.value = loggedInCustomer.phone;
+                
+                await syncCustomerLoyaltyDiscount(loggedInCustomer.phone);
                 renderAccountModalUI();
                 renderAnnouncementCheckinUI();
-                await syncCustomerLoyaltyDiscount(loggedInCustomer.phone);
                 updateCartUI();
                 showToast(`Selamat datang, ${loggedInCustomer.name}!`);
 
@@ -3499,7 +3501,7 @@
             });
 
             if (loggedInCustomer) {
-                // 🔥 TARIK DATA POIN TERBARU DARI DATABASE
+                // 🔥 TARIK DATA POIN TERBARU DARI DATABASE SEBELUM MEMBACA LOCALSTORAGE
                 try {
                     const { data: latestCust, error } = await supabaseClient
                         .from('customers')
@@ -3822,7 +3824,7 @@ async function doDailyCheckinFromAnnouncement() {
             return `ngopa_point_batches_${clean}`;
         }
 
-        function loadAndCleanExpiredPointBatches(phone) {
+          function loadAndCleanExpiredPointBatches(phone) {
             const targetPhone = phone || loggedInCustomer?.phone;
             if (!targetPhone) return [];
             const key = getCustomerPointBatchesKey(targetPhone);
@@ -3830,9 +3832,7 @@ async function doDailyCheckinFromAnnouncement() {
             try {
                 batches = JSON.parse(localStorage.getItem(key) || '[]');
                 if (!Array.isArray(batches)) batches = [];
-            } catch (e) {
-                batches = [];
-            }
+            } catch (e) { batches = []; }
 
             const now = new Date();
             if (batches.length === 0 && loggedInCustomer && Number(loggedInCustomer.points) > 0) {
@@ -3858,28 +3858,34 @@ async function doDailyCheckinFromAnnouncement() {
                 return !isExpired && Number(b.remaining) > 0;
             });
 
-            const activeTotal = validBatches.reduce((sum, b) => sum + (Number(b.remaining) || 0), 0);
-            localStorage.setItem(key, JSON.stringify(validBatches));
+            let activeTotal = validBatches.reduce((sum, b) => sum + (Number(b.remaining) || 0), 0);
 
             if (loggedInCustomer && String(loggedInCustomer.phone) === String(targetPhone)) {
-                if (expiredPointsTotal > 0 || loggedInCustomer.points !== activeTotal) {
-                    loggedInCustomer.points = activeTotal;
+                if (expiredPointsTotal > 0) {
+                    loggedInCustomer.points = Math.max(0, (loggedInCustomer.points || 0) - expiredPointsTotal);
                     localStorage.setItem('ngopa_customer', JSON.stringify(loggedInCustomer));
-                    supabaseClient
-                        .from('customers')
-                        .update({ points: activeTotal })
-                        .eq('id', loggedInCustomer.id)
-                        .then(() => {});
-                    
-                    if (expiredPointsTotal > 0) {
-                        showToast(`⚠️ ${expiredPointsTotal} Poin telah hangus karena melewati batas waktu 2 bulan.`);
-                        
-                        // 🔥 TAMBAHKAN INI: Mencatat log poin hangus
-                        logPointActivity('out', expiredPointsTotal, 'Poin Kadaluarsa (Hangus)', activeTotal);
-                    }
+                    supabaseClient.from('customers').update({ points: loggedInCustomer.points }).eq('id', loggedInCustomer.id).then(() => {});
+                    showToast(`⚠️ ${expiredPointsTotal} Poin hangus karena melewati batas 2 bulan.`);
+                    logPointActivity('out', expiredPointsTotal, 'Poin Kadaluarsa (Hangus)', loggedInCustomer.points);
+                } 
+                // 🔥 PERBAIKAN: Jika Database (loggedInCustomer.points) lebih besar dari LocalStorage (activeTotal)
+                else if (Number(loggedInCustomer.points) > activeTotal) {
+                    const diff = Number(loggedInCustomer.points) - activeTotal;
+                    const expiresAt = addTwoMonthsDate(now);
+                    validBatches.push({
+                        id: 'sync-' + Date.now(),
+                        source: 'Sinkronisasi Sistem (Poin Masuk)',
+                        amount: diff,
+                        remaining: diff,
+                        earned_at: now.toISOString(),
+                        expires_at: expiresAt.toISOString()
+                    });
+                    activeTotal = Number(loggedInCustomer.points);
+                    logPointActivity('in', diff, 'Sinkronisasi Poin (Order Selesai)', activeTotal, expiresAt);
                 }
             }
 
+            localStorage.setItem(key, JSON.stringify(validBatches));
             return validBatches;
         }
 
