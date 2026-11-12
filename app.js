@@ -461,53 +461,45 @@
             }
         }
 
-                            async function updateOrderStatusAdmin(orderId, newStatus) {
+                                   async function updateOrderStatusAdmin(orderId, newStatus) {
             try {
-                // Ambil data order saat ini untuk cek status sebelumnya
-                const { data: currentOrder } = await supabaseClient
+                // 1. Ambil data order saat ini untuk cek status sebelumnya & no HP
+                const { data: currentOrder, error: fetchErr } = await supabaseClient
                     .from('orders')
                     .select('status, customer_phone, points_earned')
                     .eq('id', orderId)
                     .single();
 
-                const response = await fetch(
-                    'https://aenpbsmaazkebxfkbwid.supabase.co/functions/v1/update-order-status',
-                    {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            order_id: orderId,
-                            status: newStatus,
-                            admin_password: ADMIN_PASSWORD
-                        })
-                    }
-                );
-                const result = await response.json();
+                if (fetchErr) throw fetchErr;
 
-                if (result.success) {
-                    // Tarik Poin Jika Dibatalkan
-                    if (newStatus.toLowerCase().includes('batal') || newStatus.toLowerCase().includes('cancel')) {
-                        if (currentOrder && currentOrder.customer_phone) {
-                            await revokePointsOnCancellation(orderId, currentOrder.customer_phone);
-                        }
+                // 2. Update status langsung ke tabel database Supabase
+                const { error: updateErr } = await supabaseClient
+                    .from('orders')
+                    .update({ status: newStatus })
+                    .eq('id', orderId);
+
+                if (updateErr) throw updateErr;
+
+                // 3. Logika Tambah/Kurang Poin
+                if (newStatus.toLowerCase().includes('batal') || newStatus.toLowerCase().includes('cancel')) {
+                    if (currentOrder && currentOrder.customer_phone) {
+                        await revokePointsOnCancellation(orderId, currentOrder.customer_phone);
                     }
-                    
-                    // 🔥 TAMBAHKAN POIN JIKA STATUS DIUBAH MENJADI SELESAI
-                    if (currentOrder && (newStatus === 'Selesai' || newStatus === 'Sudah selesai')) {
-                        const prevStatus = (currentOrder?.status || '').toLowerCase();
-                        if (!prevStatus.includes('selesai')) { // Cegah double award
-                            await awardOrderPointsToCustomer(orderId, currentOrder.customer_phone, currentOrder.points_earned);
-                        }
-                    }
-                    
-                    alert('✅ Status berhasil diperbarui!');
-                    loadAdminOrders();
-                } else {
-                    alert('❌ Gagal: ' + (result.message || 'Unknown error'));
                 }
+                
+                if (newStatus === 'Selesai' || newStatus === 'Sudah selesai') {
+                    const prevStatus = (currentOrder?.status || '').toLowerCase();
+                    // Cegah double award jika sebelumnya sudah "selesai"
+                    if (!prevStatus.includes('selesai')) { 
+                        await awardOrderPointsToCustomer(orderId, currentOrder.customer_phone, currentOrder.points_earned);
+                    }
+                }
+                
+                alert('✅ Status berhasil diperbarui & Poin diproses!');
+                loadAdminOrders();
             } catch (err) {
-                alert('❌ Gagal terhubung ke server! Pastikan internet aktif.');
-                console.error(err);
+                alert('❌ Gagal: ' + err.message);
+                console.error("Error update status:", err);
             }
         }
 
