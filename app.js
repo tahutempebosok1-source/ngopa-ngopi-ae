@@ -3000,12 +3000,36 @@
                 initialEl.classList.remove('hidden');
             }
         }
-        function openAccountModal(mode = 'login') {
+                async function openAccountModal(mode = 'login') {
             openedFromAnnouncement = false;
             currentAuthMode = mode;
             const custPhoneVal = document.getElementById('custPhone')?.value?.trim();
             const authPhoneEl = document.getElementById('authPhone');
             if (custPhoneVal && authPhoneEl && !authPhoneEl.value.trim()) authPhoneEl.value = custPhoneVal;
+            
+            // 🔥 TARIK DATA TERBARU DARI DATABASE SEBELUM MODAL TERBUKA
+            if (loggedInCustomer) {
+                try {
+                    const { data: latestCust, error } = await supabaseClient
+                        .from('customers')
+                        .select('*')
+                        .eq('id', loggedInCustomer.id)
+                        .single();
+                        
+                    if (latestCust && !error) {
+                        loggedInCustomer = latestCust; // Update data di memori
+                        localStorage.setItem('ngopa_customer', JSON.stringify(loggedInCustomer)); // Simpan ke cache baru
+                        
+                        // Bersihkan batch poin lama agar sinkron dengan saldo terbaru
+                        const cleanPhone = loggedInCustomer.phone.replace(/[^0-9]/g, '');
+                        localStorage.removeItem(`ngopa_point_batches_${cleanPhone}`); 
+                        loadAndCleanExpiredPointBatches(loggedInCustomer.phone);
+                    }
+                } catch (e) {
+                    console.error("Gagal sinkronisasi data terbaru:", e);
+                }
+            }
+
             renderAccountModalUI();
             openModal('accountModal');
         }
