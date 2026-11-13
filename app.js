@@ -2918,7 +2918,74 @@ let isUsingPoints = false;
 let currentAuthMode = 'login'; // 'login' atau 'register'
 let openedFromAnnouncement = false;
 
-// ======================== LOG HISTORY POIN ========================
+// ======================== LOG HISTORY POIN & REKALKULASI SISA POIN KRONOLOGIS ========================
+function recalculateChronologicalPointHistory(historyArray) {
+    if (!Array.isArray(historyArray) || historyArray.length === 0) return [];
+    const now = new Date();
+
+    // 1. Urutkan dari yang PALING LAMA ke PALING BARU (ascending) untuk menghitung running balance (Sisa)
+    const chronological = [...historyArray].sort((a, b) => {
+        const timeA = new Date(a.date || 0).getTime();
+        const timeB = new Date(b.date || 0).getTime();
+        if (timeA !== timeB) return timeA - timeB;
+        // Jika terjadi di detik/menit yang sama (misal Checkout Potong Poin & Cashback Order Selesai):
+        // Urutkan: 1. Check-in ('checkin-') -> 2. Potong Poin ('out') -> 3. Cashback Selesai ('in') -> 4. Pending ('pending')
+        const getPriority = (item) => {
+            const idStr = String(item.id || '');
+            if (idStr.startsWith('checkin-')) return 1;
+            if (item.type === 'out') return 2;
+            if (item.type === 'in') return 3;
+            if (item.type === 'pending' || item.status_tag === 'pending') return 4;
+            return 5;
+        };
+        return getPriority(a) - getPriority(b);
+    });
+
+    // 2. Deteksi jika ada transaksi pertama yang memiliki saldo awal sebelum histori tercatat (base balance)
+    let runningBalance = 0;
+    const firstActiveIdx = chronological.findIndex(item => item.type === 'in' || item.type === 'out');
+    if (firstActiveIdx > -1) {
+        const firstItem = chronological[firstActiveIdx];
+        const recordedBal = Number(firstItem.balance);
+        const amt = Math.abs(Number(firstItem.amount) || 0);
+        // Jika item pertama adalah Check-in Harian (+15) tapi memiliki recorded Sisa > 15 (misal Sisa: 1425 dari check-in sebelumnya),
+        // kita ambil selisihnya sebagai saldo awal apabila belum ada transaksi order sebelumnya
+        if (firstItem.type === 'in' && !String(firstItem.id || '').startsWith('order-in-') && !isNaN(recordedBal) && recordedBal > amt) {
+            const hasOlderOrder = chronological.slice(0, firstActiveIdx).some(x => String(x.id || '').startsWith('order-'));
+            if (!hasOlderOrder) {
+                runningBalance = recordedBal - amt;
+            }
+        }
+    }
+
+    // 3. Hitung Sisa Poin (balance) secara berurutan dari transaksi paling awal hingga terbaru
+    chronological.forEach(item => {
+        const amt = Math.abs(Number(item.amount) || 0);
+        const isPending = item.type === 'pending' || item.status_tag === 'pending';
+        const expDateObj = item.expires_at ? new Date(item.expires_at) : null;
+        const isExpired = Boolean(!isPending && item.type === 'in' && expDateObj && !isNaN(expDateObj.getTime()) && now > expDateObj) || item.status_tag === 'expired';
+
+        if (isPending) {
+            // Poin pending belum menambah saldo aktif, tampilkan proyeksi atau saldo saat ini
+            item.balance = runningBalance;
+            item.projected_balance = runningBalance + amt;
+        } else if (isExpired) {
+            // Jika poin sudah hangus lewat 2 bulan, tidak menambah saldo aktif saat ini
+            item.status_tag = 'expired';
+            item.balance = runningBalance;
+        } else if (item.type === 'in') {
+            runningBalance += amt;
+            item.balance = runningBalance;
+        } else if (item.type === 'out') {
+            runningBalance = Math.max(0, runningBalance - amt);
+            item.balance = runningBalance;
+        }
+    });
+
+    // 4. Kembalikan dalam urutan TERBARU ke TERLAMA (descending) untuk ditampilkan di UI
+    return chronological.reverse();
+}
+
 function logPointActivity(type, amount, description, balanceAfter, expiresAt = null, customId = null, customDate = null, statusTag = null) {
     if (!loggedInCustomer) return;
     const cleanPhone = String(loggedInCustomer.phone || '').replace(/[^0-9]/g, '');
@@ -2950,8 +3017,8 @@ function logPointActivity(type, amount, description, balanceAfter, expiresAt = n
         history.unshift(entryObj);
     }
 
-    // Urutkan dari yang terbaru berdasarkan tanggal
-    history.sort((a, b) => new Date(b.date) - new Date(a.date));
+    // Rekalkulasi seluruh Sisa Poin secara kronologis agar antar aktivitas 100% sinkron
+    history = recalculateChronologicalPointHistory(history);
 
     // Batasi maksimal 50 riwayat terakhir agar tidak membebani browser
     if (history.length > 50) history = history.slice(0, 50);
@@ -2983,6 +3050,10 @@ function renderPointHistoryUI() {
         container.innerHTML = '<p class="text-[10px] text-gray-500 dark:text-gray-400 text-center py-4 italic">Belum ada riwayat aktivitas poin.</p>';
         return;
     }
+
+    // Pastikan Sisa Poin selalu direkalkulasi secara kronologis sebelum dirender ke layar
+    history = recalculateChronologicalPointHistory(history);
+    localStorage.setItem(key, JSON.stringify(history));
 
     const now = new Date();
 
@@ -3043,9 +3114,9 @@ function renderPointHistoryUI() {
         }
         
         const rightBalanceText = isPending
-            ? `<p class="text-[9px] text-amber-600 dark:text-amber-400 font-bold mt-0.5">Menunggu Selesai</p>`
+            ? `<p class="text-[9px] text-amber-600 dark:text-amber-400 font-bold mt-0.5">Sisa: ${log.balance ?? 0} (Pending)</p>`
             : (isExpiredNow
-                ? `<p class="text-[9px] text-rose-500 font-bold mt-0.5">Hangus (Lewat 2 Bln)</p>`
+                ? `<p class="text-[9px] text-rose-500 font-bold mt-0.5">Hangus • Sisa: ${log.balance ?? 0}</p>`
                 : `<p class="text-[9px] text-gray-400 font-bold mt-0.5">Sisa: ${log.balance ?? (loggedInCustomer.points || 0)}</p>`);
 
         return `
@@ -3118,7 +3189,7 @@ function updateAvatarUI(base64) {
     }
 }
 
-// 🔥 REKONSILIASI & SINKRONISASI PENUH (ORDER SUPABASE + CHECK-IN HARIAN DARI CUSTOMERS SUPABASE)
+// 🔥 REKONSILIASI & SINKRONISASI PENUH (ORDER SUPABASE + CHECK-IN HARIAN + SISA POIN KRONOLOGIS)
 async function reconcileCompletedOrdersPoints(customerObj) {
     if (!customerObj || !customerObj.phone) return customerObj;
     try {
@@ -3161,6 +3232,13 @@ async function reconcileCompletedOrdersPoints(customerObj) {
             return true;
         });
 
+        // Pastikan setiap log Check-in Harian lama memiliki expires_at (2 bulan dari tanggal check-in)
+        nonOrderHistory.forEach(h => {
+            if (h.type === 'in' && !h.expires_at && h.date) {
+                h.expires_at = addTwoMonthsDate(new Date(h.date)).toISOString();
+            }
+        });
+
         // Hanya pertahankan batch poin non-order (misal dari Check-in Harian)
         const nonOrderBatches = batches.filter(b => {
             const bId = String(b.id || '');
@@ -3177,81 +3255,70 @@ async function reconcileCompletedOrdersPoints(customerObj) {
         });
 
         // 🔥 1B. SINKRONISASI RIWAYAT CHECK-IN DARI TABEL 'customers' SUPABASE (`last_checkin` & `checkin_streak`)
-        // Jika di Supabase tercatat sudah check-in pada tanggal `last_checkin` (misal hari ini 2026-11-13),
-        // tetapi di Riwayat Aktivitas Poin belum ada log Check-in Harian pada tanggal tersebut, otomatis tambahkan!
         if (customerObj.last_checkin) {
             const lastCheckinDateStr = String(customerObj.last_checkin).split('T')[0]; // Format: YYYY-MM-DD
-            const hasCheckinLogOnDate = nonOrderHistory.some(h => {
+            const existingCheckinLog = nonOrderHistory.find(h => {
                 const desc = String(h.description || '').toLowerCase();
                 if (!desc.includes('check-in') && !desc.includes('checkin')) return false;
                 if (!h.date) return false;
                 const hDate = new Date(h.date);
                 if (isNaN(hDate.getTime())) return false;
-                // Bandingkan baik format YYYY-MM-DD UTC maupun tanggal lokal
                 const isoDay = hDate.toISOString().split('T')[0];
                 const localDay = `${hDate.getFullYear()}-${String(hDate.getMonth() + 1).padStart(2, '0')}-${String(hDate.getDate()).padStart(2, '0')}`;
                 return isoDay === lastCheckinDateStr || localDay === lastCheckinDateStr || h.id === `checkin-${lastCheckinDateStr}`;
             });
 
-            if (!hasCheckinLogOnDate) {
-                // Buat timestamp check-in yang sinkron dengan tanggal last_checkin
+            // Jika pada tanggal last_checkin ada order yang memakai poin (seperti NGOP-172 memakai 1470 poin pada 13/11/26 pukul 10.56),
+            // berarti Check-in Harian dilakukan SEBELUM order tersebut dibuat
+            const sameDayOrdersWithPointUsed = orders.filter(o => {
+                const st = String(o.status || '').toLowerCase();
+                if (st.includes('batal') || st.includes('cancel')) return false;
+                if (!o.created_at) return false;
+                const oDate = new Date(o.created_at);
+                const oIsoDay = oDate.toISOString().split('T')[0];
+                const oLocalDay = `${oDate.getFullYear()}-${String(oDate.getMonth() + 1).padStart(2, '0')}-${String(oDate.getDate()).padStart(2, '0')}`;
+                return (oIsoDay === lastCheckinDateStr || oLocalDay === lastCheckinDateStr) && extractOrderUsedPoints(o) > 0;
+            });
+
+            let targetCheckinTimestamp = now;
+            if (sameDayOrdersWithPointUsed.length > 0) {
+                const firstOrderTime = new Date(sameDayOrdersWithPointUsed[0].created_at).getTime();
+                // Tempatkan waktu check-in 1 menit sebelum order pemakaian poin jika log check-in dibuat otomatis setelahnya
+                targetCheckinTimestamp = new Date(firstOrderTime - 60000);
+            } else {
                 const todayIsoStr = now.toISOString().split('T')[0];
                 const todayLocalStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-                const checkinTimestamp = (lastCheckinDateStr === todayIsoStr || lastCheckinDateStr === todayLocalStr)
-                    ? now
-                    : new Date(`${lastCheckinDateStr}T08:00:00`);
-                const checkinExpDate = addTwoMonthsDate(checkinTimestamp);
-                const checkinBatchId = `batch-checkin-${lastCheckinDateStr}`;
-
-                // Pastikan batch kadaluarsa 2 bulan untuk check-in tanggal tersebut juga ada
-                if (!validNonOrderBatches.some(b => b.id === checkinBatchId)) {
-                    // Cek apakah order setelah tanggal check-in sudah menghabiskan poin check-in ini
-                    const ordersOnOrAfterCheckin = orders.filter(o => {
-                        const st = String(o.status || '').toLowerCase();
-                        if (st.includes('batal') || st.includes('cancel')) return false;
-                        const oDay = String(o.created_at || '').split('T')[0];
-                        return oDay >= lastCheckinDateStr && extractOrderUsedPoints(o) > 0;
-                    });
-                    const wasConsumedInOrder = ordersOnOrAfterCheckin.length > 0;
-
-                    validNonOrderBatches.push({
-                        id: checkinBatchId,
-                        source: 'Check-in Harian',
-                        amount: 15,
-                        remaining: wasConsumedInOrder ? 0 : 15,
-                        earned_at: checkinTimestamp.toISOString(),
-                        expires_at: checkinExpDate.toISOString()
-                    });
+                if (lastCheckinDateStr !== todayIsoStr && lastCheckinDateStr !== todayLocalStr) {
+                    targetCheckinTimestamp = new Date(`${lastCheckinDateStr}T08:00:00`);
                 }
+            }
 
-                // Hitung estimasi saldo saat check-in tersebut dilakukan
-                const prevCheckinLogs = nonOrderHistory.filter(h => new Date(h.date) < checkinTimestamp);
-                const prevBalance = prevCheckinLogs.length > 0 ? (Number(prevCheckinLogs[0].balance) || 1455) : 0;
-
+            if (!existingCheckinLog) {
+                const checkinExpDate = addTwoMonthsDate(targetCheckinTimestamp);
                 nonOrderHistory.push({
                     id: `checkin-${lastCheckinDateStr}`,
-                    date: checkinTimestamp.toISOString(),
+                    date: targetCheckinTimestamp.toISOString(),
                     type: 'in',
                     amount: 15,
                     description: 'Check-in Harian',
-                    balance: prevBalance + 15,
+                    balance: 0, // Akan dihitung akurat oleh recalculateChronologicalPointHistory
                     expires_at: checkinExpDate.toISOString(),
                     status_tag: 'active'
                 });
+            } else if (sameDayOrdersWithPointUsed.length > 0 && String(existingCheckinLog.id || '') === `checkin-${lastCheckinDateStr}`) {
+                // Jika log checkin-YYYY-MM-DD tadi ter-generate otomatis dengan jam sore (15.34) padahal poinnya sudah dipakai jam 10.56 di NGOP-172,
+                // sesuaikan jamnya ke sebelum NGOP-172 agar urutan kronologis Sisa Poin 100% masuk akal
+                const firstOrderTime = new Date(sameDayOrdersWithPointUsed[0].created_at).getTime();
+                if (new Date(existingCheckinLog.date).getTime() > firstOrderTime) {
+                    existingCheckinLog.date = new Date(firstOrderTime - 60000).toISOString();
+                }
             }
         }
-
-        // Hitung poin check-in yang masih aktif dan belum terpakai
-        const activeCheckinPts = validNonOrderBatches.reduce((sum, b) => sum + (Number(b.remaining) || 0), 0);
 
         // 🔥 2. BANGUN ULANG RIWAYAT & BATCH ORDER MURNI DARI BARIS TABEL 'orders' SUPABASE SAAT INI
         const rebuiltOrderHistory = [];
         const rebuiltOrderBatches = [];
         const validAwardedIds = [];
-        let activeOrderCashbackTotal = 0;
-
-        // Hitung akumulasi poin secara kronologis dari order yang benar-benar ada di Supabase
-        let runningOrderPts = activeCheckinPts;
 
         for (const ord of orders) {
             const st = String(ord.status || '').toLowerCase().trim();
@@ -3274,7 +3341,7 @@ async function reconcileCompletedOrdersPoints(customerObj) {
                     type: 'out',
                     amount: usedPts,
                     description: `Potongan Poin Checkout (${orderCode})`,
-                    balance: Math.max(0, runningOrderPts),
+                    balance: 0, // Akan dihitung secara kronologis
                     expires_at: null,
                     status_tag: 'used'
                 });
@@ -3282,18 +3349,15 @@ async function reconcileCompletedOrdersPoints(customerObj) {
 
             if (earnedPts > 0) {
                 if (isCompleted) {
-                    if (!isExpired) {
-                        activeOrderCashbackTotal += earnedPts;
-                        runningOrderPts += earnedPts;
-                    }
-
+                    // Beri jeda +1 detik dari waktu buat order agar di urutan kronologis: Potong Poin Checkout -> baru Cashback Order Selesai
+                    const completedDate = new Date(orderDate.getTime() + 1000);
                     rebuiltOrderHistory.push({
                         id: `order-in-${ord.id}`,
-                        date: orderDate.toISOString(),
+                        date: completedDate.toISOString(),
                         type: 'in',
                         amount: earnedPts,
                         description: `Cashback Order Selesai (${orderCode})`,
-                        balance: runningOrderPts,
+                        balance: 0, // Akan dihitung secara kronologis
                         expires_at: expDate.toISOString(),
                         status_tag: isExpired ? 'expired' : 'active'
                     });
@@ -3303,25 +3367,25 @@ async function reconcileCompletedOrdersPoints(customerObj) {
                         source: `Cashback Order (${orderCode})`,
                         amount: earnedPts,
                         remaining: isExpired ? 0 : earnedPts,
-                        earned_at: orderDate.toISOString(),
+                        earned_at: completedDate.toISOString(),
                         expires_at: expDate.toISOString()
                     });
 
                     validAwardedIds.push(String(ord.id));
 
-                    // Pastikan di Supabase ditandai points_awarded = true
                     if (ord.points_awarded !== true) {
                         supabaseClient.from('orders').update({ points_awarded: true }).eq('id', ord.id).then(() => {});
                     }
                 } else {
                     // Order masih Pending (Pesanan Diterima / Diproses / Siap)
+                    const pendingDate = new Date(orderDate.getTime() + 1000);
                     rebuiltOrderHistory.push({
                         id: `order-pending-${ord.id}`,
-                        date: orderDate.toISOString(),
+                        date: pendingDate.toISOString(),
                         type: 'pending',
                         amount: earnedPts,
                         description: `Cashback Order (${orderCode})`,
-                        balance: runningOrderPts,
+                        balance: 0, // Akan dihitung secara kronologis
                         expires_at: expDate.toISOString(),
                         status_tag: 'pending'
                     });
@@ -3329,10 +3393,49 @@ async function reconcileCompletedOrdersPoints(customerObj) {
             }
         }
 
-        // 🔥 3. SINKRONKAN SALDO POIN CUSTOMER DI DATABASE SUPABASE JIKA TIDAK SESUAI DENGAN TOTAL ORDER AKTIF
-        const expectedValidPoints = activeCheckinPts + activeOrderCashbackTotal;
-        const currentDbPoints = Number(customerObj.points) || 0;
+        // 🔥 3. GABUNGKAN & HITUNG ULANG SELURUH SISA POIN (RUNNING BALANCE) DARI AWAL SAMPAI AKHIR
+        const combinedHistory = [...nonOrderHistory, ...rebuiltOrderHistory];
+        const finalHistory = recalculateChronologicalPointHistory(combinedHistory).slice(0, 50);
 
+        // Ambil nilai Sisa Poin paling terakhir (terbaru yang bukan pending) sebagai saldo valid customer
+        const latestActiveLog = finalHistory.find(h => h.type === 'in' || h.type === 'out');
+        const expectedValidPoints = latestActiveLog ? Math.max(0, Number(latestActiveLog.balance) || 0) : 0;
+
+        // Sesuaikan remaining pada batch aktif agar totalnya sama persis dengan expectedValidPoints
+        const allCandidateBatches = [...validNonOrderBatches, ...rebuiltOrderBatches.filter(b => Number(b.remaining) > 0)]
+            .sort((a, b) => new Date(a.expires_at) - new Date(b.expires_at));
+        let totalBatchRem = allCandidateBatches.reduce((s, b) => s + (Number(b.remaining) || 0), 0);
+
+        if (totalBatchRem > expectedValidPoints) {
+            let toDeduct = totalBatchRem - expectedValidPoints;
+            for (const b of allCandidateBatches) {
+                if (toDeduct <= 0) break;
+                const rem = Number(b.remaining) || 0;
+                if (rem <= toDeduct) {
+                    toDeduct -= rem;
+                    b.remaining = 0;
+                } else {
+                    b.remaining = rem - toDeduct;
+                    toDeduct = 0;
+                }
+            }
+        } else if (totalBatchRem < expectedValidPoints) {
+            const diff = expectedValidPoints - totalBatchRem;
+            const nowExp = addTwoMonthsDate(now);
+            allCandidateBatches.push({
+                id: `batch-checkin-balance-${cleanPhone}`,
+                source: 'Akumulasi Check-in Harian',
+                amount: diff,
+                remaining: diff,
+                earned_at: now.toISOString(),
+                expires_at: nowExp.toISOString()
+            });
+        }
+
+        const finalBatches = allCandidateBatches.filter(b => Number(b.remaining) > 0);
+
+        // Update kolom points di tabel customers Supabase jika belum sama dengan expectedValidPoints
+        const currentDbPoints = Number(customerObj.points) || 0;
         if (currentDbPoints !== expectedValidPoints) {
             const { error: syncPtsErr } = await supabaseClient
                 .from('customers')
@@ -3343,10 +3446,6 @@ async function reconcileCompletedOrdersPoints(customerObj) {
                 customerObj.points = expectedValidPoints;
             }
         }
-
-        // Gabungkan riwayat non-order (check-in) dan riwayat order dari Supabase, lalu urutkan dari yang terbaru
-        const finalHistory = [...nonOrderHistory, ...rebuiltOrderHistory].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 50);
-        const finalBatches = [...validNonOrderBatches.filter(b => Number(b.remaining) > 0), ...rebuiltOrderBatches.filter(b => Number(b.remaining) > 0)];
 
         localStorage.setItem(historyKey, JSON.stringify(finalHistory));
         localStorage.setItem(batchKey, JSON.stringify(finalBatches));
