@@ -1112,10 +1112,10 @@ async function renderMenu() {
             // Cek ketersediaan stok (menggunakan kolom status_stok sesuai database Supabase kamu)
             const isAvailable = item.is_available !== false; 
             const isPaketHematCard = item.category === 'Paket Hemat';
-            const safeItemName = (item.name || '').replace(/'/g, "\'");
-            const isDrinkAndFood = isBundlingDrinkAndFood(item);
-            const shareBtnHtml = (isPaketHematCard && isDrinkAndFood) ? `
-                <button type="button" onclick="event.stopPropagation(); openSharePaketHematModal({ id: ${item.id}, name: '${safeItemName}', category: '${item.category}' })" 
+            
+            // 🔥 TOMBOL SHARE UNTUK SEMUA PAKET HEMAT
+            const shareBtnHtml = isPaketHematCard ? `
+                <button type="button" onclick="event.stopPropagation(); triggerSharePromo('${item.id}')" 
                     class="mt-1.5 w-full py-1 px-2 rounded-xl bg-amber-400/15 hover:bg-amber-400/30 border border-amber-400/50 text-amber-700 dark:text-amber-300 text-[9px] font-extrabold flex items-center justify-center gap-1 transition cursor-pointer">
                     <i class="fa-solid fa-share-nodes text-amber-500"></i> Share Diskon Rp2.000
                 </button>
@@ -2536,6 +2536,30 @@ function normalizePhoneVariants(phone) {
     return Array.from(variants);
 }
 
+// 🔥 FUNGSI BARU: Format ke Tanggal Lokal YYYY-MM-DD (Bukan UTC)
+function getLocalTodayString() {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+// 🔥 FUNGSI BARU: Normalisasi format tanggal dari DB ke format lokal murni YYYY-MM-DD
+function normalizeDateToLocalYYYYMMDD(dateInput) {
+    if (!dateInput) return null;
+    // Jika formatnya sudah YYYY-MM-DD (panjang 10), return apa adanya
+    if (typeof dateInput === 'string' && dateInput.length === 10 && dateInput.includes('-')) {
+        return dateInput;
+    }
+    const d = new Date(dateInput);
+    if (isNaN(d.getTime())) return String(dateInput).split('T')[0];
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 async function getCustomerOrderCount(phone) {
     const variants = normalizePhoneVariants(phone);
     if (variants.length === 0) return 0;
@@ -3894,9 +3918,11 @@ function checkTodayCheckinStatus() {
         expiryEl.innerText = `Berakhir ${nextMonth.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}`;
     }
 
+    // 🔥 PERBAIKAN: Gunakan Local Time dan Normalisasi Tanggal
+    const todayStr = getLocalTodayString();
+    const lastCheckinDateStr = normalizeDateToLocalYYYYMMDD(loggedInCustomer.last_checkin);
 
-    const todayStr = new Date().toISOString().split('T')[0];
-    if (loggedInCustomer.last_checkin === todayStr) {
+    if (lastCheckinDateStr === todayStr) {
         btnCheckin.innerText = "✓ Sudah Check-in Hari Ini";
         btnCheckin.disabled = true;
         btnCheckin.className = "w-full py-3 bg-brand-700/80 text-brand-200 border border-brand-500/30 font-black rounded-xl text-xs cursor-not-allowed";
@@ -3928,8 +3954,9 @@ function openCheckinDetailModal() {
 
     // Hitung status visual berdasarkan streak customer
     const streak = loggedInCustomer.checkin_streak || 0;
-    const todayStr = new Date().toISOString().split('T')[0];
-    const isCheckedInToday = loggedInCustomer.last_checkin === todayStr;
+    const todayStr = getLocalTodayString();
+    const lastCheckinDateStr = normalizeDateToLocalYYYYMMDD(loggedInCustomer.last_checkin);
+    const isCheckedInToday = lastCheckinDateStr === todayStr;
     
     // Tentukan posisi "Hari Ini" di kalender
     // Jika sudah checkin hari ini, berarti posisi hari ini adalah sejumlah streak.
@@ -3989,9 +4016,11 @@ async function doDailyCheckin() {
     if (!loggedInCustomer) return;
 
     const today = new Date();
-    const todayStr = today.toISOString().split('T')[0];
+    // 🔥 PERBAIKAN: Gunakan Local Time dan Normalisasi Tanggal
+    const todayStr = getLocalTodayString();
+    const lastCheckinDateStr = normalizeDateToLocalYYYYMMDD(loggedInCustomer.last_checkin);
     
-    if (loggedInCustomer.last_checkin === todayStr) {
+    if (lastCheckinDateStr === todayStr) {
         showToast("Kamu sudah melakukan check-in hari ini!");
         return;
     }
@@ -4000,8 +4029,8 @@ async function doDailyCheckin() {
     let streak = loggedInCustomer.checkin_streak || 0;
     let earnedPoints = 15; // Poin harian dasar
 
-    if (loggedInCustomer.last_checkin) {
-        const lastDate = new Date(loggedInCustomer.last_checkin);
+    if (lastCheckinDateStr) {
+        const lastDate = new Date(lastCheckinDateStr);
         const diffTime = Math.abs(today - lastDate);
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
@@ -4206,8 +4235,10 @@ if (loggedInCustomer) {
     document.getElementById('announcementUserStreak').innerText = loggedInCustomer.checkin_streak || 0;
 
     const btn = document.getElementById('announcementCheckinBtn');
-    const todayStr = new Date().toISOString().split('T')[0];
-    if (loggedInCustomer.last_checkin === todayStr) {
+    // 🔥 PERBAIKAN: Gunakan Local Time dan Normalisasi Tanggal
+    const todayStr = getLocalTodayString();
+    const lastCheckinDateStr = normalizeDateToLocalYYYYMMDD(loggedInCustomer.last_checkin);
+    if (lastCheckinDateStr === todayStr) {
         btn.innerText = "✓ Sudah Check-in Hari Ini";
         btn.disabled = true;
         btn.className = "w-full py-2.5 bg-brand-700/80 text-brand-200 border border-brand-500/30 font-black rounded-xl text-xs cursor-not-allowed";
@@ -4366,6 +4397,26 @@ function isBundlingDrinkAndFood(item) {
     return name.includes('bundling drink & food') || name.includes('couple') || name.includes('satnight');
 }
 
+// ======================== FUNGSI BARU: TRIGGER SHARE DARI KARTU MENU ========================
+async function triggerSharePromo(itemId) {
+    // Buka modal dengan data sementara agar instan
+    openSharePaketHematModal({ id: itemId, name: 'Paket Hemat Pilihan', category: 'Paket Hemat' });
+    
+    // Ambil data terbaru dari DB di background untuk memastikan nama & link benar
+    try {
+        const { data: item, error } = await supabaseClient.from('products').select('*').eq('id', itemId).single();
+        if (item && !error) {
+            const nameEl = document.getElementById('shareModalMenuName');
+            if (nameEl) nameEl.innerText = item.name;
+            currentShareMenuItem = item;
+            const linkInput = document.getElementById('shareReferralLinkInput');
+            if (linkInput) linkInput.value = generatePaketHematReferralLink(item);
+        }
+    } catch(e) {
+        console.warn('Gagal ambil detail item share:', e);
+    }
+}
+
 // ======================== 1 & 2. SISTEM KADALUARSA POIN (MAKS 2 BULAN / DD-MM-YYYY) & CASHBACK LEVEL ========================
 const POINT_EXPIRY_MONTHS = 2;
 
@@ -4475,7 +4526,8 @@ async function addPointBatchWithExpiry(amount, sourceLabel) {
     if (!loggedInCustomer || pts <= 0) return;
 
     const now = new Date();
-    const todayStr = now.toISOString().split('T')[0];
+    // 🔥 PERBAIKAN: Gunakan Local Time dan Normalisasi Tanggal
+    const todayStr = getLocalTodayString();
     const expiresAt = addTwoMonthsDate(now);
     const batches = loadAndCleanExpiredPointBatches(loggedInCustomer.phone);
     const isCheckin = String(sourceLabel || '').toLowerCase().includes('check-in');
@@ -4683,34 +4735,39 @@ async function openSharePaketHematModal(menuItem) {
     if (toggleEl) toggleEl.checked = true;
     onToggleShareSwitchChange();
 
-    const targetPhone = loggedInCustomer?.phone || document.getElementById('custPhone')?.value?.trim() || '';
-    const alreadyUsed = await checkHasCustomerUsedSharePromo(targetPhone);
-    const statusBadge = document.getElementById('shareModalClaimStatusBadge');
-    const submitBtn = document.getElementById('btnSubmitShareProof');
-
-    if (alreadyUsed) {
-        if (statusBadge) {
-            statusBadge.className = 'bg-rose-500/20 text-rose-300 border border-rose-400/40 text-[9px] font-black px-2.5 py-1 rounded-full shrink-0';
-            statusBadge.innerText = 'Sudah Terpakai';
-        }
-        if (submitBtn) {
-            submitBtn.disabled = true;
-            submitBtn.innerText = 'Diskon sudah Terpakai';
-            submitBtn.className = 'py-2.5 bg-gray-600 text-gray-300 font-black rounded-xl text-xs cursor-not-allowed';
-        }
-    } else {
-        if (statusBadge) {
-            statusBadge.className = 'bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 text-[9px] font-black px-2.5 py-1 rounded-full shrink-0';
-            statusBadge.innerText = 'Tersedia 1x klaim';
-        }
-        if (submitBtn) {
-            submitBtn.disabled = false;
-            submitBtn.innerText = 'Verifikasi & Klaim Rp2.000';
-            submitBtn.className = 'py-2.5 bg-amber-400 hover:bg-amber-300 text-brand-900 font-black rounded-xl text-xs shadow-lg cursor-pointer';
-        }
-    }
-
+    // 🔥 PERBAIKAN: Buka modal secara instan agar tidak terasa lambat
     openModal('sharePaketHematModal');
+
+    const targetPhone = loggedInCustomer?.phone || document.getElementById('custPhone')?.value?.trim() || '';
+    try {
+        const alreadyUsed = await checkHasCustomerUsedSharePromo(targetPhone);
+        const statusBadge = document.getElementById('shareModalClaimStatusBadge');
+        const submitBtn = document.getElementById('btnSubmitShareProof');
+
+        if (alreadyUsed) {
+            if (statusBadge) {
+                statusBadge.className = 'bg-rose-500/20 text-rose-300 border border-rose-400/40 text-[9px] font-black px-2.5 py-1 rounded-full shrink-0';
+                statusBadge.innerText = 'Sudah Terpakai';
+            }
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerText = 'Diskon sudah Terpakai';
+                submitBtn.className = 'py-2.5 bg-gray-600 text-gray-300 font-black rounded-xl text-xs cursor-not-allowed';
+            }
+        } else {
+            if (statusBadge) {
+                statusBadge.className = 'bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 text-[9px] font-black px-2.5 py-1 rounded-full shrink-0';
+                statusBadge.innerText = 'Tersedia 1x klaim';
+            }
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Verifikasi & Klaim Rp2.000';
+                submitBtn.className = 'py-2.5 bg-amber-400 hover:bg-amber-300 text-brand-900 font-black rounded-xl text-xs shadow-lg cursor-pointer';
+            }
+        }
+    } catch (e) {
+        console.warn('Gagal cek promo share:', e);
+    }
 }
 
 function onToggleShareSwitchChange() {
