@@ -2576,6 +2576,71 @@ async function getCustomerOrderStats(phone) {
     return { totalOrders, totalSpend };
 }
 
+// 🔥 FUNGSI BARU: Cek apakah Guest (belum login) punya poin dari pesanan "Selesai" yang belum diklaim
+async function checkGuestUnclaimedPoints(phone) {
+    const existingReminder = document.getElementById('guestPointsReminderBox');
+    
+    if (loggedInCustomer) {
+        if (existingReminder) existingReminder.remove();
+        return; 
+    }
+    
+    const cleanPhone = String(phone || '').replace(/[^0-9]/g, '');
+    if (cleanPhone.length < 9) {
+        if (existingReminder) existingReminder.remove();
+        return;
+    }
+
+    try {
+        const variants = normalizePhoneVariants(cleanPhone);
+        const { data: orders, error } = await supabaseClient
+            .from('orders')
+            .select('points_earned, status')
+            .in('customer_phone', variants)
+            .in('status', ['Selesai', 'Sudah selesai']);
+
+        if (error || !orders || orders.length === 0) {
+            if (existingReminder) existingReminder.remove();
+            return;
+        }
+
+        const totalUnclaimedPoints = orders.reduce((sum, o) => sum + (Number(o.points_earned) || 0), 0);
+        
+        if (totalUnclaimedPoints > 0) {
+            // Jika nomor HP sudah terdaftar di tabel customers, jangan tampilkan reminder (biarkan dia login)
+            const { data: cust } = await supabaseClient.from('customers').select('id').in('phone', variants).limit(1);
+            if (cust && cust.length > 0) {
+                if (existingReminder) existingReminder.remove();
+                return;
+            }
+
+            if (!existingReminder) {
+                const reminderDiv = document.createElement('div');
+                reminderDiv.id = 'guestPointsReminderBox';
+                reminderDiv.className = "p-3 mb-2 bg-gradient-to-r from-amber-400/20 to-amber-500/10 rounded-xl border-2 border-amber-400 text-xs shadow-sm relative overflow-hidden";
+                reminderDiv.innerHTML = `
+                    <div class="flex items-start gap-2">
+                        <i class="fa-solid fa-triangle-exclamation text-amber-500 text-base mt-0.5"></i>
+                        <div>
+                            <p class="font-extrabold text-amber-900 dark:text-amber-300 leading-tight">Poin Cashback Kamu Belum Diklaim!</p>
+                            <p class="text-[10px] text-gray-700 dark:text-gray-300 mt-0.5">Kamu memiliki <strong>${totalUnclaimedPoints} Poin</strong> dari pesanan yang sudah selesai. Daftarkan akunmu sekarang dengan nomor <strong>${cleanPhone}</strong> agar poin tidak hangus!</p>
+                            <button type="button" onclick="openAccountModal('register')" class="mt-1.5 px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-brand-900 font-black rounded-lg text-[10px] shadow transition">Daftar & Klaim Poin</button>
+                        </div>
+                    </div>
+                `;
+                const targetParent = document.getElementById('cartSpendProgressBox')?.parentElement?.parentElement || document.getElementById('cartModal').querySelector('.bg-brand-50');
+                if (targetParent) {
+                    targetParent.insertBefore(reminderDiv, targetParent.firstChild);
+                }
+            }
+        } else {
+            if (existingReminder) existingReminder.remove();
+        }
+    } catch (e) {
+        console.warn('Gagal cek unclaimed points guest:', e);
+    }
+}
+
 function updateAccountSpendProgressUI(spendInfo) {
     if (!spendInfo) return;
     const { currentTier, nextTier, totalSpend, progressPercent, remainingToNext, targetMax } = spendInfo;
@@ -2655,6 +2720,7 @@ async function syncCustomerLoyaltyDiscount(phoneOverride) {
         if (statusInfoEl) statusInfoEl.classList.add('hidden');
         if (cartSpendBox) cartSpendBox.classList.add('hidden');
         updateAccountSpendProgressUI(currentAccountSpendInfo);
+        await checkGuestUnclaimedPoints('');
         updateCartUI();
         return;
     }
@@ -2669,6 +2735,8 @@ async function syncCustomerLoyaltyDiscount(phoneOverride) {
     currentAccountSpendInfo = getAccountSpendLevelInfo(totalSpend);
     updateAccountSpendProgressUI(currentAccountSpendInfo);
     await checkHasCustomerUsedSharePromo(targetPhone);
+    await checkGuestUnclaimedPoints(targetPhone);
+    
     if (typeof renderPointExpiryUI === 'function') renderPointExpiryUI();
 
     if (statusInfoEl) {
@@ -3256,7 +3324,10 @@ async function reconcileCompletedOrdersPoints(customerObj) {
 
         // 🔥 1B. SINKRONISASI RIWAYAT CHECK-IN DARI TABEL 'customers' SUPABASE (`last_checkin` & `checkin_streak`)
         if (customerObj.last_checkin) {
-            const lastCheckinDateStr = String(customerObj.last_checkin).split('T')[0]; // Format: YYYY-MM-DD
+            const lastCheckinRaw = String(customerObj.last_checkin);
+            // Ambil format YYYY-MM-DD murni (abaikan jam/menit/zona waktu agar akurat)
+            const lastCheckinDateStr = lastCheckinRaw.includes('T') ? lastCheckinRaw.split('T')[0] : lastCheckinRaw;
+            
             const existingCheckinLog = nonOrderHistory.find(h => {
                 const desc = String(h.description || '').toLowerCase();
                 if (!desc.includes('check-in') && !desc.includes('checkin')) return false;
@@ -3268,8 +3339,7 @@ async function reconcileCompletedOrdersPoints(customerObj) {
                 return isoDay === lastCheckinDateStr || localDay === lastCheckinDateStr || h.id === `checkin-${lastCheckinDateStr}`;
             });
 
-            // Jika pada tanggal last_checkin ada order yang memakai poin (seperti NGOP-172 memakai 1470 poin pada 13/11/26 pukul 10.56),
-            // berarti Check-in Harian dilakukan SEBELUM order tersebut dibuat
+            // Jika pada tanggal last_checkin ada order yang memakai poin, pastikan Check-in dihitung SEBELUM pemakaian poin
             const sameDayOrdersWithPointUsed = orders.filter(o => {
                 const st = String(o.status || '').toLowerCase();
                 if (st.includes('batal') || st.includes('cancel')) return false;
@@ -3283,7 +3353,6 @@ async function reconcileCompletedOrdersPoints(customerObj) {
             let targetCheckinTimestamp = now;
             if (sameDayOrdersWithPointUsed.length > 0) {
                 const firstOrderTime = new Date(sameDayOrdersWithPointUsed[0].created_at).getTime();
-                // Tempatkan waktu check-in 1 menit sebelum order pemakaian poin jika log check-in dibuat otomatis setelahnya
                 targetCheckinTimestamp = new Date(firstOrderTime - 60000);
             } else {
                 const todayIsoStr = now.toISOString().split('T')[0];
@@ -3306,8 +3375,6 @@ async function reconcileCompletedOrdersPoints(customerObj) {
                     status_tag: 'active'
                 });
             } else if (sameDayOrdersWithPointUsed.length > 0 && String(existingCheckinLog.id || '') === `checkin-${lastCheckinDateStr}`) {
-                // Jika log checkin-YYYY-MM-DD tadi ter-generate otomatis dengan jam sore (15.34) padahal poinnya sudah dipakai jam 10.56 di NGOP-172,
-                // sesuaikan jamnya ke sebelum NGOP-172 agar urutan kronologis Sisa Poin 100% masuk akal
                 const firstOrderTime = new Date(sameDayOrdersWithPointUsed[0].created_at).getTime();
                 if (new Date(existingCheckinLog.date).getTime() > firstOrderTime) {
                     existingCheckinLog.date = new Date(firstOrderTime - 60000).toISOString();
