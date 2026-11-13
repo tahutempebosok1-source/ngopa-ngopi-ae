@@ -3118,20 +3118,21 @@ function updateAvatarUI(base64) {
     }
 }
 
-// 🔥 REKONSILIASI OTOMATIS POIN CASHBACK DARI ORDER (SELESAI, PENDING, ATAU HANGUS) DI SUPABASE
+// 🔥 REKONSILIASI & SINKRONISASI DUA ARAH (TAMBAH, UPDATE, & HAPUS ORDER) ANTARA SUPABASE & WEB CUSTOMER
 async function reconcileCompletedOrdersPoints(customerObj) {
     if (!customerObj || !customerObj.phone) return customerObj;
     try {
         const variants = normalizePhoneVariants(customerObj.phone);
         if (variants.length === 0) return customerObj;
 
-        const { data: orders, error } = await supabaseClient
+        const { data: dbOrders, error } = await supabaseClient
             .from('orders')
             .select('*')
             .in('customer_phone', variants)
             .order('created_at', { ascending: true });
 
-        if (error || !orders || orders.length === 0) return customerObj;
+        if (error) return customerObj;
+        const orders = Array.isArray(dbOrders) ? dbOrders : [];
 
         const cleanPhone = String(customerObj.phone).replace(/[^0-9]/g, '');
         const awardedKey = `ngopa_awarded_order_ids_${cleanPhone}`;
@@ -3156,8 +3157,98 @@ async function reconcileCompletedOrdersPoints(customerObj) {
             if (!Array.isArray(batches)) batches = [];
         } catch (e) { batches = []; }
 
-        // Hapus log sinkronisasi generik ('sync-in-...') agar tidak duplikat dengan log per order
-        history = history.filter(h => !String(h.id || '').startsWith('sync-in-') && !String(h.description || '').includes('Sinkronisasi DB'));
+        // Kumpulkan semua ID order yang saat ini BENAR-BENAR ADA di tabel orders Supabase
+        const existingOrderIdsSet = new Set(orders.map(o => String(o.id)));
+
+        // 🔥 1. BERSIHKAN RIWAYAT & BATCH DARI ORDER YANG SUDAH DIHAPUS DI SUPABASE
+        let pointsToDeductFromDeletedOrders = 0;
+
+        // Cek apakah ada order yang sebelumnya sudah masuk ke saldo/batch tetapi sekarang dihapus dari Supabase
+        batches.forEach(b => {
+            const bId = String(b.id || '');
+            if (bId.startsWith('batch-order-')) {
+                const ordId = bId.replace('batch-order-', '');
+                if (!existingOrderIdsSet.has(ordId)) {
+                    pointsToDeductFromDeletedOrders += (Number(b.remaining) || Number(b.amount) || 0);
+                }
+            }
+        });
+
+        // Jika belum tercatat di batch-order-, cek dari history order-in- yang terhapus
+        if (pointsToDeductFromDeletedOrders === 0) {
+            history.forEach(h => {
+                const hId = String(h.id || '');
+                if (hId.startsWith('order-in-')) {
+                    const ordId = hId.replace('order-in-', '');
+                    if (!existingOrderIdsSet.has(ordId)) {
+                        pointsToDeductFromDeletedOrders += (Number(h.amount) || 0);
+                    }
+                }
+            });
+        }
+
+        // Hapus semua log history poin (order-in-, order-out-, order-pending-, revoke-order-) yang ordernya sudah dihapus di Supabase
+        history = history.filter(h => {
+            const hId = String(h.id || '');
+            const desc = String(h.description || '');
+            if (hId.startsWith('sync-in-') || desc.includes('Sinkronisasi DB')) return false;
+
+            const matchPrefix = hId.match(/^(?:order-in-|order-out-|order-pending-|revoke-order-)(\d+)$/);
+            if (matchPrefix && matchPrefix[1]) {
+                return existingOrderIdsSet.has(String(matchPrefix[1]));
+            }
+            // Cek juga bila ada log lama yang mencantumkan #NGOP-{id} atau (NGOP-{id})
+            const matchCode = desc.match(/NGOP-(\d+)/i);
+            if (matchCode && matchCode[1] && (desc.toLowerCase().includes('order') || desc.toLowerCase().includes('checkout'))) {
+                return existingOrderIdsSet.has(String(matchCode[1]));
+            }
+            return true;
+        });
+
+        // Hapus semua batch poin dari order yang sudah dihapus di Supabase
+        batches = batches.filter(b => {
+            const bId = String(b.id || '');
+            if (bId.startsWith('batch-order-')) {
+                const ordId = bId.replace('batch-order-', '');
+                return existingOrderIdsSet.has(ordId);
+            }
+            return true;
+        });
+
+        // Bersihkan juga daftar awardedIds dari order yang sudah tidak ada di Supabase
+        awardedIds = awardedIds.filter(id => existingOrderIdsSet.has(String(id)));
+
+        // Jika ada poin dari order yang dihapus di Supabase, kurangi juga saldo customer di Supabase (jika belum dikurangi oleh Trigger DELETE)
+        if (pointsToDeductFromDeletedOrders > 0) {
+            const currentPts = Number(customerObj.points) || 0;
+            // Hitung total maksimal poin yang sah dari order yang masih tersisa + check-in
+            const nonOrderHistoryPts = history
+                .filter(h => h.type === 'in' && !String(h.id || '').startsWith('order-in-'))
+                .reduce((sum, h) => sum + (Number(h.amount) || 0), 0);
+            const remainingOrdersPts = orders
+                .filter(o => ['selesai', 'sudah selesai'].includes(String(o.status || '').toLowerCase().trim()))
+                .reduce((sum, o) => sum + extractOrderEarnedPoints(o), 0);
+            const maxValidPoints = nonOrderHistoryPts + remainingOrdersPts;
+
+            if (currentPts > maxValidPoints) {
+                const correctedPoints = Math.max(0, currentPts - pointsToDeductFromDeletedOrders);
+                const { error: deductErr } = await supabaseClient
+                    .from('customers')
+                    .update({ points: correctedPoints })
+                    .eq('id', customerObj.id);
+                if (!deductErr) {
+                    customerObj.points = correctedPoints;
+                }
+            }
+        }
+
+        // Jika seluruh order customer sudah dihapus (orders kosong), simpan hasil pembersihan & keluar
+        if (orders.length === 0) {
+            localStorage.setItem(historyKey, JSON.stringify(history));
+            localStorage.setItem(batchKey, JSON.stringify(batches));
+            localStorage.setItem(awardedKey, JSON.stringify(awardedIds));
+            return customerObj;
+        }
 
         let totalExpectedCompletedCashback = 0;
         let unclaimedCashbackToCredit = 0;
@@ -3178,7 +3269,7 @@ async function reconcileCompletedOrdersPoints(customerObj) {
                 continue;
             }
 
-            // 1. Catat riwayat pemakaian poin checkout (jika order menggunakan poin)
+            // 2. Catat riwayat pemakaian poin checkout (jika order menggunakan poin)
             if (usedPts > 0) {
                 const outId = `order-out-${ord.id}`;
                 const orderCode = ord.order_code || `NGOP-${ord.id}`;
@@ -3197,7 +3288,7 @@ async function reconcileCompletedOrdersPoints(customerObj) {
                 else history.push(outEntry);
             }
 
-            // 2. Klasifikasikan order yang memiliki Cashback Poin (Selesai vs Pending)
+            // 3. Klasifikasikan order yang memiliki Cashback Poin (Selesai vs Pending)
             if (earnedPts > 0) {
                 if (isCompleted) {
                     totalExpectedCompletedCashback += earnedPts;
@@ -3220,6 +3311,7 @@ async function reconcileCompletedOrdersPoints(customerObj) {
         if (cancelledOrderIds.length > 0) {
             const cancelSet = new Set(cancelledOrderIds.flatMap(id => [`order-in-${id}`, `order-pending-${id}`]));
             history = history.filter(h => !cancelSet.has(h.id));
+            batches = batches.filter(b => !cancelledOrderIds.some(id => b.id === `batch-order-${id}`));
         }
 
         const currentDbPoints = Number(customerObj.points) || 0;
@@ -3255,7 +3347,26 @@ async function reconcileCompletedOrdersPoints(customerObj) {
             batches = batches.filter(b => !String(b.id || '').startsWith('init-') && !String(b.id || '').startsWith('sync-'));
         }
 
-        // 3. Sinkronkan setiap order 'Selesai' ke Riwayat Aktivitas Poin & Batch Masa Berlaku 2 Bulan
+        // 4. Sinkronkan setiap order 'Selesai' ke Riwayat Aktivitas Poin & Batch Masa Berlaku 2 Bulan
+        const completedIdsSet = new Set(completedOrdersWithPoints.map(o => String(o.id)));
+        // Jika ada order yang tadinya 'Selesai' tapi diubah kembali menjadi status belum selesai di Supabase, hapus order-in & batch-order-nya
+        history = history.filter(h => {
+            const hId = String(h.id || '');
+            if (hId.startsWith('order-in-')) {
+                const ordId = hId.replace('order-in-', '');
+                return completedIdsSet.has(ordId);
+            }
+            return true;
+        });
+        batches = batches.filter(b => {
+            const bId = String(b.id || '');
+            if (bId.startsWith('batch-order-')) {
+                const ordId = bId.replace('batch-order-', '');
+                return completedIdsSet.has(ordId);
+            }
+            return true;
+        });
+
         let cumulativeCompletedPts = 0;
         for (const ord of completedOrdersWithPoints) {
             const earnedPts = extractOrderEarnedPoints(ord);
@@ -3309,7 +3420,17 @@ async function reconcileCompletedOrdersPoints(customerObj) {
             }
         }
 
-        // 4. Sinkronkan order yang masih 'Pending' (Pesanan Diterima / Diproses / Siap) ke Riwayat Aktivitas Poin
+        // 5. Sinkronkan order yang masih 'Pending' (Pesanan Diterima / Diproses / Siap) ke Riwayat Aktivitas Poin
+        const pendingIdsSet = new Set(pendingOrdersWithPoints.map(o => String(o.id)));
+        history = history.filter(h => {
+            const hId = String(h.id || '');
+            if (hId.startsWith('order-pending-')) {
+                const ordId = hId.replace('order-pending-', '');
+                return pendingIdsSet.has(ordId);
+            }
+            return true;
+        });
+
         for (const ord of pendingOrdersWithPoints) {
             const earnedPts = extractOrderEarnedPoints(ord);
             const orderCode = ord.order_code || `NGOP-${ord.id}`;
@@ -3317,7 +3438,6 @@ async function reconcileCompletedOrdersPoints(customerObj) {
             const estExpDate = addTwoMonthsDate(createdDate);
             const pendingId = `order-pending-${ord.id}`;
 
-            // Jangan tampilkan pending jika sudah ada order-in untuk ID yang sama
             if (history.some(h => h.id === `order-in-${ord.id}`)) continue;
 
             const existingPendIdx = history.findIndex(h => h.id === pendingId);
@@ -3580,13 +3700,15 @@ function customerLogout() {
 }
 
 // ======================== RIWAYAT PESANAN CUSTOMER ========================
-function openOrderHistoryModal() {
+async function openOrderHistoryModal() {
     if (!loggedInCustomer) {
         showValidationAlert("Silakan login terlebih dahulu untuk melihat riwayat pesanan.");
         return;
     }
     renderOrderHistory();
     openModal('orderHistoryModal');
+    await syncCustomerPointsFromDB();
+    renderAccountModalUI();
 }
 
 async function renderOrderHistory() {
