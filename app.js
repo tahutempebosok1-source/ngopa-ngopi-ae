@@ -3,16 +3,16 @@ let BUNDLING_PRESETS = {};
 let premiumOutletIds = [];
 let LOYALTY_LEVELS = [
     { minOrders: 0, level: 'Anak Baru Ngopi', icon: '🌱', desc: 'Baru coba', voucher: null, discount: 0 },
-    { minOrders: 10, level: 'Ngopers Amatir', icon: '🐣', desc: 'Mulai sering', voucher: 'Diskon Rp200/transaksi', discount: 200 },
-    { minOrders: 20, level: 'Ngopers Addict', icon: '🔥', desc: 'Udah langganan', voucher: 'Diskon Rp400/transaksi', discount: 400 },
+    { minOrders: 15, level: 'Ngopers Amatir', icon: '🐣', desc: 'Mulai sering', voucher: 'Diskon Rp200/transaksi', discount: 200 },
+    { minOrders: 30, level: 'Ngopers Addict', icon: '🔥', desc: 'Udah langganan', voucher: 'Diskon Rp400/transaksi', discount: 400 },
     { minOrders: 50, level: 'Ngopers Holic', icon: '👑', desc: 'Mulai ketagihan', voucher: 'Diskon Rp600/transaksi', discount: 600 }
 ];
 
 let ACCOUNT_SPEND_LEVELS = [
     { minSpend: 0, maxSpend: 149999, nextThreshold: 150000, level: 'Anak Baru Ngopi', icon: '🌱', cashbackRate: 0 },
-    { minSpend: 150000, maxSpend: 299999, nextThreshold: 300000, level: 'Ngopers Amatir', icon: '🐣', cashbackRate: 0.01 },
-    { minSpend: 300000, maxSpend: 499999, nextThreshold: 500000, level: 'Ngopers Addict', icon: '🔥', cashbackRate: 0.03 },
-    { minSpend: 500000, maxSpend: 1000000, nextThreshold: 1000000, level: 'Ngopers Holic', icon: '👑', cashbackRate: 0.06 }
+    { minSpend: 250000, maxSpend: 499999, nextThreshold: 500000, level: 'Ngopers Amatir', icon: '🐣', cashbackRate: 0.01 },
+    { minSpend: 500000, maxSpend: 749999, nextThreshold: 750000, level: 'Ngopers Addict', icon: '🔥', cashbackRate: 0.03 },
+    { minSpend: 750000, maxSpend: 1500000, nextThreshold: 1510000, level: 'Ngopers Holic', icon: '👑', cashbackRate: 0.05 }
 ];
 
 // Fungsi untuk mengambil data konfigurasi dari Supabase saat aplikasi dibuka
