@@ -2549,8 +2549,9 @@ function getLocalTodayString() {
 function normalizeDateToLocalYYYYMMDD(dateInput) {
     if (!dateInput) return null;
     // Jika formatnya sudah YYYY-MM-DD (panjang 10), return apa adanya
-    if (typeof dateInput === 'string' && dateInput.length === 10 && dateInput.includes('-')) {
-        return dateInput;
+    if (typeof dateInput === 'string') {
+        const match = dateInput.match(/^(\d{4}-\d{2}-\d{2})/);
+        if (match) return match[1];
     }
     const d = new Date(dateInput);
     if (isNaN(d.getTime())) return String(dateInput).split('T')[0];
@@ -2652,9 +2653,9 @@ async function checkGuestUnclaimedPoints(phone) {
                         </div>
                     </div>
                 `;
-                const targetParent = document.getElementById('cartSpendProgressBox')?.parentElement?.parentElement || document.getElementById('cartModal').querySelector('.bg-brand-50');
-                if (targetParent) {
-                    targetParent.insertBefore(reminderDiv, targetParent.firstChild);
+                const cartItemsContainer = document.getElementById('cartItems');
+                if (cartItemsContainer) {
+                    cartItemsContainer.insertAdjacentElement('afterend', reminderDiv);
                 }
             }
         } else {
