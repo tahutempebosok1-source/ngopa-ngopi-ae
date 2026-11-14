@@ -3058,10 +3058,10 @@ function recalculateChronologicalPointHistory(historyArray) {
         const expDateObj = item.expires_at ? new Date(item.expires_at) : null;
         const isExpired = Boolean(!isPending && item.type === 'in' && expDateObj && !isNaN(expDateObj.getTime()) && now > expDateObj) || item.status_tag === 'expired';
 
-        if (isPending) {
-            // Poin pending belum menambah saldo aktif, tampilkan proyeksi atau saldo saat ini
+        if (isPending || item.status_tag === 'cancelled') {
+            // Poin pending atau batal (cancelled) tidak menambah saldo aktif
             item.balance = runningBalance;
-            item.projected_balance = runningBalance + amt;
+            if (isPending) item.projected_balance = runningBalance + amt;
         } else if (isExpired) {
             // Jika poin sudah hangus lewat 2 bulan, tidak menambah saldo aktif saat ini
             item.status_tag = 'expired';
@@ -3160,9 +3160,14 @@ function renderPointHistoryUI() {
         let icon = isIn ? 'fa-circle-plus' : 'fa-circle-minus';
         let sign = isIn ? '+' : '-';
 
+        const isCancelled = log.status_tag === 'cancelled';
         if (isPending) {
             colorClass = 'text-gray-500 dark:text-gray-400';
             icon = 'fa-clock';
+            sign = '+';
+        } else if (isCancelled) {
+            colorClass = 'text-rose-500 dark:text-rose-400';
+            icon = 'fa-circle-xmark';
             sign = '+';
         } else if (isExpiredNow) {
             colorClass = 'text-rose-500 dark:text-rose-400';
@@ -3181,6 +3186,15 @@ function renderPointHistoryUI() {
                         <i class="fa-solid fa-clock"></i> +${log.amount} Poin Cashback (Pending)
                     </span>
                     <span class="text-[8px] text-gray-400 font-semibold">• Berlaku 2 bln s/d ${estExpStr} setelah Selesai</span>
+                </div>
+            `;
+        } else if (isCancelled) {
+            statusAndExpiryHtml = `
+                <div class="mt-1 flex flex-wrap items-center gap-1">
+                    <span class="text-[9px] font-extrabold text-rose-600 dark:text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded-md border border-rose-400/30 inline-flex items-center gap-1">
+                        <i class="fa-solid fa-ban"></i> Cashback Batal
+                    </span>
+                    <span class="text-[8px] text-rose-400 font-semibold">• Pesanan Dibatalkan</span>
                 </div>
             `;
         } else if (isExpiredNow) {
@@ -3206,9 +3220,11 @@ function renderPointHistoryUI() {
             `;
         }
         
-        const rightBalanceText = isPending
-            ? `<p class="text-[9px] text-amber-600 dark:text-amber-400 font-bold mt-0.5">Sisa: ${log.balance ?? 0} (Pending)</p>`
-            : (isExpiredNow
+        const rightBalanceText = isCancelled
+            ? `<p class="text-[9px] text-rose-500 font-bold mt-0.5">Batal Masuk</p>`
+            : (isPending
+                ? `<p class="text-[9px] text-amber-600 dark:text-amber-400 font-bold mt-0.5">Sisa: ${log.balance ?? 0} (Pending)</p>`
+                : (isExpiredNow
                 ? `<p class="text-[9px] text-rose-500 font-bold mt-0.5">Hangus • Sisa: ${log.balance ?? 0}</p>`
                 : `<p class="text-[9px] text-gray-400 font-bold mt-0.5">Sisa: ${log.balance ?? (loggedInCustomer.points || 0)}</p>`);
 
@@ -3423,9 +3439,7 @@ async function reconcileCompletedOrdersPoints(customerObj) {
             const expDate = addTwoMonthsDate(orderDate);
             const isExpired = now > expDate;
 
-            if (isCancelled) continue;
-
-            // Catat pemakaian poin jika order ini memakai potongan poin saat checkout
+            // Catat pemakaian poin jika order ini memakai potongan poin saat checkout (walaupun dibatalkan, tetap dimunculkan history-nya sebagai pengembalian)
             if (usedPts > 0) {
                 rebuiltOrderHistory.push({
                     id: `order-out-${ord.id}`,
@@ -3433,15 +3447,42 @@ async function reconcileCompletedOrdersPoints(customerObj) {
                     type: 'out',
                     amount: usedPts,
                     description: `Potongan Poin Checkout (${orderCode})`,
-                    balance: 0, // Akan dihitung secara kronologis
+                    balance: 0,
                     expires_at: null,
                     status_tag: 'used'
                 });
+                
+                // Jika pesanan dibatalkan, kembalikan saldo potongannya (seolah poin masuk kembali)
+                if (isCancelled) {
+                    const refundDate = new Date(orderDate.getTime() + 2000); // Anggap dibatalkan 2 detik kemudian di history
+                    rebuiltOrderHistory.push({
+                        id: `revoke-out-${ord.id}`,
+                        date: refundDate.toISOString(),
+                        type: 'in',
+                        amount: usedPts,
+                        description: `Poin Dikembalikan (Order Batal: ${orderCode})`,
+                        balance: 0,
+                        expires_at: null,
+                        status_tag: 'active'
+                    });
+                }
             }
 
             if (earnedPts > 0) {
-                if (isCompleted) {
-                    // Beri jeda +1 detik dari waktu buat order agar di urutan kronologis: Potong Poin Checkout -> baru Cashback Order Selesai
+                if (isCancelled) {
+                    // Munculkan sebagai poin pending yang batal di history, tapi tidak menambah saldo aktif
+                    const pendingDate = new Date(orderDate.getTime() + 1000);
+                    rebuiltOrderHistory.push({
+                        id: `order-pending-${ord.id}`,
+                        date: pendingDate.toISOString(),
+                        type: 'pending',
+                        amount: earnedPts,
+                        description: `Cashback Order (${orderCode})`,
+                        balance: 0,
+                        expires_at: expDate.toISOString(),
+                        status_tag: 'cancelled'
+                    });
+                } else if (isCompleted) {
                     const completedDate = new Date(orderDate.getTime() + 1000);
                     rebuiltOrderHistory.push({
                         id: `order-in-${ord.id}`,
@@ -3449,7 +3490,7 @@ async function reconcileCompletedOrdersPoints(customerObj) {
                         type: 'in',
                         amount: earnedPts,
                         description: `Cashback Order Selesai (${orderCode})`,
-                        balance: 0, // Akan dihitung secara kronologis
+                        balance: 0,
                         expires_at: expDate.toISOString(),
                         status_tag: isExpired ? 'expired' : 'active'
                     });
@@ -3477,7 +3518,7 @@ async function reconcileCompletedOrdersPoints(customerObj) {
                         type: 'pending',
                         amount: earnedPts,
                         description: `Cashback Order (${orderCode})`,
-                        balance: 0, // Akan dihitung secara kronologis
+                        balance: 0,
                         expires_at: expDate.toISOString(),
                         status_tag: 'pending'
                     });
@@ -3774,7 +3815,7 @@ function customerLogout() {
 }
 
 // ======================== RIWAYAT PESANAN CUSTOMER ========================
-async function openOrderHistoryModal() {
+async async function openOrderHistoryModal() {
     if (!loggedInCustomer) {
         showValidationAlert("Silakan login terlebih dahulu untuk melihat riwayat pesanan.");
         return;
