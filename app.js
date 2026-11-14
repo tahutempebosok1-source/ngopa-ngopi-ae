@@ -3225,8 +3225,10 @@ function renderPointHistoryUI() {
             : (isPending
                 ? `<p class="text-[9px] text-amber-600 dark:text-amber-400 font-bold mt-0.5">Sisa: ${log.balance ?? 0} (Pending)</p>`
                 : (isExpiredNow
-                ? `<p class="text-[9px] text-rose-500 font-bold mt-0.5">Hangus • Sisa: ${log.balance ?? 0}</p>`
-                : `<p class="text-[9px] text-gray-400 font-bold mt-0.5">Sisa: ${log.balance ?? (loggedInCustomer.points || 0)}</p>`);
+                    ? `<p class="text-[9px] text-rose-500 font-bold mt-0.5">Hangus • Sisa: ${log.balance ?? 0}</p>`
+                    : `<p class="text-[9px] text-gray-400 font-bold mt-0.5">Sisa: ${log.balance ?? (loggedInCustomer.points || 0)}</p>`
+                )
+            );
 
         return `
             <div class="flex items-center justify-between bg-white dark:bg-brand-900/50 p-2.5 rounded-xl border ${isPending ? 'border-dashed border-gray-300 dark:border-brand-600 opacity-85' : (isExpiredNow ? 'border-rose-200 dark:border-rose-900/50 opacity-75' : 'border-brand-100 dark:border-brand-700/60')} shadow-sm">
@@ -3813,9 +3815,8 @@ function customerLogout() {
     updateCartUI();
     showToast("Berhasil keluar akun.");
 }
-
 // ======================== RIWAYAT PESANAN CUSTOMER ========================
-async async function openOrderHistoryModal() {
+async function openOrderHistoryModal() {
     if (!loggedInCustomer) {
         showValidationAlert("Silakan login terlebih dahulu untuk melihat riwayat pesanan.");
         return;
@@ -3825,7 +3826,6 @@ async async function openOrderHistoryModal() {
     await syncCustomerPointsFromDB();
     renderAccountModalUI();
 }
-
 async function renderOrderHistory() {
     const container = document.getElementById('orderHistoryList');
     container.innerHTML = '<p class="text-center text-xs text-gray-500 dark:text-gray-400 py-6">Memuat riwayat pesanan...</p>';
