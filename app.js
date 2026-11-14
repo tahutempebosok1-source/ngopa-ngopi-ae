@@ -2736,7 +2736,7 @@ async function syncCustomerLoyaltyDiscount(phoneOverride) {
     const statusInfoEl = document.getElementById('cartLoyaltyStatusInfo');
     const cartSpendBox = document.getElementById('cartSpendProgressBox');
 
-    if (!targetPhone || targetPhone.replace(/[^0-9]/g, '').length < 9) {
+    if (!targetPhone || (!loggedInCustomer && targetPhone.replace(/[^0-9]/g, '').length < 8)) {
         currentCustomerOrderCount = 0;
         currentLoyaltyLevelObj = LOYALTY_LEVELS[0];
         currentLoyaltyDiscount = 0;
@@ -4435,8 +4435,10 @@ function showOutOfStockWarning(itemName) {
 
 function isBundlingDrinkAndFood(item) {
     if (!item) return false;
-    const name = (item.name || '').toLowerCase();
-    return name.includes('bundling drink & food') || name.includes('couple') || name.includes('satnight');
+    const cat = String(item.category || item.cat || '').toLowerCase().trim();
+    const name = String(item.name || '').toLowerCase();
+    if (cat === 'paket hemat' && !name.includes('paket ayam')) return true;
+    return name.includes('bundling') || name.includes('paket hemat') || name.includes('couple') || name.includes('satnight');
 }
 
 // ======================== FUNGSI BARU: TRIGGER SHARE DARI KARTU MENU ========================
@@ -4702,16 +4704,32 @@ let isSharePaketHematDiscountActive = false;
 let hasAccountUsedSharePromo = false;
 let cachedAdminShareProofs = [];
 
+function getActiveCustomerPhone() {
+    if (!loggedInCustomer) {
+        try {
+            const saved = JSON.parse(localStorage.getItem('ngopa_customer') || 'null');
+            if (saved) loggedInCustomer = saved;
+        } catch (e) {}
+    }
+    const rawPhone = loggedInCustomer?.phone
+        || loggedInCustomer?.customer_phone
+        || document.getElementById('custPhone')?.value?.trim()
+        || document.getElementById('dashCustomerPhone')?.innerText?.trim()
+        || document.getElementById('authPhone')?.value?.trim()
+        || '';
+    return String(rawPhone).trim();
+}
+
 function generatePaketHematReferralLink(menuItem) {
     const baseUrl = window.location.origin + window.location.pathname;
-    const refPhone = (loggedInCustomer?.phone || document.getElementById('custPhone')?.value?.trim() || 'guest').replace(/[^0-9]/g, '');
+    const refPhone = (getActiveCustomerPhone() || 'guest').replace(/[^0-9]/g, '');
     const itemId = menuItem?.id || 'bundle';
     return `${baseUrl}?register=1&ref=${encodeURIComponent(refPhone)}&paket_hemat=${encodeURIComponent(itemId)}`;
 }
 
 async function checkHasCustomerUsedSharePromo(phone) {
-    const cleanPhone = String(phone || loggedInCustomer?.phone || document.getElementById('custPhone')?.value || '').replace(/[^0-9]/g, '');
-    if (!cleanPhone || cleanPhone.length < 9) {
+    const cleanPhone = String(phone || getActiveCustomerPhone() || '').replace(/[^0-9]/g, '');
+    if (!cleanPhone || (cleanPhone.length < 4 && !loggedInCustomer)) {
         hasAccountUsedSharePromo = false;
         return false;
     }
@@ -4780,7 +4798,7 @@ async function openSharePaketHematModal(menuItem) {
     // 🔥 PERBAIKAN: Buka modal secara instan agar tidak terasa lambat
     openModal('sharePaketHematModal');
 
-    const targetPhone = loggedInCustomer?.phone || document.getElementById('custPhone')?.value?.trim() || '';
+    const targetPhone = getActiveCustomerPhone();
     try {
         const alreadyUsed = await checkHasCustomerUsedSharePromo(targetPhone);
         const statusBadge = document.getElementById('shareModalClaimStatusBadge');
@@ -4825,7 +4843,7 @@ function onToggleShareSwitchChange() {
 
 async function recordShareLinkActivityToDB(actionType, extraFields = {}) {
     const shareLink = document.getElementById('shareReferralLinkInput')?.value || generatePaketHematReferralLink(currentShareMenuItem);
-    const phone = loggedInCustomer?.phone || document.getElementById('custPhone')?.value?.trim() || 'guest';
+    const phone = getActiveCustomerPhone() || 'guest';
     const custName = loggedInCustomer?.name || document.getElementById('custName')?.value?.trim() || 'Customer';
     const params = new URLSearchParams(window.location.search);
     const refBy = params.get('ref') || localStorage.getItem('ngopa_referred_by') || null;
@@ -5000,10 +5018,22 @@ async function submitSharePaketHematClaim() {
         return;
     }
 
-    const phone = loggedInCustomer?.phone || document.getElementById('custPhone')?.value?.trim() || '';
-    if (!phone || phone.replace(/[^0-9]/g, '').length < 9) {
+    const phone = getActiveCustomerPhone();
+    const cleanPh = phone.replace(/[^0-9]/g, '');
+    // Jika user sudah login (loggedInCustomer ada), izinkan berapa pun panjang nomor HP yang didaftarkan (termasuk nomor testing pendek)
+    if (!loggedInCustomer && cleanPh.length < 8) {
         showValidationAlert('Silahkan login akun atau isi Nomor HP terlebih dahulu agar klaim dapat diverifikasi!');
         return;
+    }
+    if (loggedInCustomer && !cleanPh) {
+        showValidationAlert('Nomor HP pada akun belum terdeteksi, silakan isi Nomor HP di keranjang!');
+        return;
+    }
+
+    // Pastikan input custPhone di keranjang juga terisi otomatis dengan nomor akun yang sedang login
+    const custPhoneInput = document.getElementById('custPhone');
+    if (custPhoneInput && !custPhoneInput.value.trim() && phone) {
+        custPhoneInput.value = phone;
     }
 
     const alreadyUsed = await checkHasCustomerUsedSharePromo(phone);
@@ -5018,6 +5048,7 @@ async function submitSharePaketHematClaim() {
     }
 
     isSharePaketHematDiscountActive = true;
+    hasAccountUsedSharePromo = false;
     await recordShareLinkActivityToDB('verified_with_photo_proof', {
         proof_image_url: uploadedShareProofDataUrl,
         proof_file_name: uploadedShareProofFileName || 'bukti-share.jpg',
@@ -5199,7 +5230,7 @@ function checkReferralRegistrationRedirect() {
     if (params.get('ref')) {
         localStorage.setItem('ngopa_referred_by', params.get('ref'));
     }
-    if (params.get('register') === '1' || params.get('ref')) {
+    if ((params.get('register') === '1' || params.get('ref')) && !loggedInCustomer) {
         setTimeout(() => {
             closeDailyAnnouncement();
             openAccountModal('register');
