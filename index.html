@@ -548,7 +548,7 @@
             <div class="my-3 flex flex-wrap gap-2 pb-1" id="bundlingSlotsContainer"></div>
             <div class="my-2">
     <p class="text-xs font-bold text-gray-300 mb-2">Pilihan Menu (Pilih untuk Slot Aktif):</p>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 max-h-20px overflow-y-auto pr-1" id="bundlingItemGrid"></div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 max-h-[320px] overflow-y-auto pr-1" id="bundlingItemGrid"></div>
 </div>
             <div id="bundlingCustomizeArea"
                 class="bg-brand-800/80 p-3 rounded-2xl border border-brand-700 my-2 hidden text-xs space-y-3">
@@ -1716,11 +1716,14 @@
                         </div>
                     </div>
 
-                </div>
+                </div> <!-- Penutup #userDashboardSection -->
+            </div> <!-- TAMBAHKAN INI: Penutup #accountContentArea -->
+        </div> <!-- TAMBAHKAN INI: Penutup .panel-modal-box -->
+    </div> <!-- TAMBAHKAN INI: Penutup #accountModal -->
 
     <!-- ========== MODAL SHARE PAKET HEMAT & KLAIM DISKON RP 2.000 (1X PER AKUN) ========== -->
     <div id="sharePaketHematModal"
-        class="fixed inset-0 bg-black/75 backdrop-blur-sm z-[90] flex items-center justify-center p-4 hidden">
+        class="fixed inset-0 bg-black/75 backdrop-blur-sm z-[115] flex items-center justify-center p-4 hidden">
         <div class="bg-brand-900 text-white w-full max-w-md rounded-3xl p-5 shadow-2xl border-2 border-amber-400/60 max-h-[92vh] flex flex-col overflow-y-auto">
             <div class="flex justify-between items-start border-b border-brand-700 pb-3 mb-3">
                 <div class="flex items-center gap-2.5">
